@@ -9,7 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Navigation, Clock, CreditCard, ChevronRight, Menu, Phone, MessageSquare, Star, Search, Car, Loader2, Calendar } from 'lucide-react';
+import { MapPin, Navigation, Clock, CreditCard, ChevronRight, Menu, Phone, MessageSquare, Star, Search, Car, Loader2, Calendar, History, Wallet, Settings } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TripsView } from '@/components/dashboard/TripsView';
+import { PaymentsView } from '@/components/dashboard/PaymentsView';
+import { SettingsView } from '@/components/dashboard/SettingsView';
 
 const DynamicMap = dynamic(() => import('@/components/DynamicMap'), {
   ssr: false,
@@ -22,6 +27,7 @@ export default function Home() {
   const router = useRouter();
   const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [userName, setUserName] = useState('User');
+  const [activeTab, setActiveTab] = useState<'BOOKING' | 'TRIPS' | 'PAYMENTS' | 'SETTINGS'>('BOOKING');
   const [flowState, setFlowState] = useState<FlowState>('IDLE');
 
   // Mocks
@@ -96,28 +102,81 @@ export default function Home() {
       {/* Sidebar Navigation - Common App Style */}
       <aside className="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 h-full z-10 shadow-sm">
         <div className="p-6">
-          <h1 className="text-2xl font-black tracking-tight flex items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-sm">R</span>
+          <h1 className="text-2xl font-black tracking-tight flex items-center gap-2 text-slate-900 dark:text-white">
+            <span className="w-8 h-8 rounded-full bg-black dark:bg-white text-white dark:text-black flex items-center justify-center text-sm">R</span>
             RideShare
           </h1>
         </div>
         <nav className="flex-1 px-4 space-y-2">
-          <Button variant="ghost" className="w-full justify-start font-medium bg-slate-100">Booking</Button>
-          <Button variant="ghost" className="w-full justify-start text-slate-500">My Trips</Button>
-          <Button variant="ghost" className="w-full justify-start text-slate-500">Payments</Button>
-          <Button variant="ghost" className="w-full justify-start text-slate-500">Settings</Button>
+          <Button
+            variant="ghost"
+            className={`w-full justify-start font-medium ${activeTab === 'BOOKING' ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400'}`}
+            onClick={() => setActiveTab('BOOKING')}
+          >
+            <Car className="w-5 h-5 mr-3" /> Booking
+          </Button>
+          <Button
+            variant="ghost"
+            className={`w-full justify-start font-medium ${activeTab === 'TRIPS' ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400'}`}
+            onClick={() => setActiveTab('TRIPS')}
+          >
+            <History className="w-5 h-5 mr-3" /> My Trips
+          </Button>
+          <Button
+            variant="ghost"
+            className={`w-full justify-start font-medium ${activeTab === 'PAYMENTS' ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400'}`}
+            onClick={() => setActiveTab('PAYMENTS')}
+          >
+            <Wallet className="w-5 h-5 mr-3" /> Payments
+          </Button>
+          <Button
+            variant="ghost"
+            className={`w-full justify-start font-medium ${activeTab === 'SETTINGS' ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400'}`}
+            onClick={() => setActiveTab('SETTINGS')}
+          >
+            <Settings className="w-5 h-5 mr-3" /> Settings
+          </Button>
         </nav>
         <div className="p-4 border-t border-slate-200">
-          <div className="flex items-center gap-3">
-            <Avatar>
-              <AvatarImage src="https://ui.shadcn.com/avatars/02.png" />
-              <AvatarFallback>{userName.substring(0, 2).toUpperCase()}</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="text-sm font-semibold">{userName}</p>
-              <p className="text-xs text-slate-500">5.0 ★ Rating</p>
-            </div>
-          </div>
+          <Dialog>
+            <DialogTrigger asChild>
+              <div className="flex items-center gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 p-2 rounded-xl transition-colors">
+                <Avatar>
+                  <AvatarImage src="https://ui.shadcn.com/avatars/02.png" />
+                  <AvatarFallback>{userName.substring(0, 2).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="text-sm font-semibold">{userName}</p>
+                  <p className="text-xs text-slate-500">5.0 ★ Rating</p>
+                </div>
+              </div>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>User Profile</DialogTitle>
+                <DialogDescription>
+                  Manage your public profile and preferences.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex flex-col items-center justify-center p-6 space-y-4">
+                <Avatar className="w-24 h-24 border-4 border-white shadow-lg">
+                  <AvatarImage src="https://ui.shadcn.com/avatars/02.png" />
+                  <AvatarFallback className="text-2xl font-bold bg-blue-100 text-blue-700">{userName.substring(0, 2).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <div className="text-center">
+                  <h3 className="text-2xl font-bold">{userName}</h3>
+                  <p className="text-slate-500 font-medium">+1 (555) 123-4567</p>
+                  <div className="flex items-center justify-center gap-2 mt-4">
+                    <Badge variant="secondary" className="px-3 py-1 text-sm"><Star className="w-3 h-3 text-yellow-500 mr-1 fill-yellow-500" /> 5.0 Rating</Badge>
+                    <Badge variant="secondary" className="px-3 py-1 text-sm"><History className="w-3 h-3 mr-1 text-blue-500" /> 42 Rides</Badge>
+                  </div>
+                </div>
+              </div>
+              <DialogFooter className="sm:justify-start">
+                <Button variant="outline" className="w-full">Edit Profile</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </aside>
 
@@ -133,13 +192,18 @@ export default function Home() {
           </Avatar>
         </header>
 
-        {/* Map Area */}
-        <div className="absolute inset-0 z-0">
+        {/* Main Toggled Views */}
+        {activeTab === 'TRIPS' && <div className="absolute inset-0 bg-white dark:bg-slate-950 z-10"><TripsView /></div>}
+        {activeTab === 'PAYMENTS' && <div className="absolute inset-0 bg-white dark:bg-slate-950 z-10"><PaymentsView /></div>}
+        {activeTab === 'SETTINGS' && <div className="absolute inset-0 bg-white dark:bg-slate-950 z-10"><SettingsView /></div>}
+
+        {/* Map Area (Only visible on Booking Tab) */}
+        <div className={`absolute inset-0 z-0 ${activeTab !== 'BOOKING' ? 'hidden' : ''}`}>
           <DynamicMap pickup={pickup} dropoff={dropoff} driverLocation={driverLoc} showRoute={flowState === 'IN_RIDE'} />
         </div>
 
-        {/* Floating UI Overlay Base */}
-        <div className="absolute bottom-0 left-0 right-0 md:left-6 md:top-6 md:bottom-auto md:w-[400px] z-10 pointer-events-none">
+        {/* Floating UI Overlay Base (Only visible on Booking Tab) */}
+        <div className={`absolute bottom-0 left-0 right-0 md:left-6 md:top-6 md:bottom-auto md:w-[400px] z-10 pointer-events-none ${activeTab !== 'BOOKING' ? 'hidden' : ''}`}>
 
           {/* STATE 1: IDLE / Search Location */}
           {flowState === 'IDLE' && (
@@ -169,12 +233,59 @@ export default function Home() {
                 </div>
 
                 <div className="pt-2 flex gap-2">
-                  <Button variant="outline" className="flex-1 justify-start font-normal text-slate-600">
+                  <Button variant="outline" className="flex-1 justify-start font-normal text-slate-600 dark:text-slate-300">
                     <Clock className="w-4 h-4 mr-2" /> Now
                   </Button>
-                  <Button variant="outline" className="flex-1 justify-start font-normal text-slate-600">
-                    <Calendar className="w-4 h-4 mr-2" /> Schedule
-                  </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="flex-1 justify-start font-normal text-slate-600 dark:text-slate-300">
+                        <Calendar className="w-4 h-4 mr-2" /> Schedule
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Schedule a Ride</DialogTitle>
+                        <DialogDescription>
+                          Choose a date and time for your upcoming trip.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">Date</label>
+                          <Select defaultValue="tomorrow">
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select Date" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="today">Today</SelectItem>
+                              <SelectItem value="tomorrow">Tomorrow</SelectItem>
+                              <SelectItem value="next">Next Week</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">Time</label>
+                          <Select defaultValue="8am">
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select Time" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="6am">06:00 AM</SelectItem>
+                              <SelectItem value="7am">07:00 AM</SelectItem>
+                              <SelectItem value="8am">08:00 AM</SelectItem>
+                              <SelectItem value="9am">09:00 AM</SelectItem>
+                              <SelectItem value="10am">10:00 AM</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" onClick={handleFindRide}>
+                          Set Pickup Time
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </CardContent>
               <CardFooter className="bg-white pt-2 pb-6 md:pb-4 border-t border-slate-100">
