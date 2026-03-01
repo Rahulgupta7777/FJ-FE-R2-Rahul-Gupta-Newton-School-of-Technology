@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Navigation, Clock, CreditCard, ChevronRight, Menu, Phone, MessageSquare, Star, Search, Car, Loader2, Calendar, History, Wallet, Settings } from 'lucide-react';
+import { User, MapPin, Navigation, Clock, CreditCard, ChevronRight, Menu, Phone, MessageSquare, Star, Search, Car, Loader2, Calendar, History, Wallet, Settings, Banknote } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -17,24 +17,28 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescri
 import { TripsView } from '@/components/dashboard/TripsView';
 import { PaymentsView } from '@/components/dashboard/PaymentsView';
 import { SettingsView } from '@/components/dashboard/SettingsView';
+import Image from 'next/image';
 
 const DynamicMap = dynamic(() => import('@/components/DynamicMap'), {
   ssr: false,
   loading: () => <div className="w-full h-full bg-slate-100 animate-pulse flex items-center justify-center">Loading...</div>
 });
 
-type FlowState = 'IDLE' | 'SELECTING_RIDE' | 'SEARCHING' | 'ACCEPTED' | 'IN_RIDE' | 'COMPLETED';
+type FlowState = 'IDLE' | 'SELECTING_RIDE' | 'SEARCHING' | 'DRIVER_ASSIGNED' | 'IN_RIDE' | 'POST_RIDE';
 
 export default function Home() {
   const router = useRouter();
   const [isAuthChecking, setIsAuthChecking] = useState(true);
-  const [userName, setUserName] = useState('User');
+  const [userName, setUserName] = useState('Rahul Gupta');
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'BOOKING' | 'TRIPS' | 'PAYMENTS' | 'SETTINGS'>('BOOKING');
   const [flowState, setFlowState] = useState<FlowState>('IDLE');
 
   // Profile Edit State
   const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [editNameName, setEditNameName] = useState(userName);
+  const [editName, setEditName] = useState(userName);
 
   // Mocks
   const [pickup, setPickup] = useState<[number, number]>([40.7128, -74.0060]); // NYC Start
@@ -48,6 +52,13 @@ export default function Home() {
   // Customizations
   const [sharedSeats, setSharedSeats] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState<'Cash' | 'Visa •••• 1234' | 'Paytm'>('Visa •••• 1234');
+
+  // Dynamic Payment Icon Helper
+  const renderPaymentIcon = (method: string) => {
+    if (method === 'Cash') return <Banknote className="w-5 h-5 text-green-600" />;
+    if (method === 'Paytm') return <Image src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" width={20} height={20} className="object-contain" />;
+    return <CreditCard className="w-5 h-5 text-slate-600" />;
+  };
 
   // Chat State
   const [chatMessage, setChatMessage] = useState('');
@@ -69,11 +80,32 @@ export default function Home() {
     if (!isAuth) {
       router.push('/login');
     } else {
-      const storedName = localStorage.getItem('userName');
-      if (storedName) setUserName(storedName);
+      if (typeof window !== 'undefined') {
+        const storedName = localStorage.getItem('user_name');
+        const storedAvatar = localStorage.getItem('profile_image');
+        if (storedName) setUserName(storedName);
+        if (storedAvatar) setProfileImage(storedAvatar);
+      }
       setIsAuthChecking(false);
     }
   }, [router]);
+
+  const handleProfileImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setProfileImage(imageUrl);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('profile_image', imageUrl);
+      }
+    }
+  };
+
+  const saveProfile = () => {
+    setUserName(editName);
+    localStorage.setItem('user_name', editName);
+    setIsEditingProfile(false);
+  }
 
   if (isAuthChecking) {
     return (
@@ -94,7 +126,7 @@ export default function Home() {
     setFlowState('SEARCHING');
     setTimeout(() => {
       setDriverLoc([40.7200, -73.9900]);
-      setFlowState('ACCEPTED');
+      setFlowState('DRIVER_ASSIGNED');
     }, 2000);
   };
 
@@ -105,7 +137,7 @@ export default function Home() {
   };
 
   const completeTrip = () => {
-    setFlowState('COMPLETED');
+    setFlowState('POST_RIDE');
     setDriverLoc(null);
   };
 
@@ -163,7 +195,7 @@ export default function Home() {
             <DialogTrigger asChild>
               <div className="flex items-center gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 p-2 rounded-xl transition-colors">
                 <Avatar>
-                  <AvatarImage src="https://ui.shadcn.com/avatars/02.png" />
+                  <AvatarImage src={profileImage || "https://ui.shadcn.com/avatars/02.png"} />
                   <AvatarFallback>{userName.substring(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div>
@@ -184,10 +216,27 @@ export default function Home() {
                 // VIEW MODE
                 <>
                   <div className="flex flex-col items-center justify-center p-6 space-y-4">
-                    <Avatar className="w-24 h-24 border-4 border-white shadow-lg">
-                      <AvatarImage src="https://ui.shadcn.com/avatars/02.png" />
-                      <AvatarFallback className="text-2xl font-bold bg-blue-100 text-blue-700">{userName.substring(0, 2).toUpperCase()}</AvatarFallback>
-                    </Avatar>
+                    <div
+                      className="relative w-24 h-24 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center cursor-pointer group hover:ring-4 hover:ring-blue-100 transition-all overflow-hidden"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      {profileImage ? (
+                        <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+                      ) : (
+                        <User className="w-12 h-12 text-blue-600 dark:text-blue-300" />
+                      )}
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span className="text-white text-xs font-semibold">Change</span>
+                      </div>
+                    </div>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleProfileImageUpload}
+                    />
+
                     <div className="text-center">
                       <h3 className="text-2xl font-bold">{userName}</h3>
                       <p className="text-slate-500 font-medium">+1 (555) 123-4567</p>
@@ -199,7 +248,7 @@ export default function Home() {
                   </div>
                   <DialogFooter className="sm:justify-start">
                     <Button variant="outline" className="w-full" onClick={() => {
-                      setEditNameName(userName);
+                      setEditName(userName);
                       setIsEditingProfile(true);
                     }}>Edit Profile</Button>
                   </DialogFooter>
@@ -209,16 +258,29 @@ export default function Home() {
                 <>
                   <div className="space-y-4 py-4">
                     <div className="flex justify-center mb-6">
-                      <Avatar className="w-20 h-20 border-2 border-dashed border-slate-300 cursor-pointer hover:opacity-80">
-                        <AvatarImage src="https://ui.shadcn.com/avatars/02.png" />
-                        <AvatarFallback className="text-lg bg-slate-100">Upload</AvatarFallback>
-                      </Avatar>
+                      <div
+                        className="relative w-20 h-20 border-2 border-dashed border-slate-300 rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 overflow-hidden"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        {profileImage ? (
+                          <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+                        ) : (
+                          <AvatarFallback className="text-lg bg-slate-100">Upload</AvatarFallback>
+                        )}
+                      </div>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleProfileImageUpload}
+                      />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Display Name</label>
                       <Input
-                        value={editNameName}
-                        onChange={(e) => setEditNameName(e.target.value)}
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
                         placeholder="First Last"
                       />
                     </div>
@@ -229,14 +291,44 @@ export default function Home() {
                   </div>
                   <DialogFooter className="flex-row gap-2 sm:justify-end">
                     <Button variant="ghost" className="flex-1" onClick={() => setIsEditingProfile(false)}>Cancel</Button>
-                    <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={() => {
-                      setUserName(editNameName);
-                      localStorage.setItem('userName', editNameName);
-                      setIsEditingProfile(false);
-                    }}>Save Changes</Button>
+                    <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={saveProfile}>Save Changes</Button>
                   </DialogFooter>
                 </>
               )}
+            </DialogContent>
+          </Dialog>
+        </div>
+        <div className="p-4 border-t border-slate-100 dark:border-slate-800 mt-auto bg-slate-50 dark:bg-slate-900 flex justify-between text-xs text-slate-400">
+          <Dialog>
+            <DialogTrigger className="hover:underline">Terms</DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Terms of Service</DialogTitle>
+                <DialogDescription className="max-h-96 overflow-y-auto mt-4 text-justify space-y-4">
+                  <p><strong>1. Acceptance of Terms:</strong> By accessing and using this Ride Sharing application, you accept and agree to be bound by the terms and provision of this agreement.</p>
+                  <p><strong>2. User Accounts:</strong> You must create an account to use the service. You are responsible for maintaining the confidentiality of your account information.</p>
+                  <p><strong>3. Use of Services:</strong> You agree to use the service for lawful purposes only and in a manner consistent with any and all applicable local, national and international laws.</p>
+                  <p><strong>4. Payments:</strong> Fares are calculated dynamically based on distance, time, and demand. You agree to pay all charges incurred under your account.</p>
+                  <p><strong>5. Limitation of Liability:</strong> We shall not be liable for any direct, indirect, incidental, special or consequential damages resulting from the use or inability to use the service.</p>
+                  <Button className="w-full mt-4" onClick={(e) => (e.target as any).closest('dialog')?.close()}>I Accept</Button>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+          <Dialog>
+            <DialogTrigger className="hover:underline">Privacy</DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Privacy Policy</DialogTitle>
+                <DialogDescription className="max-h-96 overflow-y-auto mt-4 text-justify space-y-4">
+                  <p><strong>1. Information Collection:</strong> We collect information you provide directly to us, such as when you create or modify your account, request on-demand services, or contact customer support.</p>
+                  <p><strong>2. Location Data:</strong> When you use our services, we collect precise location data from your device to provide the rides and for safety and security purposes.</p>
+                  <p><strong>3. Use of Information:</strong> We use the information we collect to integrate with drivers, process payments, and improve our platform.</p>
+                  <p><strong>4. Sharing of Information:</strong> We may share your information with our driver partners to enable them to provide the requested services. Your profile picture and name will be shared during active rides.</p>
+                  <p><strong>5. Data Security:</strong> We take reasonable measures to help protect information about you from loss, theft, misuse and unauthorized access.</p>
+                  <Button className="w-full mt-4" onClick={(e) => (e.target as any).closest('dialog')?.close()}>Understood</Button>
+                </DialogDescription>
+              </DialogHeader>
             </DialogContent>
           </Dialog>
         </div>
@@ -246,9 +338,88 @@ export default function Home() {
       <main className="flex-1 relative flex flex-col h-full w-full">
         {/* Mobile Header */}
         <header className="md:hidden absolute top-0 left-0 right-0 z-20 flex justify-between items-center p-4 bg-transparent pointer-events-none">
-          <Button variant="secondary" size="icon" className="rounded-full shadow-lg pointer-events-auto bg-white/90 backdrop-blur">
-            <Menu className="w-5 h-5 text-slate-700" />
-          </Button>
+          <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+            <SheetTrigger asChild>
+              <Button variant="secondary" size="icon" className="rounded-full shadow-lg pointer-events-auto bg-white/90 backdrop-blur">
+                <Menu className="w-5 h-5 text-slate-700" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-64 p-0 flex flex-col">
+              <div className="p-6">
+                <h1 className="text-2xl font-black tracking-tight flex items-center gap-2 text-slate-900 dark:text-white">
+                  <span className="w-8 h-8 rounded-full bg-black dark:bg-white text-white dark:text-black flex items-center justify-center text-sm">R</span>
+                  RideShare
+                </h1>
+              </div>
+              {/* Nav Items */}
+              <nav className="flex-1 overflow-y-auto px-4 py-4 space-y-2 pb-24">
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start h-12 rounded-xl text-base font-medium ${activeTab === 'BOOKING' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300'}`}
+                  onClick={() => { setActiveTab('BOOKING'); setIsSidebarOpen(false); }}
+                >
+                  <Navigation className="w-5 h-5 mr-3" /> Book a Ride
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start h-12 rounded-xl text-base font-medium ${activeTab === 'TRIPS' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300'}`}
+                  onClick={() => { setActiveTab('TRIPS'); setIsSidebarOpen(false); }}
+                >
+                  <History className="w-5 h-5 mr-3" /> My Trips
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start h-12 rounded-xl text-base font-medium ${activeTab === 'PAYMENTS' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300'}`}
+                  onClick={() => { setActiveTab('PAYMENTS'); setIsSidebarOpen(false); }}
+                >
+                  <Wallet className="w-5 h-5 mr-3" /> Payments
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start h-12 rounded-xl text-base font-medium ${activeTab === 'SETTINGS' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300'}`}
+                  onClick={() => { setActiveTab('SETTINGS'); setIsSidebarOpen(false); }}
+                >
+                  <Settings className="w-5 h-5 mr-3" /> Settings
+                </Button>
+              </nav>
+
+              {/* Bottom Footer Area */}
+              <div className="p-4 border-t border-slate-100 dark:border-slate-800 mt-auto bg-slate-50 dark:bg-slate-900 absolute bottom-0 w-full flex justify-between px-6 text-xs text-slate-400">
+                <Dialog>
+                  <DialogTrigger className="hover:underline">Terms</DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Terms of Service</DialogTitle>
+                      <DialogDescription className="max-h-96 overflow-y-auto mt-4 text-justify space-y-4">
+                        <p><strong>1. Acceptance of Terms:</strong> By accessing and using this Ride Sharing application, you accept and agree to be bound by the terms and provision of this agreement.</p>
+                        <p><strong>2. User Accounts:</strong> You must create an account to use the service. You are responsible for maintaining the confidentiality of your account information.</p>
+                        <p><strong>3. Use of Services:</strong> You agree to use the service for lawful purposes only and in a manner consistent with any and all applicable local, national and international laws.</p>
+                        <p><strong>4. Payments:</strong> Fares are calculated dynamically based on distance, time, and demand. You agree to pay all charges incurred under your account.</p>
+                        <p><strong>5. Limitation of Liability:</strong> We shall not be liable for any direct, indirect, incidental, special or consequential damages resulting from the use or inability to use the service.</p>
+                        <Button className="w-full mt-4" onClick={(e) => (e.target as any).closest('dialog')?.close()}>I Accept</Button>
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+                <Dialog>
+                  <DialogTrigger className="hover:underline">Privacy</DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Privacy Policy</DialogTitle>
+                      <DialogDescription className="max-h-96 overflow-y-auto mt-4 text-justify space-y-4">
+                        <p><strong>1. Information Collection:</strong> We collect information you provide directly to us, such as when you create or modify your account, request on-demand services, or contact customer support.</p>
+                        <p><strong>2. Location Data:</strong> When you use our services, we collect precise location data from your device to provide the rides and for safety and security purposes.</p>
+                        <p><strong>3. Use of Information:</strong> We use the information we collect to integrate with drivers, process payments, and improve our platform.</p>
+                        <p><strong>4. Sharing of Information:</strong> We may share your information with our driver partners to enable them to provide the requested services. Your profile picture and name will be shared during active rides.</p>
+                        <p><strong>5. Data Security:</strong> We take reasonable measures to help protect information about you from loss, theft, misuse and unauthorized access.</p>
+                        <Button className="w-full mt-4" onClick={(e) => (e.target as any).closest('dialog')?.close()}>Understood</Button>
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </SheetContent>
+          </Sheet>
           <Avatar className="pointer-events-auto border-2 border-white shadow-lg">
             <AvatarFallback className="bg-blue-600 text-white font-bold text-sm">RG</AvatarFallback>
           </Avatar>
@@ -482,15 +653,21 @@ export default function Home() {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <div className="flex items-center gap-2 px-3 py-2 bg-slate-100 rounded-lg cursor-pointer hover:bg-slate-200 transition-colors">
-                        <CreditCard className="w-4 h-4 text-slate-700" />
+                        {renderPaymentIcon(paymentMethod)}
                         <span className="text-sm font-semibold">{paymentMethod}</span>
                         <ChevronRight className="w-4 h-4 text-slate-400" />
                       </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuItem onClick={() => setPaymentMethod('Cash')}>Cash</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setPaymentMethod('Visa •••• 1234')}>Visa •••• 1234</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setPaymentMethod('Paytm')}>Paytm</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setPaymentMethod('Cash')}>
+                        <Banknote className="w-4 h-4 mr-2" /> Cash
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setPaymentMethod('Visa •••• 1234')}>
+                        <CreditCard className="w-4 h-4 mr-2" /> Visa •••• 1234
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setPaymentMethod('Paytm')}>
+                        <Wallet className="w-4 h-4 mr-2" /> Paytm
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                   <Button className="rounded-full bg-slate-900 hover:bg-black text-white px-8" onClick={handleConfirmRide}>
@@ -540,7 +717,7 @@ export default function Home() {
           )}
 
           {/* STATE 4: Accepted / Driver Incoming */}
-          {flowState === 'ACCEPTED' && (
+          {flowState === 'DRIVER_ASSIGNED' && (
             <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white">
               <div className="bg-blue-600 text-white p-4">
                 <div className="flex justify-between items-end">
@@ -713,7 +890,7 @@ export default function Home() {
           )}
 
           {/* STATE 6: Completed / Rating */}
-          {flowState === 'COMPLETED' && (
+          {flowState === 'POST_RIDE' && (
             <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white p-6">
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
