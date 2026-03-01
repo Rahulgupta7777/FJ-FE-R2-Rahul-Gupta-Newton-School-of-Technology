@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { CreditCard, Landmark, Smartphone, Wallet, Plus, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 
@@ -109,9 +110,44 @@ export function PaymentsView() {
                         </CardContent>
                     </Card>
 
-                    <Button variant="outline" className="w-full h-14 border-dashed border-2 hover:bg-slate-50 dark:hover:bg-slate-900 mt-4 rounded-xl">
-                        <Plus className="w-5 h-5 mr-2" /> Add New Credit/Debit Card
-                    </Button>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="outline" className="w-full h-14 border-dashed border-2 hover:bg-slate-50 dark:hover:bg-slate-900 mt-4 rounded-xl">
+                                <Plus className="w-5 h-5 mr-2" /> Add New Credit/Debit Card
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Add a New Card</DialogTitle>
+                                <DialogDescription>Enter your card details securely.</DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4 py-4">
+                                <div className="space-y-2">
+                                    <Label>Card Number</Label>
+                                    <Input placeholder="0000 0000 0000 0000" />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label>Expiry Date</Label>
+                                        <Input placeholder="MM/YY" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>CVV</Label>
+                                        <Input placeholder="123" type="password" />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Cardholder Name</Label>
+                                    <Input placeholder="Name on card" />
+                                </div>
+                            </div>
+                            <DialogFooter>
+                                <DialogTrigger asChild>
+                                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">Save Card</Button>
+                                </DialogTrigger>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                 </TabsContent>
 
                 {/* WALLETS SECTION */}
