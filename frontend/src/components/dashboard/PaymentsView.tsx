@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { CreditCard, Landmark, Smartphone, Wallet, Plus, ShieldCheck } from "lucide-react";
+import Image from "next/image";
 
 export function PaymentsView() {
     const [upiId, setUpiId] = useState("");
@@ -120,8 +121,8 @@ export function PaymentsView() {
                         <Card className="border shadow-sm hover:border-blue-500 transition-colors cursor-pointer group">
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-blue-50 dark:bg-slate-800 rounded-xl flex items-center justify-center font-black text-blue-600 text-xl overflow-hidden shadow-inner">
-                                        P
+                                    <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden shadow-sm bg-white">
+                                        <Image src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" width={32} height={32} />
                                     </div>
                                     <div>
                                         <h4 className="font-bold group-hover:text-blue-600 transition-colors">Paytm Wallet</h4>
@@ -136,8 +137,8 @@ export function PaymentsView() {
                         <Card className="border shadow-sm hover:border-purple-500 transition-colors cursor-pointer group">
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-purple-50 dark:bg-slate-800 rounded-xl flex items-center justify-center font-bold text-purple-600 shadow-inner">
-                                        पे
+                                    <div className="w-12 h-12 bg-[#5f259f] rounded-xl flex items-center justify-center shadow-sm">
+                                        <Image src="https://upload.wikimedia.org/wikipedia/commons/d/df/PhonePe_Logo.svg" alt="PhonePe" width={28} height={28} className="invert brightness-0" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold group-hover:text-purple-600 transition-colors">PhonePe</h4>
@@ -152,8 +153,8 @@ export function PaymentsView() {
                         <Card className="border shadow-sm hover:border-orange-500 transition-colors cursor-pointer group">
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-slate-900 rounded-xl flex items-center justify-center font-bold text-orange-400 shadow-inner text-2xl pb-1">
-                                        a
+                                    <div className="w-12 h-12 bg-white border border-slate-100 rounded-xl flex items-center justify-center p-1 shadow-sm">
+                                        <Image src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Amazon_Pay_logo.svg" alt="Amazon Pay" width={40} height={40} />
                                     </div>
                                     <div>
                                         <h4 className="font-bold group-hover:text-orange-500 transition-colors">Amazon Pay</h4>

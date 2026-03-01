@@ -12,6 +12,8 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Navigation, Clock, CreditCard, ChevronRight, Menu, Phone, MessageSquare, Star, Search, Car, Loader2, Calendar, History, Wallet, Settings } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription } from "@/components/ui/sheet";
 import { TripsView } from '@/components/dashboard/TripsView';
 import { PaymentsView } from '@/components/dashboard/PaymentsView';
 import { SettingsView } from '@/components/dashboard/SettingsView';
@@ -30,6 +32,10 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<'BOOKING' | 'TRIPS' | 'PAYMENTS' | 'SETTINGS'>('BOOKING');
   const [flowState, setFlowState] = useState<FlowState>('IDLE');
 
+  // Profile Edit State
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [editNameName, setEditNameName] = useState(userName);
+
   // Mocks
   const [pickup, setPickup] = useState<[number, number]>([40.7128, -74.0060]); // NYC Start
   const [dropoff, setDropoff] = useState<[number, number] | null>(null);
@@ -38,6 +44,18 @@ export default function Home() {
   // Inputs
   const [pickupText, setPickupText] = useState('Current Location');
   const [dropoffText, setDropoffText] = useState('');
+  const [splitFare, setSplitFare] = useState(false);
+
+  // Chat State
+  const [chatMessage, setChatMessage] = useState('');
+  const [messages, setMessages] = useState([
+    { sender: 'driver', text: 'I am arriving in 2 minutes.' },
+    { sender: 'user', text: 'Okay, I am outside.' },
+  ]);
+
+  // Schedule State
+  const [isScheduled, setIsScheduled] = useState(false);
+  const [scheduleTime, setScheduleTime] = useState<string>('');
 
   // Rating
   const [rating, setRating] = useState(0);
@@ -153,28 +171,69 @@ export default function Home() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
-                <DialogTitle>User Profile</DialogTitle>
+                <DialogTitle>{isEditingProfile ? 'Edit Profile' : 'User Profile'}</DialogTitle>
                 <DialogDescription>
-                  Manage your public profile and preferences.
+                  {isEditingProfile ? 'Update your personal details below.' : 'Manage your public profile and preferences.'}
                 </DialogDescription>
               </DialogHeader>
-              <div className="flex flex-col items-center justify-center p-6 space-y-4">
-                <Avatar className="w-24 h-24 border-4 border-white shadow-lg">
-                  <AvatarImage src="https://ui.shadcn.com/avatars/02.png" />
-                  <AvatarFallback className="text-2xl font-bold bg-blue-100 text-blue-700">{userName.substring(0, 2).toUpperCase()}</AvatarFallback>
-                </Avatar>
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold">{userName}</h3>
-                  <p className="text-slate-500 font-medium">+1 (555) 123-4567</p>
-                  <div className="flex items-center justify-center gap-2 mt-4">
-                    <Badge variant="secondary" className="px-3 py-1 text-sm"><Star className="w-3 h-3 text-yellow-500 mr-1 fill-yellow-500" /> 5.0 Rating</Badge>
-                    <Badge variant="secondary" className="px-3 py-1 text-sm"><History className="w-3 h-3 mr-1 text-blue-500" /> 42 Rides</Badge>
+
+              {!isEditingProfile ? (
+                // VIEW MODE
+                <>
+                  <div className="flex flex-col items-center justify-center p-6 space-y-4">
+                    <Avatar className="w-24 h-24 border-4 border-white shadow-lg">
+                      <AvatarImage src="https://ui.shadcn.com/avatars/02.png" />
+                      <AvatarFallback className="text-2xl font-bold bg-blue-100 text-blue-700">{userName.substring(0, 2).toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                    <div className="text-center">
+                      <h3 className="text-2xl font-bold">{userName}</h3>
+                      <p className="text-slate-500 font-medium">+1 (555) 123-4567</p>
+                      <div className="flex items-center justify-center gap-2 mt-4">
+                        <Badge variant="secondary" className="px-3 py-1 text-sm"><Star className="w-3 h-3 text-yellow-500 mr-1 fill-yellow-500" /> 5.0 Rating</Badge>
+                        <Badge variant="secondary" className="px-3 py-1 text-sm"><History className="w-3 h-3 mr-1 text-blue-500" /> 42 Rides</Badge>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <DialogFooter className="sm:justify-start">
-                <Button variant="outline" className="w-full">Edit Profile</Button>
-              </DialogFooter>
+                  <DialogFooter className="sm:justify-start">
+                    <Button variant="outline" className="w-full" onClick={() => {
+                      setEditNameName(userName);
+                      setIsEditingProfile(true);
+                    }}>Edit Profile</Button>
+                  </DialogFooter>
+                </>
+              ) : (
+                // EDIT MODE
+                <>
+                  <div className="space-y-4 py-4">
+                    <div className="flex justify-center mb-6">
+                      <Avatar className="w-20 h-20 border-2 border-dashed border-slate-300 cursor-pointer hover:opacity-80">
+                        <AvatarImage src="https://ui.shadcn.com/avatars/02.png" />
+                        <AvatarFallback className="text-lg bg-slate-100">Upload</AvatarFallback>
+                      </Avatar>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Display Name</label>
+                      <Input
+                        value={editNameName}
+                        onChange={(e) => setEditNameName(e.target.value)}
+                        placeholder="First Last"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-slate-500">Phone Number (Verified)</label>
+                      <Input disabled value="+1 (555) 123-4567" className="bg-slate-50 text-slate-500" />
+                    </div>
+                  </div>
+                  <DialogFooter className="flex-row gap-2 sm:justify-end">
+                    <Button variant="ghost" className="flex-1" onClick={() => setIsEditingProfile(false)}>Cancel</Button>
+                    <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={() => {
+                      setUserName(editNameName);
+                      localStorage.setItem('userName', editNameName);
+                      setIsEditingProfile(false);
+                    }}>Save Changes</Button>
+                  </DialogFooter>
+                </>
+              )}
             </DialogContent>
           </Dialog>
         </div>
@@ -214,32 +273,60 @@ export default function Home() {
               </CardHeader>
               <CardContent className="space-y-4 bg-white pb-6">
                 <div className="relative flex items-center">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-black"></div>
-                  <Input
-                    value={pickupText}
-                    onChange={(e) => setPickupText(e.target.value)}
-                    className="pl-8 bg-slate-50 border-transparent focus-visible:ring-black"
-                  />
-                </div>
-                <div className="absolute left-4 top-[90px] bottom-[110px] w-0.5 bg-slate-200"></div>
-                <div className="relative flex items-center">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-sm bg-blue-600"></div>
-                  <Input
-                    placeholder="Enter Dropoff location"
-                    value={dropoffText}
-                    onChange={(e) => setDropoffText(e.target.value)}
-                    className="pl-8 bg-slate-100 border-transparent font-medium focus-visible:ring-blue-600"
-                  />
+                  <div className="space-y-3 relative">
+                    <div className="absolute left-4 top-5 bottom-5 w-0.5 bg-slate-200"></div>
+
+                    <div className="relative">
+                      <div className="absolute left-3 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-blue-600 rounded-full z-10 ring-4 ring-white"></div>
+                      <Input
+                        placeholder="Current Location"
+                        className="pl-10 bg-slate-50 border-transparent focus-visible:ring-blue-600 h-12 text-base rounded-xl"
+                        value={pickupText}
+                        onChange={(e) => setPickupText(e.target.value)}
+                      />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-600 hover:bg-blue-50 h-8 px-2"
+                        onClick={() => {
+                          setPickupText('Current Location');
+                          // Mock GPS location change
+                          setPickup([40.7128, -74.0060]);
+                        }}
+                      >
+                        <Navigation className="w-4 h-4 mr-1" /> Locate
+                      </Button>
+                    </div>
+                    <div className="relative">
+                      <div className="absolute left-3 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-black rounded-full z-10 ring-4 ring-white"></div>
+                      <Input
+                        placeholder="Enter Dropoff location"
+                        value={dropoffText}
+                        onChange={(e) => setDropoffText(e.target.value)}
+                        className="pl-10 bg-slate-100 border-transparent font-medium focus-visible:ring-blue-600 h-12 text-base rounded-xl"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="pt-2 flex gap-2">
-                  <Button variant="outline" className="flex-1 justify-start font-normal text-slate-600 dark:text-slate-300">
+                  <Button
+                    variant={isScheduled ? "outline" : "default"}
+                    className={`flex-1 justify-start font-normal ${isScheduled ? 'text-slate-600 dark:text-slate-300' : 'bg-blue-600 text-white'}`}
+                    onClick={() => {
+                      setIsScheduled(false);
+                      setScheduleTime('');
+                    }}
+                  >
                     <Clock className="w-4 h-4 mr-2" /> Now
                   </Button>
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="outline" className="flex-1 justify-start font-normal text-slate-600 dark:text-slate-300">
-                        <Calendar className="w-4 h-4 mr-2" /> Schedule
+                      <Button
+                        variant={isScheduled ? "default" : "outline"}
+                        className={`flex-1 justify-start font-normal ${isScheduled ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300'}`}
+                      >
+                        <Calendar className="w-4 h-4 mr-2" /> {isScheduled ? scheduleTime : 'Schedule'}
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
@@ -265,32 +352,42 @@ export default function Home() {
                         </div>
                         <div className="space-y-2">
                           <label className="text-sm font-medium">Time</label>
-                          <Select defaultValue="8am">
+                          <Select defaultValue="8am" onValueChange={(val) => setScheduleTime(val)}>
                             <SelectTrigger>
                               <SelectValue placeholder="Select Time" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="6am">06:00 AM</SelectItem>
-                              <SelectItem value="7am">07:00 AM</SelectItem>
-                              <SelectItem value="8am">08:00 AM</SelectItem>
-                              <SelectItem value="9am">09:00 AM</SelectItem>
-                              <SelectItem value="10am">10:00 AM</SelectItem>
+                              <SelectItem value="06:00 AM">06:00 AM</SelectItem>
+                              <SelectItem value="07:00 AM">07:00 AM</SelectItem>
+                              <SelectItem value="08:00 AM">08:00 AM</SelectItem>
+                              <SelectItem value="09:00 AM">09:00 AM</SelectItem>
+                              <SelectItem value="10:00 AM">10:00 AM</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
                       </div>
                       <DialogFooter>
-                        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" onClick={handleFindRide}>
-                          Set Pickup Time
-                        </Button>
+                        <DialogTrigger asChild>
+                          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" onClick={() => {
+                            if (!scheduleTime) setScheduleTime('08:00 AM');
+                            setIsScheduled(true);
+                          }}>
+                            Confirm Pickup Time
+                          </Button>
+                        </DialogTrigger>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
                 </div>
               </CardContent>
-              <CardFooter className="bg-white pt-2 pb-6 md:pb-4 border-t border-slate-100">
-                <Button className="w-full bg-black hover:bg-slate-800 text-white text-lg h-12 rounded-xl" onClick={handleFindRide}>
-                  Search Routes
+              <CardFooter className="bg-white pt-2 pb-6 md:pb-4 border-t border-slate-100 rounded-b-3xl md:rounded-b-xl">
+                <Button
+                  className="w-full h-14 text-lg font-semibold rounded-xl bg-slate-900 text-white hover:bg-black shadow-md transition-all active:scale-[0.98]"
+                  onClick={handleFindRide}
+                  disabled={!dropoffText}
+                >
+                  <Search className="w-5 h-5 mr-2" />
+                  {isScheduled ? `Schedule for ${scheduleTime}` : 'Search Rides'}
                 </Button>
               </CardFooter>
             </Card>
@@ -319,7 +416,8 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg">$14.50</p>
+                      <p className="font-bold text-lg">${splitFare ? (14.50 / 2).toFixed(2) : '14.50'}</p>
+                      {splitFare && <p className="text-xs text-slate-400">per person</p>}
                     </div>
                   </div>
 
@@ -337,12 +435,13 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg">$21.20</p>
+                      <p className="font-bold text-lg">${splitFare ? (21.20 / 2).toFixed(2) : '21.20'}</p>
+                      {splitFare && <p className="text-xs text-slate-400">per person</p>}
                     </div>
                   </div>
 
                   {/* XL Option */}
-                  <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50">
+                  <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 border-b border-slate-100">
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-10 bg-slate-200 rounded flex items-center justify-center">
                         <Car className="text-slate-700 w-10 h-10" />
@@ -355,8 +454,18 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg">$28.90</p>
+                      <p className="font-bold text-lg">${splitFare ? (28.90 / 2).toFixed(2) : '28.90'}</p>
+                      {splitFare && <p className="text-xs text-slate-400">per person</p>}
                     </div>
+                  </div>
+
+                  {/* Split Fare Toggle */}
+                  <div className="p-4 bg-slate-50 flex flex-row items-center justify-between border-b border-slate-100">
+                    <div className="space-y-0.5">
+                      <h4 className="font-medium text-sm text-slate-900">Split fare with friends</h4>
+                      <p className="text-xs text-slate-500">Share the cost directly in the app</p>
+                    </div>
+                    <Checkbox id="split" checked={splitFare} onCheckedChange={(c) => setSplitFare(!!c)} />
                   </div>
                 </div>
 
@@ -450,25 +559,100 @@ export default function Home() {
               <div className="bg-emerald-600 text-white p-4 flex justify-between items-center">
                 <div>
                   <p className="text-emerald-100 text-sm uppercase font-semibold tracking-wider mb-1">Heading to Destination</p>
-                  <h3 className="font-bold text-xl drop-shadow-sm">Dropoff in 12 min</h3>
+                  <h3 className="font-bold text-xl drop-shadow-sm flex items-center gap-2"><Clock className="w-5 h-5" /> Dropoff in 12 min</h3>
                 </div>
-                <Badge className="bg-emerald-800 hover:bg-emerald-900 border-none px-3 py-1 text-sm">
+                <Badge className="bg-emerald-800 hover:bg-emerald-900 border-none px-3 py-1 text-sm shadow-sm">
                   15:46
                 </Badge>
               </div>
-              <div className="p-4 bg-slate-50 border-b flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <Navigation className="w-5 h-5 text-emerald-600" />
-                  <p className="font-medium text-slate-800">123 Broadway, New York</p>
+              <div className="p-4 bg-slate-50 border-b flex flex-col gap-2">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <Navigation className="w-5 h-5 text-emerald-600" />
+                    <p className="font-medium text-slate-800 dark:text-slate-900">123 Broadway, New York</p>
+                  </div>
+                  <Button variant="ghost" size="sm" className="text-slate-500">Edit</Button>
                 </div>
-                <Button variant="ghost" size="sm" className="text-slate-500">Edit</Button>
               </div>
-              <div className="p-4 flex justify-between items-center gap-4">
-                <Button variant="outline" className="rounded-xl w-14 h-14 p-0 shrink-0">
-                  <Phone className="w-5 h-5 text-slate-700" />
-                </Button>
-                {/* Invisible button to fast forward the simulation */}
-                <Button variant="default" className="flex-1 rounded-xl h-14 bg-slate-900 text-white text-lg font-medium" onClick={completeTrip}>
+              <div className="p-4 flex flex-col gap-3">
+                <div className="flex gap-3">
+                  <Button variant="outline" className="rounded-xl flex-1 h-14 bg-slate-50">
+                    <Phone className="w-5 h-5 text-slate-700 mr-2" /> Call Driver
+                  </Button>
+
+                  {/* CHAT SHEET TRIGGGER */}
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <Button variant="outline" className="rounded-xl flex-1 h-14 bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100 hover:text-blue-800 relative">
+                        <MessageSquare className="w-5 h-5 mr-2" /> Chat
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center font-bold">1</span>
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="bottom" className="h-[70vh] sm:h-[600px] flex flex-col rounded-t-3xl sm:rounded-xl">
+                      <SheetHeader className="text-left border-b pb-4 shrink-0">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-10 h-10">
+                            <AvatarImage src="https://ui.shadcn.com/avatars/03.png" />
+                            <AvatarFallback>JD</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <SheetTitle>Michael</SheetTitle>
+                            <SheetDescription>Toyota Camry • White</SheetDescription>
+                          </div>
+                        </div>
+                      </SheetHeader>
+
+                      {/* Chat Messages Area */}
+                      <div className="flex-1 overflow-y-auto pt-4 flex flex-col gap-4">
+                        {messages.map((msg, idx) => (
+                          <div key={idx} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                            <div className={`px-4 py-2 rounded-2xl max-w-[80%] ${msg.sender === 'user' ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-slate-100 text-slate-900 rounded-bl-sm'}`}>
+                              {msg.text}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Chat Input Area */}
+                      <div className="pt-4 border-t flex gap-2 shrink-0">
+                        <Input
+                          placeholder="Type a message..."
+                          className="rounded-full h-12"
+                          value={chatMessage}
+                          onChange={(e) => setChatMessage(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' && chatMessage.trim()) {
+                              setMessages([...messages, { sender: 'user', text: chatMessage }]);
+                              setChatMessage('');
+                              // Mock auto-reply
+                              setTimeout(() => {
+                                setMessages(prev => [...prev, { sender: 'driver', text: 'Got it!' }]);
+                              }, 1500);
+                            }
+                          }}
+                        />
+                        <Button
+                          className="rounded-full w-12 h-12 p-0 bg-blue-600 hover:bg-blue-700 shrink-0"
+                          onClick={() => {
+                            if (chatMessage.trim()) {
+                              setMessages([...messages, { sender: 'user', text: chatMessage }]);
+                              setChatMessage('');
+                              // Mock auto-reply
+                              setTimeout(() => {
+                                setMessages(prev => [...prev, { sender: 'driver', text: 'Got it!' }]);
+                              }, 1500);
+                            }
+                          }}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white ml-[-2px] mt-[2px]"><path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" /></svg>
+                        </Button>
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+                </div>
+
+                {/* Fast forward the simulation */}
+                <Button variant="default" className="w-full rounded-xl h-14 bg-slate-900 text-white text-lg font-medium shadow-md hover:bg-black transition-colors" onClick={completeTrip}>
                   End Trip Simulation
                 </Button>
               </div>
