@@ -222,17 +222,19 @@ export default function LoginPage() {
                                         className="h-12"
                                     />
                                 </div>
-                                <div className="flex items-start space-x-3 pt-4">
+                                <div className="flex items-start gap-3 mt-6 pt-6 border-t border-slate-100">
                                     <input
                                         type="checkbox"
                                         id="terms"
-                                        className="mt-1 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600"
+                                        className="mt-1 w-4 h-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-600 cursor-pointer"
                                         checked={agreedToTerms}
                                         onChange={(e) => setAgreedToTerms(e.target.checked)}
                                     />
-                                    <Label htmlFor="terms" className="text-sm font-normal text-slate-600 leading-tight cursor-pointer">
-                                        By checking this box, I agree to the <a href="#" className="text-blue-600 hover:underline">Terms of Service</a> and <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>.
-                                    </Label>
+                                    <div className="flex-1">
+                                        <Label htmlFor="terms" className="text-sm font-normal text-slate-600 leading-snug inline-block cursor-pointer">
+                                            By checking this box, I agree to the <a href="#" className="font-semibold text-blue-600 hover:text-blue-700 hover:underline transition-colors">Terms of Service</a> and <a href="#" className="font-semibold text-blue-600 hover:text-blue-700 hover:underline transition-colors">Privacy Policy</a>.
+                                        </Label>
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>
