@@ -8,10 +8,20 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Moon, Sun, Monitor, Bell, Shield, LogOut, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export function SettingsView() {
     const { theme, setTheme } = useTheme();
     const router = useRouter();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return <div className="p-6 md:p-8 h-full w-full max-w-3xl mx-auto flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>;
+    }
 
     return (
         <div className="p-6 md:p-8 h-full overflow-y-auto w-full max-w-3xl mx-auto animate-in fade-in duration-300">

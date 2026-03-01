@@ -56,7 +56,7 @@ export default function Home() {
   // Dynamic Payment Icon Helper
   const renderPaymentIcon = (method: string) => {
     if (method === 'Cash') return <Banknote className="w-5 h-5 text-green-600" />;
-    if (method === 'Paytm') return <Image src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" width={20} height={20} className="object-contain" />;
+    if (method === 'Paytm') return <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" className="w-5 h-5 object-contain" />;
     return <CreditCard className="w-5 h-5 text-slate-600" />;
   };
 
@@ -265,7 +265,7 @@ export default function Home() {
                         {profileImage ? (
                           <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
-                          <AvatarFallback className="text-lg bg-slate-100">Upload</AvatarFallback>
+                          <div className="text-lg bg-slate-100 w-full h-full flex items-center justify-center text-slate-500 font-medium">Upload</div>
                         )}
                       </div>
                       <input

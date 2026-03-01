@@ -24,6 +24,7 @@ export default function LoginPage() {
     const [otp, setOtp] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
 
     // Helpers
     const isEmail = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
@@ -71,7 +72,7 @@ export default function LoginPage() {
 
     const handleProfileSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!firstName) return;
+        if (!firstName || !agreedToTerms) return;
 
         setIsLoading(true);
         await new Promise(r => setTimeout(r, 800));
@@ -221,10 +222,22 @@ export default function LoginPage() {
                                         className="h-12"
                                     />
                                 </div>
+                                <div className="flex items-start space-x-3 pt-4">
+                                    <input
+                                        type="checkbox"
+                                        id="terms"
+                                        className="mt-1 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600"
+                                        checked={agreedToTerms}
+                                        onChange={(e) => setAgreedToTerms(e.target.checked)}
+                                    />
+                                    <Label htmlFor="terms" className="text-sm font-normal text-slate-600 leading-tight cursor-pointer">
+                                        By checking this box, I agree to the <a href="#" className="text-blue-600 hover:underline">Terms of Service</a> and <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>.
+                                    </Label>
+                                </div>
                             </div>
                         </CardContent>
                         <CardFooter>
-                            <Button type="submit" className="w-full h-12 text-lg rounded-xl" disabled={!firstName || isLoading}>
+                            <Button type="submit" className="w-full h-12 text-lg rounded-xl" disabled={!firstName || !agreedToTerms || isLoading}>
                                 {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Start Riding'}
                             </Button>
                         </CardFooter>
@@ -236,7 +249,7 @@ export default function LoginPage() {
             {/* Footer Links */}
             <div className="absolute bottom-8 left-0 right-0 text-center px-4">
                 <p className="text-sm text-slate-500 max-w-sm mx-auto">
-                    By continuing, you agree to our <a href="#" className="underline">Terms of Service</a> and <a href="#" className="underline">Privacy Policy</a>.
+                    Secure login powered by RideShare Inc.
                 </p>
             </div>
         </div>

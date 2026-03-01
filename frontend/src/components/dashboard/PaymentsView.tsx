@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { CreditCard, Landmark, Smartphone, Wallet, Plus, ShieldCheck } from "lucide-react";
-import Image from "next/image";
 
 export function PaymentsView() {
     const [upiId, setUpiId] = useState("");
@@ -158,7 +157,7 @@ export function PaymentsView() {
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden shadow-sm bg-white">
-                                        <Image src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" width={32} height={32} />
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" className="w-8 h-8 object-contain" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold group-hover:text-blue-600 transition-colors">Paytm Wallet</h4>
@@ -174,7 +173,7 @@ export function PaymentsView() {
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 bg-[#5f259f] rounded-xl flex items-center justify-center shadow-sm">
-                                        <Image src="https://upload.wikimedia.org/wikipedia/commons/d/df/PhonePe_Logo.svg" alt="PhonePe" width={28} height={28} className="invert brightness-0" />
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/df/PhonePe_Logo.svg" alt="PhonePe" className="w-7 h-7 object-contain invert brightness-0" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold group-hover:text-purple-600 transition-colors">PhonePe</h4>
@@ -190,7 +189,7 @@ export function PaymentsView() {
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 bg-white border border-slate-100 rounded-xl flex items-center justify-center p-1 shadow-sm">
-                                        <Image src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Amazon_Pay_logo.svg" alt="Amazon Pay" width={40} height={40} />
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Amazon_Pay_logo.svg" alt="Amazon Pay" className="w-10 h-10 object-contain" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold group-hover:text-orange-500 transition-colors">Amazon Pay</h4>
@@ -212,10 +211,21 @@ export function PaymentsView() {
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                {['HDFC', 'SBI', 'ICICI', 'Axis', 'Kotak', 'Yes Bank', 'PNB', 'Bank of Baroda'].map(bank => (
-                                    <Button key={bank} variant="outline" className="h-16 justify-center flex-col gap-1 bg-white dark:bg-slate-950 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-200 dark:hover:border-blue-800 transition-colors rounded-xl">
-                                        <Landmark className="w-4 h-4 text-slate-400" />
-                                        <span className="text-xs font-semibold truncate w-full px-2">{bank}</span>
+                                {[
+                                    { name: 'HDFC Bank', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/28/HDFC_Bank_Logo.svg' },
+                                    { name: 'SBI', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/cc/SBI-logo.svg' },
+                                    { name: 'ICICI Bank', logo: 'https://upload.wikimedia.org/wikipedia/commons/1/12/ICICI_Bank_Logo.svg' },
+                                    { name: 'Axis Bank', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c2/Axis_Bank_logo.svg' },
+                                    { name: 'Kotak Bank', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c3/Kotak_Mahindra_Bank_logo.svg' },
+                                    { name: 'Yes Bank', logo: 'https://upload.wikimedia.org/wikipedia/en/e/e0/Yes_Bank_Logo.svg' },
+                                    { name: 'PNB', logo: 'https://upload.wikimedia.org/wikipedia/commons/1/14/PNB_Logo.svg' },
+                                    { name: 'Bank of Baroda', logo: 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Bank_of_Baroda_logo.svg' }
+                                ].map(bank => (
+                                    <Button key={bank.name} variant="outline" className="h-20 justify-center flex-col gap-2 bg-white dark:bg-slate-900 border hover:border-blue-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors rounded-xl overflow-hidden p-2">
+                                        <div className="h-8 flex items-center justify-center w-full">
+                                            <img src={bank.logo} alt={bank.name} className="max-h-full max-w-full object-contain dark:brightness-200 dark:contrast-200" />
+                                        </div>
+                                        <span className="text-[10px] font-semibold truncate w-full px-1 text-center text-slate-600 dark:text-slate-300">{bank.name}</span>
                                     </Button>
                                 ))}
                             </div>
