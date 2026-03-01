@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Navigation, Clock, CreditCard, ChevronRight, Menu, Phone, MessageSquare, Star, Search, Car, Loader2, Calendar, History, Wallet, Settings } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription } from "@/components/ui/sheet";
 import { TripsView } from '@/components/dashboard/TripsView';
 import { PaymentsView } from '@/components/dashboard/PaymentsView';
@@ -44,7 +44,10 @@ export default function Home() {
   // Inputs
   const [pickupText, setPickupText] = useState('Current Location');
   const [dropoffText, setDropoffText] = useState('');
-  const [splitFare, setSplitFare] = useState(false);
+
+  // Customizations
+  const [sharedSeats, setSharedSeats] = useState(1);
+  const [paymentMethod, setPaymentMethod] = useState<'Cash' | 'Visa •••• 1234' | 'Paytm'>('Visa •••• 1234');
 
   // Chat State
   const [chatMessage, setChatMessage] = useState('');
@@ -411,13 +414,14 @@ export default function Home() {
                       <div>
                         <div className="flex items-center gap-2">
                           <h4 className="font-bold text-slate-900">Economy <span className="text-slate-500 font-normal text-sm">👤 4</span></h4>
+                          <h4 className="font-bold text-slate-900">Economy</h4>
                         </div>
                         <p className="text-sm text-slate-500">2 min • 15:34 dropoff</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg">${splitFare ? (14.50 / 2).toFixed(2) : '14.50'}</p>
-                      {splitFare && <p className="text-xs text-slate-400">per person</p>}
+                      <p className="font-bold text-lg">${(14.50 * (sharedSeats / 4)).toFixed(2)}</p>
+                      {sharedSeats < 4 && <p className="text-xs text-blue-600 font-medium">{4 - sharedSeats} seats left</p>}
                     </div>
                   </div>
 
@@ -429,14 +433,14 @@ export default function Home() {
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-slate-900">Comfort <span className="text-slate-500 font-normal text-sm">👤 4</span></h4>
+                          <h4 className="font-bold text-slate-900">Comfort</h4>
                         </div>
                         <p className="text-sm text-slate-500">4 min • 15:32 dropoff</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg">${splitFare ? (21.20 / 2).toFixed(2) : '21.20'}</p>
-                      {splitFare && <p className="text-xs text-slate-400">per person</p>}
+                      <p className="font-bold text-lg">${(21.20 * (sharedSeats / 4)).toFixed(2)}</p>
+                      {sharedSeats < 4 && <p className="text-xs text-blue-600 font-medium">{4 - sharedSeats} seats left</p>}
                     </div>
                   </div>
 
@@ -448,35 +452,48 @@ export default function Home() {
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-slate-900">XL <span className="text-slate-500 font-normal text-sm">👤 6</span></h4>
+                          <h4 className="font-bold text-slate-900">XL</h4>
                         </div>
                         <p className="text-sm text-slate-500">6 min • 15:34 dropoff</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg">${splitFare ? (28.90 / 2).toFixed(2) : '28.90'}</p>
-                      {splitFare && <p className="text-xs text-slate-400">per person</p>}
+                      <p className="font-bold text-lg">${(28.90 * (sharedSeats / 6)).toFixed(2)}</p>
+                      {sharedSeats < 6 && <p className="text-xs text-blue-600 font-medium">{6 - sharedSeats} seats left</p>}
                     </div>
                   </div>
 
-                  {/* Split Fare Toggle */}
+                  {/* Shared Ride Counter */}
                   <div className="p-4 bg-slate-50 flex flex-row items-center justify-between border-b border-slate-100">
                     <div className="space-y-0.5">
-                      <h4 className="font-medium text-sm text-slate-900">Split fare with friends</h4>
-                      <p className="text-xs text-slate-500">Share the cost directly in the app</p>
+                      <h4 className="font-medium text-sm text-slate-900">Shared Ride Options</h4>
+                      <p className="text-xs text-slate-500">How many seats do you need?</p>
                     </div>
-                    <Checkbox id="split" checked={splitFare} onCheckedChange={(c) => setSplitFare(!!c)} />
+                    <div className="flex items-center items-center gap-4 bg-white px-3 py-1 rounded-full border shadow-sm">
+                      <button className="text-xl font-bold text-slate-400 hover:text-slate-900 px-2" onClick={() => setSharedSeats(Math.max(1, sharedSeats - 1))}>-</button>
+                      <span className="font-bold text-lg w-4 text-center">{sharedSeats}</span>
+                      <button className="text-xl font-bold text-slate-400 hover:text-slate-900 px-2" onClick={() => setSharedSeats(Math.min(6, sharedSeats + 1))}>+</button>
+                    </div>
                   </div>
                 </div>
 
-                <div className="p-4 border-t">
-                  <div className="flex justify-between items-center mb-4 px-2">
-                    <div className="flex items-center text-sm font-medium text-slate-700">
-                      <CreditCard className="w-4 h-4 mr-2" /> Visa •••• 4242
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-slate-400" />
-                  </div>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white text-lg h-12 rounded-xl" onClick={handleConfirmRide}>
+                {/* Selected Action */}
+                <div className="pt-4 flex items-center justify-between px-4">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <div className="flex items-center gap-2 px-3 py-2 bg-slate-100 rounded-lg cursor-pointer hover:bg-slate-200 transition-colors">
+                        <CreditCard className="w-4 h-4 text-slate-700" />
+                        <span className="text-sm font-semibold">{paymentMethod}</span>
+                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                      </div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem onClick={() => setPaymentMethod('Cash')}>Cash</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setPaymentMethod('Visa •••• 1234')}>Visa •••• 1234</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setPaymentMethod('Paytm')}>Paytm</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <Button className="rounded-full bg-slate-900 hover:bg-black text-white px-8" onClick={handleConfirmRide}>
                     Confirm Economy
                   </Button>
                 </div>
@@ -497,9 +514,28 @@ export default function Home() {
               <h3 className="text-xl font-bold mb-2 text-slate-900">Finding your ride</h3>
               <p className="text-slate-500 text-sm">Connecting you to drivers nearby...</p>
 
-              <Button variant="outline" className="mt-8 rounded-full" onClick={() => setFlowState('IDLE')}>
-                Cancel Request
-              </Button>
+              {/* Action / Payment modifier */}
+              <div className="mt-6 flex flex-col gap-3">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <CreditCard className="w-5 h-5 text-slate-600" />
+                        <span className="font-medium text-slate-800">{paymentMethod}</span>
+                      </div>
+                      <span className="text-blue-600 text-sm font-semibold">Change</span>
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[200px]">
+                    <DropdownMenuItem onClick={() => setPaymentMethod('Cash')}>Cash</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setPaymentMethod('Visa •••• 1234')}>Visa •••• 1234</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setPaymentMethod('Paytm')}>Paytm</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button variant="outline" className="w-full h-12 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 rounded-xl" onClick={() => setFlowState('IDLE')}>
+                  Cancel Request
+                </Button>
+              </div>
             </Card>
           )}
 
@@ -575,6 +611,23 @@ export default function Home() {
                 </div>
               </div>
               <div className="p-4 flex flex-col gap-3">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <CreditCard className="w-5 h-5 text-slate-600" />
+                        <span className="font-medium text-slate-800">{paymentMethod}</span>
+                      </div>
+                      <span className="text-blue-600 text-sm font-semibold">Change</span>
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[200px]">
+                    <DropdownMenuItem onClick={() => setPaymentMethod('Cash')}>Cash</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setPaymentMethod('Visa •••• 1234')}>Visa •••• 1234</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setPaymentMethod('Paytm')}>Paytm</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
                 <div className="flex gap-3">
                   <Button variant="outline" className="rounded-xl flex-1 h-14 bg-slate-50">
                     <Phone className="w-5 h-5 text-slate-700 mr-2" /> Call Driver
