@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -18,6 +19,9 @@ const DynamicMap = dynamic(() => import('@/components/DynamicMap'), {
 type FlowState = 'IDLE' | 'SELECTING_RIDE' | 'SEARCHING' | 'ACCEPTED' | 'IN_RIDE' | 'COMPLETED';
 
 export default function Home() {
+  const router = useRouter();
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
+  const [userName, setUserName] = useState('User');
   const [flowState, setFlowState] = useState<FlowState>('IDLE');
 
   // Mocks
@@ -31,6 +35,27 @@ export default function Home() {
 
   // Rating
   const [rating, setRating] = useState(0);
+
+  useEffect(() => {
+    // Basic auth check
+    const isAuth = localStorage.getItem('isAuthenticated');
+    if (!isAuth) {
+      router.push('/login');
+    } else {
+      const storedName = localStorage.getItem('userName');
+      if (storedName) setUserName(storedName);
+      setIsAuthChecking(false);
+    }
+  }, [router]);
+
+  if (isAuthChecking) {
+    return (
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-slate-50 gap-4">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <p className="text-slate-500 font-medium animate-pulse">Loading securely...</p>
+      </div>
+    );
+  }
 
   // Transitions
   const handleFindRide = () => {
@@ -86,10 +111,10 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <Avatar>
               <AvatarImage src="https://ui.shadcn.com/avatars/02.png" />
-              <AvatarFallback>RG</AvatarFallback>
+              <AvatarFallback>{userName.substring(0, 2).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div>
-              <p className="text-sm font-semibold">Rahul Gupta</p>
+              <p className="text-sm font-semibold">{userName}</p>
               <p className="text-xs text-slate-500">5.0 ★ Rating</p>
             </div>
           </div>
