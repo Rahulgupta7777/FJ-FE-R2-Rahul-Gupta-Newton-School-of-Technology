@@ -153,7 +153,7 @@ export default function Home() {
     <div className="relative h-screen w-full flex overflow-hidden bg-slate-50 font-sans">
 
       {/* Sidebar Navigation - Common App Style */}
-      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 h-full z-10 shadow-sm">
+      <aside className="hidden md:flex flex-col w-64 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 h-full z-10 shadow-sm">
         <div className="p-6">
           <h1 className="text-2xl font-black tracking-tight flex items-center gap-2 text-slate-900 dark:text-white">
             <span className="w-8 h-8 rounded-full bg-black dark:bg-white text-white dark:text-black flex items-center justify-center text-sm">R</span>
@@ -190,7 +190,7 @@ export default function Home() {
             <Settings className="w-5 h-5 mr-3" /> Settings
           </Button>
         </nav>
-        <div className="p-4 border-t border-slate-200">
+        <div className="p-4 border-t border-slate-200 dark:border-slate-800">
           <Dialog>
             <DialogTrigger asChild>
               <div className="flex items-center gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 p-2 rounded-xl transition-colors">
@@ -199,8 +199,8 @@ export default function Home() {
                   <AvatarFallback>{userName.substring(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="text-sm font-semibold">{userName}</p>
-                  <p className="text-xs text-slate-500">5.0 ★ Rating</p>
+                  <p className="text-sm font-semibold text-slate-900 dark:text-white">{userName}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">5.0 ★ Rating</p>
                 </div>
               </div>
             </DialogTrigger>
@@ -340,11 +340,11 @@ export default function Home() {
         <header className="md:hidden absolute top-0 left-0 right-0 z-20 flex justify-between items-center p-4 bg-transparent pointer-events-none">
           <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
             <SheetTrigger asChild>
-              <Button variant="secondary" size="icon" className="rounded-full shadow-lg pointer-events-auto bg-white/90 backdrop-blur">
-                <Menu className="w-5 h-5 text-slate-700" />
+              <Button variant="secondary" size="icon" className="rounded-full shadow-lg pointer-events-auto bg-white/90 dark:bg-slate-900/90 backdrop-blur">
+                <Menu className="w-5 h-5 text-slate-700 dark:text-slate-300" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-64 p-0 flex flex-col">
+            <SheetContent side="left" className="w-64 p-0 flex flex-col bg-white dark:bg-slate-950 border-r dark:border-slate-800">
               <div className="p-6">
                 <h1 className="text-2xl font-black tracking-tight flex items-center gap-2 text-slate-900 dark:text-white">
                   <span className="w-8 h-8 rounded-full bg-black dark:bg-white text-white dark:text-black flex items-center justify-center text-sm">R</span>
@@ -441,20 +441,20 @@ export default function Home() {
           {/* STATE 1: IDLE / Search Location */}
           {flowState === 'IDLE' && (
             <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-2xl border-0 overflow-hidden animate-in slide-in-from-bottom-5">
-              <CardHeader className="bg-white pb-4">
+              <CardHeader className="bg-white dark:bg-slate-950 pb-4">
                 <CardTitle className="text-xl">Where to?</CardTitle>
                 <CardDescription>Find a ride instantly</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4 bg-white pb-6">
+              <CardContent className="space-y-4 bg-white dark:bg-slate-950 pb-6">
                 <div className="relative flex flex-col gap-3">
                   {/* Connecting Line */}
-                  <div className="absolute left-[23px] top-[24px] bottom-[24px] w-0.5 bg-slate-200 z-0"></div>
+                  <div className="absolute left-[23px] top-[24px] bottom-[24px] w-0.5 bg-slate-200 dark:bg-slate-800 z-0"></div>
 
                   <div className="relative group">
-                    <div className="absolute left-6 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-blue-600 rounded-full z-10 ring-4 ring-slate-50 group-focus-within:ring-white"></div>
+                    <div className="absolute left-6 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-blue-600 rounded-full z-10 ring-4 ring-slate-50 dark:ring-slate-900 group-focus-within:ring-white dark:group-focus-within:ring-slate-950"></div>
                     <Input
                       placeholder="Current Location"
-                      className="pl-14 bg-slate-50 hover:bg-slate-100 focus-visible:bg-white border-transparent focus-visible:ring-blue-600 h-14 text-base rounded-2xl transition-colors font-medium border-0 shadow-none text-slate-900"
+                      className="pl-14 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:bg-white dark:focus-visible:bg-slate-950 border-transparent focus-visible:ring-blue-600 h-14 text-base rounded-2xl transition-colors font-medium border-0 shadow-none text-slate-900 dark:text-white"
                       value={pickupText}
                       onChange={(e) => setPickupText(e.target.value)}
                     />
@@ -472,12 +472,12 @@ export default function Home() {
                   </div>
 
                   <div className="relative group">
-                    <div className="absolute left-6 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-black rounded-full z-10 ring-4 ring-slate-100 group-focus-within:ring-white"></div>
+                    <div className="absolute left-6 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-black dark:bg-white rounded-full z-10 ring-4 ring-slate-100 dark:ring-slate-800 group-focus-within:ring-white dark:group-focus-within:ring-slate-950"></div>
                     <Input
                       placeholder="Enter Dropoff location"
                       value={dropoffText}
                       onChange={(e) => setDropoffText(e.target.value)}
-                      className="pl-14 bg-slate-100 hover:bg-slate-200 focus-visible:bg-white border-transparent font-medium focus-visible:ring-blue-600 h-14 text-base rounded-2xl transition-colors border-0 shadow-none text-slate-900"
+                      className="pl-14 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 focus-visible:bg-white dark:focus-visible:bg-slate-950 border-transparent font-medium focus-visible:ring-blue-600 h-14 text-base rounded-2xl transition-colors border-0 shadow-none text-slate-900 dark:text-white"
                     />
                   </div>
                 </div>
@@ -485,7 +485,7 @@ export default function Home() {
                 <div className="pt-2 flex gap-3">
                   <Button
                     variant={isScheduled ? "outline" : "default"}
-                    className={`flex-1 justify-center font-medium h-12 rounded-xl transition-all ${isScheduled ? 'text-slate-600 border-slate-200 hover:bg-slate-50' : 'bg-[#1E5EFF] text-white shadow-md hover:bg-blue-700'}`}
+                    className={`flex-1 justify-center font-medium h-12 rounded-xl transition-all ${isScheduled ? 'text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900' : 'bg-[#1E5EFF] text-white shadow-md hover:bg-blue-700'}`}
                     onClick={() => {
                       setIsScheduled(false);
                       setScheduleTime('');
@@ -497,9 +497,9 @@ export default function Home() {
                     <DialogTrigger asChild>
                       <Button
                         variant={isScheduled ? "default" : "outline"}
-                        className={`flex-1 justify-center font-medium h-12 rounded-xl transition-all ${isScheduled ? 'bg-[#1E5EFF] text-white shadow-md hover:bg-blue-700' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+                        className={`flex-1 justify-center font-medium h-12 rounded-xl transition-all ${isScheduled ? 'bg-[#1E5EFF] text-white shadow-md hover:bg-blue-700' : 'text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900'}`}
                       >
-                        <Calendar className="w-5 h-5 mr-2 text-slate-500" /> {isScheduled ? scheduleTime : 'Schedule'}
+                        <Calendar className="w-5 h-5 mr-2 text-slate-500 dark:text-slate-400" /> {isScheduled ? scheduleTime : 'Schedule'}
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
@@ -553,9 +553,9 @@ export default function Home() {
                   </Dialog>
                 </div>
               </CardContent>
-              <CardFooter className="bg-white pt-2 pb-6 md:pb-4 border-t border-slate-100 rounded-b-3xl md:rounded-b-xl">
+              <CardFooter className="bg-white dark:bg-slate-950 pt-2 pb-6 md:pb-4 border-t border-slate-100 dark:border-slate-800 rounded-b-3xl md:rounded-b-xl">
                 <Button
-                  className="w-full h-14 text-lg font-semibold rounded-xl bg-slate-900 text-white hover:bg-black shadow-md transition-all active:scale-[0.98]"
+                  className="w-full h-14 text-lg font-semibold rounded-xl bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-black dark:hover:bg-slate-200 shadow-md transition-all active:scale-[0.98]"
                   onClick={handleFindRide}
                   disabled={!dropoffText}
                 >
@@ -569,20 +569,20 @@ export default function Home() {
           {/* STATE 2: Select Ride */}
           {flowState === 'SELECTING_RIDE' && (
             <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
-              <div className="p-4 bg-white flex items-center justify-between border-b">
+              <div className="p-4 bg-white dark:bg-slate-950 flex items-center justify-between border-b dark:border-slate-800">
                 <h3 className="font-semibold text-lg">Choose a ride</h3>
                 <Button variant="ghost" size="sm" onClick={() => setFlowState('IDLE')}>Cancel</Button>
               </div>
-              <CardContent className="p-0 bg-white">
+              <CardContent className="p-0 bg-white dark:bg-slate-950">
                 <div className="overflow-y-auto max-h-[40vh] md:max-h-[500px]">
                   {/* Shared Option */}
                   <div
-                    className={`p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 border-b border-slate-100 transition-colors ${selectedVehicle === 'Shared' ? 'bg-blue-50/50 border-blue-200' : ''}`}
+                    className={`p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 border-b border-slate-100 dark:border-slate-800 transition-colors ${selectedVehicle === 'Shared' ? 'bg-blue-50/50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' : ''}`}
                     onClick={() => setSelectedVehicle('Shared')}
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-10 flex items-center justify-center">
-                        <div className="w-full h-full flex items-center justify-center bg-slate-100 rounded-md">
+                        <div className="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-md">
                           <Car className="w-8 h-8 text-blue-600" />
                           <div className="absolute -bottom-1 -right-1 bg-white rounded-full">
                             <span className="text-[10px] p-0.5">👥</span>
@@ -603,12 +603,12 @@ export default function Home() {
 
                   {/* Economy Option */}
                   <div
-                    className={`p-4 flex items-center justify-between border-b border-slate-100 cursor-pointer hover:bg-slate-50 transition-colors ${selectedVehicle === 'Economy' ? 'bg-blue-50/50 border-blue-200' : ''}`}
+                    className={`p-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors ${selectedVehicle === 'Economy' ? 'bg-blue-50/50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' : ''}`}
                     onClick={() => setSelectedVehicle('Economy')}
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-10 flex items-center justify-center">
-                        <div className="w-full h-full flex items-center justify-center bg-slate-100 rounded-md">
+                        <div className="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-md">
                           <Car className="w-8 h-8 text-blue-500" />
                         </div>
                       </div>
@@ -626,13 +626,13 @@ export default function Home() {
 
                   {/* Comfort Option */}
                   <div
-                    className={`p-4 flex items-center justify-between border-b border-slate-100 cursor-pointer hover:bg-slate-50 transition-colors ${selectedVehicle === 'Comfort' ? 'bg-blue-50/50 border-blue-200' : ''}`}
+                    className={`p-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors ${selectedVehicle === 'Comfort' ? 'bg-blue-50/50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' : ''}`}
                     onClick={() => setSelectedVehicle('Comfort')}
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-10 flex items-center justify-center">
-                        <div className="w-full h-full flex items-center justify-center bg-slate-900 rounded-md">
-                          <Car className="w-9 h-9 text-slate-100" />
+                        <div className="w-full h-full flex items-center justify-center bg-slate-900 dark:bg-slate-200 rounded-md">
+                          <Car className="w-9 h-9 text-slate-100 dark:text-slate-800" />
                         </div>
                       </div>
                       <div>
@@ -649,13 +649,13 @@ export default function Home() {
 
                   {/* XL Option */}
                   <div
-                    className={`p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 border-b border-slate-100 transition-colors ${selectedVehicle === 'XL' ? 'bg-blue-50/50 border-blue-200' : ''}`}
+                    className={`p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 border-b border-slate-100 dark:border-slate-800 transition-colors ${selectedVehicle === 'XL' ? 'bg-blue-50/50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' : ''}`}
                     onClick={() => setSelectedVehicle('XL')}
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-10 flex items-center justify-center">
-                        <div className="w-full h-full flex items-center justify-center bg-slate-200 rounded-md">
-                          <Car className="w-10 h-10 text-slate-800" />
+                        <div className="w-full h-full flex items-center justify-center bg-slate-200 dark:bg-slate-700 rounded-md">
+                          <Car className="w-10 h-10 text-slate-800 dark:text-slate-200" />
                         </div>
                       </div>
                       <div>
@@ -672,25 +672,25 @@ export default function Home() {
 
                   {/* Shared Ride Counter - Only visible if 'Shared' is selected */}
                   {selectedVehicle === 'Shared' && (
-                    <div className="p-4 bg-slate-50 flex flex-row items-center justify-between border-b border-slate-100 animate-in slide-in-from-top-2 fade-in">
+                    <div className="p-4 bg-slate-50 dark:bg-slate-900/50 flex flex-row items-center justify-between border-b border-slate-100 dark:border-slate-800 animate-in slide-in-from-top-2 fade-in">
                       <div className="space-y-0.5">
-                        <h4 className="font-medium text-sm text-slate-900">Shared Ride Options</h4>
-                        <p className="text-xs text-slate-500">How many seats do you need?</p>
+                        <h4 className="font-medium text-sm text-slate-900 dark:text-white">Shared Ride Options</h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">How many seats do you need?</p>
                       </div>
-                      <div className="flex items-center gap-4 bg-white px-3 py-1 rounded-full border shadow-sm">
-                        <button className="text-xl font-bold text-slate-400 hover:text-slate-900 px-2" onClick={() => setSharedSeats(Math.max(1, sharedSeats - 1))}>-</button>
+                      <div className="flex items-center gap-4 bg-white dark:bg-slate-950 px-3 py-1 rounded-full border dark:border-slate-800 shadow-sm">
+                        <button className="text-xl font-bold text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white px-2" onClick={() => setSharedSeats(Math.max(1, sharedSeats - 1))}>-</button>
                         <span className="font-bold text-lg w-4 text-center">{sharedSeats}</span>
-                        <button className="text-xl font-bold text-slate-400 hover:text-slate-900 px-2" onClick={() => setSharedSeats(Math.min(2, sharedSeats + 1))}>+</button>
+                        <button className="text-xl font-bold text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white px-2" onClick={() => setSharedSeats(Math.min(2, sharedSeats + 1))}>+</button>
                       </div>
                     </div>
                   )}
                 </div>
 
                 {/* Selected Action */}
-                <div className="pt-4 flex items-center justify-between px-4">
+                <div className="pt-4 flex items-center justify-between px-4 bg-white dark:bg-slate-950 pb-4">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <div className="flex items-center gap-2 px-3 py-2 bg-slate-100 rounded-lg cursor-pointer hover:bg-slate-200 transition-colors">
+                      <div className="flex items-center gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
                         {renderPaymentIcon(paymentMethod)}
                         <span className="text-sm font-semibold">{paymentMethod}</span>
                         <ChevronRight className="w-4 h-4 text-slate-400" />
@@ -708,7 +708,7 @@ export default function Home() {
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  <Button className="rounded-full bg-slate-900 hover:bg-black text-white px-8 transition-transform active:scale-95" onClick={handleConfirmRide}>
+                  <Button className="rounded-full bg-slate-900 dark:bg-white hover:bg-black dark:hover:bg-slate-200 text-white dark:text-black px-8 transition-transform active:scale-95" onClick={handleConfirmRide}>
                     Confirm {selectedVehicle}
                   </Button>
                 </div>
@@ -718,25 +718,25 @@ export default function Home() {
 
           {/* STATE 3: Searching */}
           {flowState === 'SEARCHING' && (
-            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden  flex flex-col items-center justify-center p-8 text-center bg-white/95 backdrop-blur">
+            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden  flex flex-col items-center justify-center p-8 text-center bg-white/95 dark:bg-slate-950/95 backdrop-blur">
               <div className="relative w-24 h-24 mb-6 flex items-center justify-center">
-                <div className="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-75"></div>
-                <div className="absolute inset-4 bg-blue-200 rounded-full animate-ping opacity-75" style={{ animationDelay: '0.2s' }}></div>
+                <div className="absolute inset-0 bg-blue-100 dark:bg-blue-900/50 rounded-full animate-ping opacity-75"></div>
+                <div className="absolute inset-4 bg-blue-200 dark:bg-blue-800/50 rounded-full animate-ping opacity-75" style={{ animationDelay: '0.2s' }}></div>
                 <div className="absolute inset-2 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg">
                   <Search className="w-8 h-8" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold mb-2 text-slate-900">Finding your ride</h3>
-              <p className="text-slate-500 text-sm">Connecting you to drivers nearby...</p>
+              <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">Finding your ride</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-sm">Connecting you to drivers nearby...</p>
 
               {/* Action / Payment modifier */}
-              <div className="mt-6 flex flex-col gap-3">
+              <div className="mt-6 flex flex-col gap-3 w-full">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
+                    <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-900 border dark:border-slate-800 rounded-xl cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                       <div className="flex items-center gap-3">
-                        <CreditCard className="w-5 h-5 text-slate-600" />
-                        <span className="font-medium text-slate-800">{paymentMethod}</span>
+                        <CreditCard className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                        <span className="font-medium text-slate-800 dark:text-slate-200">{paymentMethod}</span>
                       </div>
                       <span className="text-blue-600 text-sm font-semibold">Change</span>
                     </div>
@@ -747,7 +747,7 @@ export default function Home() {
                     <DropdownMenuItem onClick={() => setPaymentMethod('Paytm')}>Paytm</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Button variant="outline" className="w-full h-12 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 rounded-xl" onClick={() => setFlowState('IDLE')}>
+                <Button variant="outline" className="w-full h-12 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-300 rounded-xl" onClick={() => setFlowState('IDLE')}>
                   Cancel Request
                 </Button>
               </div>
@@ -756,7 +756,7 @@ export default function Home() {
 
           {/* STATE 4: Accepted / Driver Incoming */}
           {flowState === 'DRIVER_ASSIGNED' && (
-            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white">
+            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white dark:bg-slate-950">
               <div className="bg-blue-600 text-white p-4">
                 <div className="flex justify-between items-end">
                   <div>
@@ -769,34 +769,34 @@ export default function Home() {
                 </div>
               </div>
               <CardContent className="p-0">
-                <div className="p-5 flex items-center justify-between border-b">
+                <div className="p-5 flex items-center justify-between border-b dark:border-slate-800">
                   <div className="flex gap-4 items-center">
                     <div className="relative">
-                      <Avatar className="w-14 h-14 border-2 border-white shadow">
+                      <Avatar className="w-14 h-14 border-2 border-white dark:border-slate-950 shadow">
                         <AvatarImage src="https://ui.shadcn.com/avatars/03.png" />
                         <AvatarFallback>JD</AvatarFallback>
                       </Avatar>
-                      <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white flex items-center gap-1 px-1.5 py-0.5 rounded shadow-sm border text-[10px] font-bold">
+                      <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white dark:bg-slate-900 text-slate-900 dark:text-white flex items-center gap-1 px-1.5 py-0.5 rounded shadow-sm border dark:border-slate-800 text-[10px] font-bold">
                         <span>4.9</span> <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                       </div>
                     </div>
                     <div>
-                      <h4 className="font-bold text-lg">Michael</h4>
-                      <p className="text-slate-500 text-sm">Toyota Camry - White</p>
+                      <h4 className="font-bold text-lg text-slate-900 dark:text-white">Michael</h4>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm">Toyota Camry - White</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="bg-slate-100 px-3 py-1.5 rounded uppercase font-mono font-bold text-slate-700 tracking-wider">
+                    <div className="bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded uppercase font-mono font-bold text-slate-700 dark:text-slate-300 tracking-wider">
                       NYC 482
                     </div>
                   </div>
                 </div>
 
                 <div className="p-4 flex gap-3">
-                  <Button variant="outline" className="flex-1 rounded-xl h-12 gap-2 text-slate-700">
+                  <Button variant="outline" className="flex-1 rounded-xl h-12 gap-2 text-slate-700 dark:text-slate-300 dark:border-slate-800 dark:hover:bg-slate-900">
                     <Phone className="w-4 h-4" /> Call
                   </Button>
-                  <Button className="flex-1 rounded-xl h-12 gap-2 bg-slate-900 hover:bg-black text-white" onClick={startTrip}>
+                  <Button className="flex-1 rounded-xl h-12 gap-2 bg-slate-900 dark:bg-blue-600 hover:bg-black dark:hover:bg-blue-700 text-white" onClick={startTrip}>
                     <MessageSquare className="w-4 h-4" /> Message
                   </Button>
                 </div>

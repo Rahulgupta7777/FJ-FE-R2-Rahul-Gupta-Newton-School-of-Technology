@@ -87,24 +87,24 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4 font-sans">
-            <Card className="w-full max-w-md shadow-xl border-0 overflow-hidden">
+            <Card className="w-full max-w-[440px] shadow-2xl rounded-2xl border-0 overflow-hidden bg-white dark:bg-slate-950">
 
                 {/* Brand Header */}
-                <div className="bg-black text-white p-6 flex flex-col items-center justify-center">
-                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-3 shadow-lg">
-                        <span className="text-black font-black text-xl">R</span>
+                <div className="bg-black text-white px-6 py-10 flex flex-col items-center justify-center">
+                    <div className="w-[60px] h-[60px] bg-white rounded-full flex flex-col items-center justify-center mb-4 shadow-sm">
+                        <span className="text-black font-black text-2xl leading-none mt-0.5">R</span>
                     </div>
-                    <h1 className="text-2xl font-black tracking-tight">RideShare</h1>
+                    <h1 className="text-3xl font-black tracking-tight">RideShare</h1>
                 </div>
 
                 {/* Step 1: Identifier (Email/Phone) */}
                 {step === 'IDENTIFIER' && (
                     <form onSubmit={handleIdentifierSubmit}>
-                        <CardHeader>
-                            <CardTitle className="text-2xl">Welcome</CardTitle>
-                            <CardDescription>Enter your phone number or email to continue</CardDescription>
+                        <CardHeader className="pt-8 pb-4 px-8 text-left">
+                            <CardTitle className="text-[28px] font-bold text-slate-900 dark:text-white mb-1">Welcome</CardTitle>
+                            <CardDescription className="text-base text-slate-500 font-normal">Enter your phone number or email to continue</CardDescription>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="px-8 pb-6">
                             <div className="space-y-4">
                                 <div className="space-y-2">
                                     <Input
@@ -112,14 +112,14 @@ export default function LoginPage() {
                                         placeholder="name@example.com or +1 234 567 8900"
                                         value={identifier}
                                         onChange={(e) => setIdentifier(e.target.value)}
-                                        className="h-12 text-lg"
+                                        className="h-[52px] text-base rounded-xl border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-slate-400 focus-visible:border-slate-400 shadow-sm"
                                         autoFocus
                                     />
                                 </div>
                             </div>
                         </CardContent>
-                        <CardFooter>
-                            <Button type="submit" className="w-full h-12 text-lg rounded-xl" disabled={!identifier || isLoading}>
+                        <CardFooter className="px-8 pb-8 pt-0">
+                            <Button type="submit" className="w-full h-[52px] text-lg font-medium rounded-xl bg-[#878787] hover:bg-[#737373] text-white shadow-none transition-colors" disabled={!identifier || isLoading}>
                                 {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Continue'}
                             </Button>
                         </CardFooter>
