@@ -446,61 +446,60 @@ export default function Home() {
                 <CardDescription>Find a ride instantly</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 bg-white pb-6">
-                <div className="relative flex items-center">
-                  <div className="space-y-3 relative">
-                    <div className="absolute left-4 top-5 bottom-5 w-0.5 bg-slate-200"></div>
+                <div className="relative flex flex-col gap-3">
+                  {/* Connecting Line */}
+                  <div className="absolute left-[23px] top-[24px] bottom-[24px] w-0.5 bg-slate-200 z-0"></div>
 
-                    <div className="relative">
-                      <div className="absolute left-3 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-blue-600 rounded-full z-10 ring-4 ring-white"></div>
-                      <Input
-                        placeholder="Current Location"
-                        className="pl-10 bg-slate-50 border-transparent focus-visible:ring-blue-600 h-12 text-base rounded-xl"
-                        value={pickupText}
-                        onChange={(e) => setPickupText(e.target.value)}
-                      />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-600 hover:bg-blue-50 h-8 px-2"
-                        onClick={() => {
-                          setPickupText('Current Location');
-                          // Mock GPS location change
-                          setPickup([40.7128, -74.0060]);
-                        }}
-                      >
-                        <Navigation className="w-4 h-4 mr-1" /> Locate
-                      </Button>
-                    </div>
-                    <div className="relative">
-                      <div className="absolute left-3 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-black rounded-full z-10 ring-4 ring-white"></div>
-                      <Input
-                        placeholder="Enter Dropoff location"
-                        value={dropoffText}
-                        onChange={(e) => setDropoffText(e.target.value)}
-                        className="pl-10 bg-slate-100 border-transparent font-medium focus-visible:ring-blue-600 h-12 text-base rounded-xl"
-                      />
-                    </div>
+                  <div className="relative group">
+                    <div className="absolute left-6 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-blue-600 rounded-full z-10 ring-4 ring-slate-50 group-focus-within:ring-white"></div>
+                    <Input
+                      placeholder="Current Location"
+                      className="pl-14 bg-slate-50 hover:bg-slate-100 focus-visible:bg-white border-transparent focus-visible:ring-blue-600 h-14 text-base rounded-2xl transition-colors font-medium border-0 shadow-none text-slate-900"
+                      value={pickupText}
+                      onChange={(e) => setPickupText(e.target.value)}
+                    />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-600 hover:bg-blue-50 hover:text-blue-700 h-10 px-3 font-medium bg-transparent"
+                      onClick={() => {
+                        setPickupText('Current Location');
+                        setPickup([40.7128, -74.0060]);
+                      }}
+                    >
+                      <Navigation className="w-4 h-4 mr-1.5" /> Locate
+                    </Button>
+                  </div>
+
+                  <div className="relative group">
+                    <div className="absolute left-6 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-black rounded-full z-10 ring-4 ring-slate-100 group-focus-within:ring-white"></div>
+                    <Input
+                      placeholder="Enter Dropoff location"
+                      value={dropoffText}
+                      onChange={(e) => setDropoffText(e.target.value)}
+                      className="pl-14 bg-slate-100 hover:bg-slate-200 focus-visible:bg-white border-transparent font-medium focus-visible:ring-blue-600 h-14 text-base rounded-2xl transition-colors border-0 shadow-none text-slate-900"
+                    />
                   </div>
                 </div>
 
-                <div className="pt-2 flex gap-2">
+                <div className="pt-2 flex gap-3">
                   <Button
                     variant={isScheduled ? "outline" : "default"}
-                    className={`flex-1 justify-start font-normal ${isScheduled ? 'text-slate-600 dark:text-slate-300' : 'bg-blue-600 text-white'}`}
+                    className={`flex-1 justify-center font-medium h-12 rounded-xl transition-all ${isScheduled ? 'text-slate-600 border-slate-200 hover:bg-slate-50' : 'bg-[#1E5EFF] text-white shadow-md hover:bg-blue-700'}`}
                     onClick={() => {
                       setIsScheduled(false);
                       setScheduleTime('');
                     }}
                   >
-                    <Clock className="w-4 h-4 mr-2" /> Now
+                    <Clock className="w-5 h-5 mr-2" /> Now
                   </Button>
                   <Dialog>
                     <DialogTrigger asChild>
                       <Button
                         variant={isScheduled ? "default" : "outline"}
-                        className={`flex-1 justify-start font-normal ${isScheduled ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300'}`}
+                        className={`flex-1 justify-center font-medium h-12 rounded-xl transition-all ${isScheduled ? 'bg-[#1E5EFF] text-white shadow-md hover:bg-blue-700' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}
                       >
-                        <Calendar className="w-4 h-4 mr-2" /> {isScheduled ? scheduleTime : 'Schedule'}
+                        <Calendar className="w-5 h-5 mr-2 text-slate-500" /> {isScheduled ? scheduleTime : 'Schedule'}
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
