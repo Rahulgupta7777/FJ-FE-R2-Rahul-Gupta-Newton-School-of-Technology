@@ -391,11 +391,11 @@ export default function Home() {
                     <DialogHeader>
                       <DialogTitle>Terms of Service</DialogTitle>
                       <DialogDescription className="max-h-96 overflow-y-auto mt-4 text-justify space-y-4">
-                        <p><strong>1. Acceptance of Terms:</strong> By accessing and using this Ride Sharing application, you accept and agree to be bound by the terms and provision of this agreement.</p>
-                        <p><strong>2. User Accounts:</strong> You must create an account to use the service. You are responsible for maintaining the confidentiality of your account information.</p>
-                        <p><strong>3. Use of Services:</strong> You agree to use the service for lawful purposes only and in a manner consistent with any and all applicable local, national and international laws.</p>
-                        <p><strong>4. Payments:</strong> Fares are calculated dynamically based on distance, time, and demand. You agree to pay all charges incurred under your account.</p>
-                        <p><strong>5. Limitation of Liability:</strong> We shall not be liable for any direct, indirect, incidental, special or consequential damages resulting from the use or inability to use the service.</p>
+                        <div><strong>1. Acceptance of Terms:</strong> By accessing and using this Ride Sharing application, you accept and agree to be bound by the terms and provision of this agreement.</div>
+                        <div><strong>2. User Accounts:</strong> You must create an account to use the service. You are responsible for maintaining the confidentiality of your account information.</div>
+                        <div><strong>3. Use of Services:</strong> You agree to use the service for lawful purposes only and in a manner consistent with any and all applicable local, national and international laws.</div>
+                        <div><strong>4. Payments:</strong> Fares are calculated dynamically based on distance, time, and demand. You agree to pay all charges incurred under your account.</div>
+                        <div><strong>5. Limitation of Liability:</strong> We shall not be liable for any direct, indirect, incidental, special or consequential damages resulting from the use or inability to use the service.</div>
                         <Button className="w-full mt-4" onClick={(e) => (e.target as any).closest('dialog')?.close()}>I Accept</Button>
                       </DialogDescription>
                     </DialogHeader>
@@ -407,11 +407,11 @@ export default function Home() {
                     <DialogHeader>
                       <DialogTitle>Privacy Policy</DialogTitle>
                       <DialogDescription className="max-h-96 overflow-y-auto mt-4 text-justify space-y-4">
-                        <p><strong>1. Information Collection:</strong> We collect information you provide directly to us, such as when you create or modify your account, request on-demand services, or contact customer support.</p>
-                        <p><strong>2. Location Data:</strong> When you use our services, we collect precise location data from your device to provide the rides and for safety and security purposes.</p>
-                        <p><strong>3. Use of Information:</strong> We use the information we collect to integrate with drivers, process payments, and improve our platform.</p>
-                        <p><strong>4. Sharing of Information:</strong> We may share your information with our driver partners to enable them to provide the requested services. Your profile picture and name will be shared during active rides.</p>
-                        <p><strong>5. Data Security:</strong> We take reasonable measures to help protect information about you from loss, theft, misuse and unauthorized access.</p>
+                        <div><strong>1. Information Collection:</strong> We collect information you provide directly to us, such as when you create or modify your account, request on-demand services, or contact customer support.</div>
+                        <div><strong>2. Location Data:</strong> When you use our services, we collect precise location data from your device to provide the rides and for safety and security purposes.</div>
+                        <div><strong>3. Use of Information:</strong> We use the information we collect to integrate with drivers, process payments, and improve our platform.</div>
+                        <div><strong>4. Sharing of Information:</strong> We may share your information with our driver partners to enable them to provide the requested services. Your profile picture and name will be shared during active rides.</div>
+                        <div><strong>5. Data Security:</strong> We take reasonable measures to help protect information about you from loss, theft, misuse and unauthorized access.</div>
                         <Button className="w-full mt-4" onClick={(e) => (e.target as any).closest('dialog')?.close()}>Understood</Button>
                       </DialogDescription>
                     </DialogHeader>
