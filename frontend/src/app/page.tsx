@@ -49,7 +49,7 @@ export default function Home() {
   const [pickupText, setPickupText] = useState('Current Location');
   const [dropoffText, setDropoffText] = useState('');
 
-  // Customizations
+  const [selectedVehicle, setSelectedVehicle] = useState<'Economy' | 'Comfort' | 'XL' | 'Shared'>('Economy');
   const [sharedSeats, setSharedSeats] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState<'Cash' | 'Visa •••• 1234' | 'Paytm'>('Visa •••• 1234');
 
@@ -576,76 +576,115 @@ export default function Home() {
               </div>
               <CardContent className="p-0 bg-white">
                 <div className="overflow-y-auto max-h-[40vh] md:max-h-[500px]">
-                  {/* Economy Option */}
-                  <div className="p-4 flex items-center justify-between border-b border-slate-100 cursor-pointer hover:bg-slate-50 bg-blue-50/50">
+                  {/* Shared Option */}
+                  <div
+                    className={`p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 border-b border-slate-100 transition-colors ${selectedVehicle === 'Shared' ? 'bg-blue-50/50 border-blue-200' : ''}`}
+                    onClick={() => setSelectedVehicle('Shared')}
+                  >
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-10 bg-slate-200 rounded flex items-center justify-center">
-                        <Car className="text-slate-500 w-8 h-8" />
+                      <div className="w-16 h-10 flex items-center justify-center">
+                        <div className="w-full h-full flex items-center justify-center bg-slate-100 rounded-md">
+                          <Car className="w-8 h-8 text-blue-600" />
+                          <div className="absolute -bottom-1 -right-1 bg-white rounded-full">
+                            <span className="text-[10px] p-0.5">👥</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-bold text-slate-900">Shared <span className="text-slate-500 font-normal text-sm">👤 1-2</span></h4>
+                        </div>
+                        <p className="text-sm text-slate-500">2 min • 15:40 dropoff</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-lg">${(9.50 * sharedSeats).toFixed(2)}</p>
+                    </div>
+                  </div>
+
+                  {/* Economy Option */}
+                  <div
+                    className={`p-4 flex items-center justify-between border-b border-slate-100 cursor-pointer hover:bg-slate-50 transition-colors ${selectedVehicle === 'Economy' ? 'bg-blue-50/50 border-blue-200' : ''}`}
+                    onClick={() => setSelectedVehicle('Economy')}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-10 flex items-center justify-center">
+                        <div className="w-full h-full flex items-center justify-center bg-slate-100 rounded-md">
+                          <Car className="w-8 h-8 text-blue-500" />
+                        </div>
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
                           <h4 className="font-bold text-slate-900">Economy <span className="text-slate-500 font-normal text-sm">👤 4</span></h4>
-                          <h4 className="font-bold text-slate-900">Economy</h4>
                         </div>
                         <p className="text-sm text-slate-500">2 min • 15:34 dropoff</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg">${(14.50 * (sharedSeats / 4)).toFixed(2)}</p>
-                      {sharedSeats < 4 && <p className="text-xs text-blue-600 font-medium">{4 - sharedSeats} seats left</p>}
+                      <p className="font-bold text-lg">$14.50</p>
                     </div>
                   </div>
 
                   {/* Comfort Option */}
-                  <div className="p-4 flex items-center justify-between border-b border-slate-100 cursor-pointer hover:bg-slate-50">
+                  <div
+                    className={`p-4 flex items-center justify-between border-b border-slate-100 cursor-pointer hover:bg-slate-50 transition-colors ${selectedVehicle === 'Comfort' ? 'bg-blue-50/50 border-blue-200' : ''}`}
+                    onClick={() => setSelectedVehicle('Comfort')}
+                  >
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-10 bg-slate-200 rounded flex items-center justify-center">
-                        <Car className="text-slate-600 w-9 h-9" />
+                      <div className="w-16 h-10 flex items-center justify-center">
+                        <div className="w-full h-full flex items-center justify-center bg-slate-900 rounded-md">
+                          <Car className="w-9 h-9 text-slate-100" />
+                        </div>
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-slate-900">Comfort</h4>
+                          <h4 className="font-bold text-slate-900">Comfort <span className="text-slate-500 font-normal text-sm">👤 4</span></h4>
                         </div>
                         <p className="text-sm text-slate-500">4 min • 15:32 dropoff</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg">${(21.20 * (sharedSeats / 4)).toFixed(2)}</p>
-                      {sharedSeats < 4 && <p className="text-xs text-blue-600 font-medium">{4 - sharedSeats} seats left</p>}
+                      <p className="font-bold text-lg">$21.20</p>
                     </div>
                   </div>
 
                   {/* XL Option */}
-                  <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 border-b border-slate-100">
+                  <div
+                    className={`p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 border-b border-slate-100 transition-colors ${selectedVehicle === 'XL' ? 'bg-blue-50/50 border-blue-200' : ''}`}
+                    onClick={() => setSelectedVehicle('XL')}
+                  >
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-10 bg-slate-200 rounded flex items-center justify-center">
-                        <Car className="text-slate-700 w-10 h-10" />
+                      <div className="w-16 h-10 flex items-center justify-center">
+                        <div className="w-full h-full flex items-center justify-center bg-slate-200 rounded-md">
+                          <Car className="w-10 h-10 text-slate-800" />
+                        </div>
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-slate-900">XL</h4>
+                          <h4 className="font-bold text-slate-900">XL <span className="text-slate-500 font-normal text-sm">👤 6</span></h4>
                         </div>
                         <p className="text-sm text-slate-500">6 min • 15:34 dropoff</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg">${(28.90 * (sharedSeats / 6)).toFixed(2)}</p>
-                      {sharedSeats < 6 && <p className="text-xs text-blue-600 font-medium">{6 - sharedSeats} seats left</p>}
+                      <p className="font-bold text-lg">$28.90</p>
                     </div>
                   </div>
 
-                  {/* Shared Ride Counter */}
-                  <div className="p-4 bg-slate-50 flex flex-row items-center justify-between border-b border-slate-100">
-                    <div className="space-y-0.5">
-                      <h4 className="font-medium text-sm text-slate-900">Shared Ride Options</h4>
-                      <p className="text-xs text-slate-500">How many seats do you need?</p>
+                  {/* Shared Ride Counter - Only visible if 'Shared' is selected */}
+                  {selectedVehicle === 'Shared' && (
+                    <div className="p-4 bg-slate-50 flex flex-row items-center justify-between border-b border-slate-100 animate-in slide-in-from-top-2 fade-in">
+                      <div className="space-y-0.5">
+                        <h4 className="font-medium text-sm text-slate-900">Shared Ride Options</h4>
+                        <p className="text-xs text-slate-500">How many seats do you need?</p>
+                      </div>
+                      <div className="flex items-center gap-4 bg-white px-3 py-1 rounded-full border shadow-sm">
+                        <button className="text-xl font-bold text-slate-400 hover:text-slate-900 px-2" onClick={() => setSharedSeats(Math.max(1, sharedSeats - 1))}>-</button>
+                        <span className="font-bold text-lg w-4 text-center">{sharedSeats}</span>
+                        <button className="text-xl font-bold text-slate-400 hover:text-slate-900 px-2" onClick={() => setSharedSeats(Math.min(2, sharedSeats + 1))}>+</button>
+                      </div>
                     </div>
-                    <div className="flex items-center items-center gap-4 bg-white px-3 py-1 rounded-full border shadow-sm">
-                      <button className="text-xl font-bold text-slate-400 hover:text-slate-900 px-2" onClick={() => setSharedSeats(Math.max(1, sharedSeats - 1))}>-</button>
-                      <span className="font-bold text-lg w-4 text-center">{sharedSeats}</span>
-                      <button className="text-xl font-bold text-slate-400 hover:text-slate-900 px-2" onClick={() => setSharedSeats(Math.min(6, sharedSeats + 1))}>+</button>
-                    </div>
-                  </div>
+                  )}
                 </div>
 
                 {/* Selected Action */}
@@ -660,18 +699,18 @@ export default function Home() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuItem onClick={() => setPaymentMethod('Cash')}>
-                        <Banknote className="w-4 h-4 mr-2" /> Cash
+                        <Banknote className="w-4 h-4 mr-2 text-green-600" /> Cash
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => setPaymentMethod('Visa •••• 1234')}>
-                        <CreditCard className="w-4 h-4 mr-2" /> Visa •••• 1234
+                        <CreditCard className="w-4 h-4 mr-2 text-slate-600" /> Visa •••• 1234
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => setPaymentMethod('Paytm')}>
-                        <Wallet className="w-4 h-4 mr-2" /> Paytm
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" className="w-4 h-4 mr-2 object-contain" /> Paytm
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  <Button className="rounded-full bg-slate-900 hover:bg-black text-white px-8" onClick={handleConfirmRide}>
-                    Confirm Economy
+                  <Button className="rounded-full bg-slate-900 hover:bg-black text-white px-8 transition-transform active:scale-95" onClick={handleConfirmRide}>
+                    Confirm {selectedVehicle}
                   </Button>
                 </div>
               </CardContent>
