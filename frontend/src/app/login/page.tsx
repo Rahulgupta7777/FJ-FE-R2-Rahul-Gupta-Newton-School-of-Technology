@@ -24,7 +24,6 @@ export default function LoginPage() {
     const [otp, setOtp] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [agreedToTerms, setAgreedToTerms] = useState(false);
 
     // Helpers
     const isEmail = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
@@ -72,7 +71,7 @@ export default function LoginPage() {
 
     const handleProfileSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!firstName || !agreedToTerms) return;
+        if (!firstName) return;
 
         setIsLoading(true);
         await new Promise(r => setTimeout(r, 800));
@@ -222,24 +221,10 @@ export default function LoginPage() {
                                         className="h-12"
                                     />
                                 </div>
-                                <div className="flex items-start gap-3 mt-6 pt-6 border-t border-slate-100">
-                                    <input
-                                        type="checkbox"
-                                        id="terms"
-                                        className="mt-1 w-4 h-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-600 cursor-pointer"
-                                        checked={agreedToTerms}
-                                        onChange={(e) => setAgreedToTerms(e.target.checked)}
-                                    />
-                                    <div className="flex-1">
-                                        <Label htmlFor="terms" className="text-sm font-normal text-slate-600 leading-snug inline-block cursor-pointer">
-                                            By checking this box, I agree to the <a href="#" className="font-semibold text-blue-600 hover:text-blue-700 hover:underline transition-colors">Terms of Service</a> and <a href="#" className="font-semibold text-blue-600 hover:text-blue-700 hover:underline transition-colors">Privacy Policy</a>.
-                                        </Label>
-                                    </div>
-                                </div>
                             </div>
                         </CardContent>
                         <CardFooter>
-                            <Button type="submit" className="w-full h-12 text-lg rounded-xl" disabled={!firstName || !agreedToTerms || isLoading}>
+                            <Button type="submit" className="w-full h-12 text-lg rounded-xl" disabled={!firstName || isLoading}>
                                 {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Start Riding'}
                             </Button>
                         </CardFooter>
