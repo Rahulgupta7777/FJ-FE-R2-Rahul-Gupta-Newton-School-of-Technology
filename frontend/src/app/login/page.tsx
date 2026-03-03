@@ -40,15 +40,17 @@ export default function LoginPage() {
         setIsLoading(true);
         setError('');
 
-        // Simulating network delay for realism
         setTimeout(() => {
             try {
-                // Get local "database" of users
                 const users = JSON.parse(localStorage.getItem('rideshare_users') || '[]');
                 const existingUser = users.find((u: any) => u.identifier === identifier);
 
                 setUserExists(!!existingUser);
-                setStep('OTP');
+                if (existingUser) {
+                    setStep('AUTH_CHOICE');
+                } else {
+                    setStep('OTP');
+                }
             } catch (err: any) {
                 setError('Local storage error.');
             } finally {
@@ -68,8 +70,16 @@ export default function LoginPage() {
             if (otp === '123456') {
                 setIsLoading(false);
                 if (userExists) {
-                    setStep('AUTH_CHOICE');
+                    // Returning User: Log in directly after OTP verification
+                    const users = JSON.parse(localStorage.getItem('rideshare_users') || '[]');
+                    const user = users.find((u: any) => u.identifier === identifier);
+
+                    document.cookie = `authToken=local_jwt_${Math.random().toString(36).substring(7)}; path=/; max-age=3600`;
+                    localStorage.setItem('isAuthenticated', 'true');
+                    localStorage.setItem('user_name', user ? `${user.firstName} ${user.lastName}`.trim() : identifier.split('@')[0]);
+                    router.push('/');
                 } else {
+                    // New User: Proceed to Profile Setup
                     setStep('PROFILE');
                 }
             } else {
@@ -93,8 +103,8 @@ export default function LoginPage() {
                 const user = users.find((u: any) => u.identifier === identifier);
 
                 if (user && user.password === password) {
+                    document.cookie = `authToken=local_jwt_${Math.random().toString(36).substring(7)}; path=/; max-age=3600`;
                     localStorage.setItem('isAuthenticated', 'true');
-                    localStorage.setItem('authToken', 'local_jwt_' + Math.random().toString(36).substring(7));
                     localStorage.setItem('user_name', `${user.firstName} ${user.lastName}`.trim());
                     router.push('/');
                 } else {
@@ -168,7 +178,7 @@ export default function LoginPage() {
                         <h1 className="text-2xl font-black tracking-tighter uppercase">RideShare</h1>
                     </div>
 
-                    <Card className="w-full shadow-2xl rounded-[32px] border border-slate-100 overflow-hidden bg-white relative transition-all duration-500 ease-in-out">
+                    <Card className="w-full shadow-[0_32px_64px_-12px_rgba(0,0,0,0.12)] rounded-[48px] border border-slate-100/50 overflow-hidden bg-white/80 backdrop-blur-xl relative transition-all duration-500 ease-in-out">
                         {error && (
                             <div className="absolute top-0 left-0 w-full bg-red-50 text-red-600 text-xs py-3 px-6 text-center border-b border-red-100 z-50 animate-in fade-in slide-in-from-top-2">
                                 {error}
@@ -197,7 +207,7 @@ export default function LoginPage() {
                                                 placeholder="name@example.com or +1 234..."
                                                 value={identifier}
                                                 onChange={(e) => setIdentifier(e.target.value)}
-                                                className="h-[56px] text-lg rounded-2xl border-slate-200 bg-slate-50/50 placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-black shadow-none transition-all"
+                                                className="h-[56px] text-lg rounded-2xl border-slate-200 bg-slate-50/50 dark:bg-slate-900/50 dark:border-slate-800 dark:text-white placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-white shadow-none transition-all"
                                                 autoFocus
                                             />
                                         </div>
@@ -218,18 +228,18 @@ export default function LoginPage() {
                                             <ArrowLeft className="w-5 h-5" />
                                         </Button>
                                         <div className="flex flex-col items-center text-center">
-                                            <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 text-blue-600 border border-blue-100 shadow-sm">
+                                            <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mb-6 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800 shadow-sm">
                                                 <ShieldCheck className="w-6 h-6" />
                                             </div>
-                                            <CardTitle className="text-3xl font-extrabold text-slate-900 mb-3 text-center">Verify Identity</CardTitle>
-                                            <CardDescription className="text-center">A 6-digit code has been sent to your device. Enter code <span className="text-black font-bold">123456</span> to proceed.</CardDescription>
+                                            <CardTitle className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3 text-center">Verify Identity</CardTitle>
+                                            <CardDescription className="text-center dark:text-slate-400">A 6-digit code has been sent to your device. Enter code <span className="text-black dark:text-white font-bold">123456</span> to proceed.</CardDescription>
                                         </div>
                                     </CardHeader>
                                     <CardContent className="flex justify-center py-8 px-10">
                                         <InputOTP maxLength={6} value={otp} onChange={setOtp} autoFocus onComplete={() => handleOtpVerify()}>
                                             <InputOTPGroup className="gap-3">
                                                 {[0, 1, 2, 3, 4, 5].map((i) => (
-                                                    <InputOTPSlot key={i} index={i} className="w-12 h-16 text-2xl font-bold border-2 rounded-2xl border-slate-200 focus:border-black transition-all" />
+                                                    <InputOTPSlot key={i} index={i} className="w-12 h-16 text-2xl font-bold border-2 rounded-2xl border-slate-200 dark:border-slate-800 dark:bg-slate-900 dark:text-white focus:border-black dark:focus:border-white transition-all" />
                                                 ))}
                                             </InputOTPGroup>
                                         </InputOTP>
@@ -242,33 +252,30 @@ export default function LoginPage() {
                                 </form>
                             )}
 
-                            {/* Step 3: Auth Choice (Returning User) */}
+                            {/* Step 3: Auth Choice (Returning User - Welcome Back) */}
                             {step === 'AUTH_CHOICE' && (
-                                <div className="p-10 text-center">
-                                    <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-6 text-slate-900 border border-slate-100 shadow-sm">
-                                        <KeyRound className="w-6 h-6" />
+                                <div className="p-10 text-center animate-in fade-in zoom-in duration-300">
+                                    <div className="w-16 h-16 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-8 text-slate-900 dark:text-white border border-slate-100 dark:border-slate-800 shadow-md ring-8 ring-slate-50 dark:ring-slate-900/50 transition-transform hover:scale-110">
+                                        <KeyRound className="w-8 h-8" />
                                     </div>
-                                    <h2 className="text-2xl font-black mb-2">Welcome back</h2>
-                                    <p className="text-slate-500 mb-10">Choose how you'd like to sign in to your account.</p>
+                                    <h2 className="text-4xl font-black mb-4 tracking-tight text-slate-900 dark:text-white">Welcome back</h2>
+                                    <p className="text-slate-500 dark:text-slate-400 text-lg mb-12 font-medium px-4">Choose how you'd like to sign in to your account.</p>
 
-                                    <div className="space-y-4">
+                                    <div className="space-y-4 px-2">
                                         <Button
                                             onClick={() => setStep('PASSWORD')}
-                                            className="w-full h-16 text-lg font-bold rounded-2xl bg-black text-white hover:bg-slate-900 flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
+                                            className="w-full h-[72px] text-xl font-bold rounded-[24px] bg-black dark:bg-white text-white dark:text-black hover:bg-slate-900 dark:hover:bg-slate-100 flex items-center justify-center gap-4 shadow-xl shadow-slate-200 dark:shadow-none transition-all active:scale-[0.98]"
                                         >
-                                            <KeyRound className="w-5 h-5" /> Sign in with Password
+                                            <KeyRound className="w-6 h-6" /> Sign in with Password
                                         </Button>
                                         <Button
                                             variant="outline"
                                             onClick={() => {
-                                                // Just skip to dashboard for demo if they choose OTP (we already verified OTP)
-                                                localStorage.setItem('isAuthenticated', 'true');
-                                                localStorage.setItem('user_name', identifier.split('@')[0]);
-                                                router.push('/');
+                                                setStep('OTP'); // Go to OTP step but for returning user
                                             }}
-                                            className="w-full h-16 text-lg font-bold rounded-2xl border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
+                                            className="w-full h-[72px] text-xl font-bold rounded-[24px] border-2 border-slate-100 dark:border-slate-800 bg-white dark:bg-transparent text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-900 flex items-center justify-center gap-4 transition-all active:scale-[0.98]"
                                         >
-                                            <ShieldCheck className="w-5 h-5" /> Continue with OTP
+                                            <ShieldCheck className="w-6 h-6" /> Continue with OTP
                                         </Button>
                                     </div>
                                 </div>
@@ -282,8 +289,8 @@ export default function LoginPage() {
                                             <ArrowLeft className="w-5 h-5" />
                                         </Button>
                                         <div className="flex flex-col items-center text-center">
-                                            <CardTitle className="text-3xl font-extrabold text-slate-900 mb-3">Enter Password</CardTitle>
-                                            <CardDescription>Enter the password associated with your account.</CardDescription>
+                                            <CardTitle className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3">Enter Password</CardTitle>
+                                            <CardDescription className="dark:text-slate-400">Enter the password associated with your account.</CardDescription>
                                         </div>
                                     </CardHeader>
                                     <CardContent className="px-10 pb-8 space-y-4">
@@ -295,7 +302,7 @@ export default function LoginPage() {
                                                 placeholder="••••••••"
                                                 value={password}
                                                 onChange={(e) => setPassword(e.target.value)}
-                                                className="h-[56px] text-lg rounded-2xl border-slate-200 bg-slate-50/50 placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-black shadow-none transition-all"
+                                                className="h-[56px] text-lg rounded-2xl border-slate-200 bg-slate-50/50 dark:bg-slate-900/50 dark:border-slate-800 dark:text-white placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-white shadow-none transition-all"
                                                 autoFocus
                                             />
                                         </div>
@@ -319,19 +326,19 @@ export default function LoginPage() {
                                             <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 text-blue-600 border border-blue-100">
                                                 <UserPlus className="w-6 h-6" />
                                             </div>
-                                            <CardTitle className="text-3xl font-extrabold text-slate-900 mb-3">Create Profile</CardTitle>
-                                            <CardDescription>Join RideShare and start traveling reliably.</CardDescription>
+                                            <CardTitle className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3">Create Profile</CardTitle>
+                                            <CardDescription className="dark:text-slate-400">Join RideShare and start traveling reliably.</CardDescription>
                                         </div>
                                     </CardHeader>
                                     <CardContent className="px-10 pb-8 space-y-6">
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
                                                 <Label className="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">First Name</Label>
-                                                <Input placeholder="John" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-[50px] rounded-xl" required />
+                                                <Input placeholder="John" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-[50px] rounded-xl dark:bg-slate-900 dark:border-slate-800 dark:text-white" required />
                                             </div>
                                             <div className="space-y-2">
                                                 <Label className="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">Last Name</Label>
-                                                <Input placeholder="Doe" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-[50px] rounded-xl" />
+                                                <Input placeholder="Doe" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-[50px] rounded-xl dark:bg-slate-900 dark:border-slate-800 dark:text-white" />
                                             </div>
                                         </div>
                                         <div className="space-y-4">
@@ -342,7 +349,7 @@ export default function LoginPage() {
                                                     placeholder="Minimum 8 characters"
                                                     value={password}
                                                     onChange={(e) => setPassword(e.target.value)}
-                                                    className="h-[56px] text-lg rounded-xl"
+                                                    className="h-[56px] text-lg rounded-xl dark:bg-slate-900 dark:border-slate-800 dark:text-white"
                                                     required
                                                 />
                                             </div>
@@ -353,7 +360,7 @@ export default function LoginPage() {
                                                     placeholder="Repeat password"
                                                     value={confirmPassword}
                                                     onChange={(e) => setConfirmPassword(e.target.value)}
-                                                    className="h-[56px] text-lg rounded-xl"
+                                                    className="h-[56px] text-lg rounded-xl dark:bg-slate-900 dark:border-slate-800 dark:text-white"
                                                     required
                                                 />
                                             </div>

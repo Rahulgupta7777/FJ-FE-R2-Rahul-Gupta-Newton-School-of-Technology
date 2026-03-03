@@ -106,6 +106,7 @@ export function SettingsView() {
                         variant="ghost"
                         className="w-full justify-start h-14 text-base font-normal text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 mt-4 px-4 rounded-xl"
                         onClick={() => {
+                            document.cookie = "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
                             localStorage.removeItem('isAuthenticated');
                             router.push('/login');
                         }}
