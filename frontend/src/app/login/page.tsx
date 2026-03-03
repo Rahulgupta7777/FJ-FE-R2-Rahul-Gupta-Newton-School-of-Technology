@@ -42,7 +42,7 @@ export default function LoginPage() {
 
         setTimeout(() => {
             try {
-                const users = JSON.parse(localStorage.getItem('rideshare_users') || '[]');
+                const users = JSON.parse(localStorage.getItem('nexride_users') || '[]');
                 const existingUser = users.find((u: any) => u.identifier === identifier);
 
                 setUserExists(!!existingUser);
@@ -71,7 +71,7 @@ export default function LoginPage() {
                 setIsLoading(false);
                 if (userExists) {
                     // Returning User: Log in directly after OTP verification
-                    const users = JSON.parse(localStorage.getItem('rideshare_users') || '[]');
+                    const users = JSON.parse(localStorage.getItem('nexride_users') || '[]');
                     const user = users.find((u: any) => u.identifier === identifier);
 
                     document.cookie = `authToken=local_jwt_${Math.random().toString(36).substring(7)}; path=/; max-age=3600`;
@@ -99,7 +99,7 @@ export default function LoginPage() {
 
         setTimeout(() => {
             try {
-                const users = JSON.parse(localStorage.getItem('rideshare_users') || '[]');
+                const users = JSON.parse(localStorage.getItem('nexride_users') || '[]');
                 const user = users.find((u: any) => u.identifier === identifier);
 
                 if (user && user.password === password) {
@@ -139,7 +139,7 @@ export default function LoginPage() {
 
         setTimeout(() => {
             try {
-                const users = JSON.parse(localStorage.getItem('rideshare_users') || '[]');
+                const users = JSON.parse(localStorage.getItem('nexride_users') || '[]');
 
                 const newUser = {
                     identifier,
@@ -150,7 +150,7 @@ export default function LoginPage() {
                 };
 
                 users.push(newUser);
-                localStorage.setItem('rideshare_users', JSON.stringify(users));
+                localStorage.setItem('nexride_users', JSON.stringify(users));
 
                 localStorage.setItem('isAuthenticated', 'true');
                 localStorage.setItem('authToken', 'local_jwt_' + Math.random().toString(36).substring(7));
@@ -173,9 +173,9 @@ export default function LoginPage() {
                     {/* Brand Logo for Mobile */}
                     <div className="md:hidden flex flex-col items-center mb-10">
                         <div className="w-14 h-14 bg-black rounded-full flex items-center justify-center mb-3">
-                            <span className="text-white font-black text-2xl">R</span>
+                            <span className="text-white font-black text-2xl">N</span>
                         </div>
-                        <h1 className="text-2xl font-black tracking-tighter uppercase">RideShare</h1>
+                        <h1 className="text-2xl font-black tracking-tighter uppercase">NexRide</h1>
                     </div>
 
                     <Card className="w-full shadow-[0_32px_64px_-12px_rgba(0,0,0,0.12)] rounded-[48px] border border-slate-100/50 overflow-hidden bg-white/80 backdrop-blur-xl relative transition-all duration-500 ease-in-out">
@@ -195,7 +195,7 @@ export default function LoginPage() {
                                         </div>
                                         <CardTitle className="text-3xl font-extrabold text-slate-900 mb-3">Login or Sign up</CardTitle>
                                         <CardDescription className="text-base text-slate-500 font-medium leading-relaxed">
-                                            Enter your email or phone number to continue with RideShare.
+                                            Enter your email or phone number to continue with NexRide.
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent className="px-10 pb-8 space-y-4">
@@ -327,7 +327,7 @@ export default function LoginPage() {
                                                 <UserPlus className="w-6 h-6" />
                                             </div>
                                             <CardTitle className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3">Create Profile</CardTitle>
-                                            <CardDescription className="dark:text-slate-400">Join RideShare and start traveling reliably.</CardDescription>
+                                            <CardDescription className="dark:text-slate-400">Join NexRide and start traveling reliably.</CardDescription>
                                         </div>
                                     </CardHeader>
                                     <CardContent className="px-10 pb-8 space-y-6">
@@ -381,7 +381,7 @@ export default function LoginPage() {
                     </Card>
 
                     <p className="mt-10 text-center text-sm text-slate-400 font-medium">
-                        Secure login powered by RideShare Inc.
+                        Secure login powered by NexRide Inc.
                     </p>
                 </div>
             </div>
