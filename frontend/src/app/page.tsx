@@ -78,7 +78,8 @@ export default function Home() {
   useEffect(() => {
     // Basic auth check
     const isAuth = localStorage.getItem('isAuthenticated');
-    if (!isAuth) {
+    const token = localStorage.getItem('authToken');
+    if (!isAuth || !token) {
       router.push('/login');
     } else {
       if (typeof window !== 'undefined') {
@@ -119,22 +120,26 @@ export default function Home() {
 
   // Transitions
   const handleFindRide = () => {
-    setDropoff([40.7306, -73.9866]); // Simulate selecting a dropoff in map
-    setFlowState('SELECTING_RIDE');
+    if (pickup && dropoff) {
+      setFlowState('SELECTING_RIDE');
+    }
   };
 
   const handleConfirmRide = () => {
     setFlowState('SEARCHING');
     setTimeout(() => {
-      setDriverLoc([40.7200, -73.9900]);
+      // Simulate driver location nearby
+      if (pickup) {
+        setDriverLoc([pickup[0] + 0.005, pickup[1] + 0.005]);
+      } else {
+        setDriverLoc([40.7200, -73.9900]);
+      }
       setFlowState('DRIVER_ASSIGNED');
     }, 2000);
   };
 
   const startTrip = () => {
     setFlowState('IN_RIDE');
-    // Simulate map moving
-    setPickup([40.7200, -73.9900]);
   };
 
   const completeTrip = () => {
@@ -431,577 +436,580 @@ export default function Home() {
         {activeTab === 'PAYMENTS' && <div className="absolute inset-0 bg-white dark:bg-slate-950 z-10"><PaymentsView /></div>}
         {activeTab === 'SETTINGS' && <div className="absolute inset-0 bg-white dark:bg-slate-950 z-10"><SettingsView /></div>}
 
-        {/* Map Area (Only visible on Booking Tab) */}
-        <div className={`absolute inset-0 z-0 ${activeTab !== 'BOOKING' ? 'hidden' : ''}`}>
-          <DynamicMap
-            pickup={pickup}
-            dropoff={dropoff}
-            driverLocation={driverLoc}
-            showRoute={flowState === 'IN_RIDE'}
-            onLocationSensed={(lat, lon) => {
-              if (!pickup) {
-                setPickup([lat, lon]);
-                setPickupText('Current Location');
-              }
-            }}
-          />
-        </div>
+        <div className="flex-1 relative overflow-hidden bg-slate-50 dark:bg-slate-900">
+          {/* Map Area (Only visible on Booking Tab) */}
+          <div className={`absolute inset-0 z-0 ${activeTab !== 'BOOKING' ? 'hidden' : ''}`}>
+            <DynamicMap
+              pickup={pickup}
+              dropoff={dropoff}
+              driverLocation={driverLoc}
+              showRoute={flowState === 'SELECTING_RIDE' || flowState === 'SEARCHING' || flowState === 'DRIVER_ASSIGNED' || flowState === 'IN_RIDE'}
+              onLocationSensed={(lat, lon) => {
+                if (!pickup) {
+                  setPickup([lat, lon]);
+                  setPickupText('Current Location');
+                }
+              }}
+            />
+          </div>
 
-        {/* Floating UI Overlay Base (Only visible on Booking Tab) */}
-        <div className={`absolute bottom-0 left-0 right-0 md:left-6 md:top-6 md:bottom-auto md:w-[400px] z-10 pointer-events-none ${activeTab !== 'BOOKING' ? 'hidden' : ''}`}>
 
-          {/* STATE 1: IDLE / Search Location */}
-          {flowState === 'IDLE' && (
-            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-2xl border-0 overflow-hidden animate-in slide-in-from-bottom-5">
-              <CardHeader className="bg-white dark:bg-slate-950 pb-4">
-                <CardTitle className="text-xl">Where to?</CardTitle>
-                <CardDescription>Find a ride instantly</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4 bg-white dark:bg-slate-950 pb-6">
-                <div className="relative flex flex-col gap-3">
-                  {/* Connecting Line */}
-                  <div className="absolute left-[23.5px] top-[24px] bottom-[24px] w-0.5 bg-slate-200 dark:bg-slate-800 z-0 border-l border-dashed border-slate-300 dark:border-slate-700"></div>
+          {/* Floating UI Overlay Base (Only visible on Booking Tab) */}
+          <div className={`absolute bottom-0 left-0 right-0 md:left-6 md:top-6 md:bottom-auto md:w-[400px] z-20 pointer-events-none ${activeTab !== 'BOOKING' ? 'hidden' : ''}`}>
 
-                  <LocationSearch
-                    placeholder="Enter pickup location"
-                    value={pickupText}
-                    onChange={setPickupText}
-                    onSelect={(lat, lon, name) => {
-                      setPickup([lat, lon]);
-                      setPickupText(name);
-                    }}
-                  />
+            {/* STATE 1: Search Location */}
+            {(flowState === 'IDLE' || flowState === 'SEARCHING') && (
+              <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-2xl border-0 overflow-hidden animate-in slide-in-from-bottom-5">
+                <CardHeader className="bg-white dark:bg-slate-950 pb-2">
+                  <CardTitle className="text-xl">Where to?</CardTitle>
+                  <CardDescription>Find a ride instantly</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4 bg-white dark:bg-slate-950 pb-6">
+                  <div className="relative flex flex-col gap-3">
+                    {/* Connecting Line */}
+                    <div className="absolute left-[23.5px] top-[24px] bottom-[24px] w-0.5 bg-slate-200 dark:bg-slate-800 z-0 border-l border-dashed border-slate-300 dark:border-slate-700"></div>
 
-                  <LocationSearch
-                    placeholder="Enter Dropoff location"
-                    value={dropoffText}
-                    onChange={setDropoffText}
-                    onSelect={(lat, lon, name) => {
-                      setDropoff([lat, lon]);
-                      setDropoffText(name);
-                    }}
-                  />
-                </div>
+                    <LocationSearch
+                      placeholder="Enter pickup location"
+                      value={pickupText}
+                      onChange={setPickupText}
+                      onSelect={(lat, lon, name) => {
+                        setPickup([lat, lon]);
+                        setPickupText(name);
+                      }}
+                    />
 
-                <div className="pt-2 flex gap-3">
+                    <LocationSearch
+                      placeholder="Enter Dropoff location"
+                      value={dropoffText}
+                      onChange={setDropoffText}
+                      onSelect={(lat, lon, name) => {
+                        setDropoff([lat, lon]);
+                        setDropoffText(name);
+                      }}
+                    />
+                  </div>
+
+                  <div className="pt-2 flex gap-3">
+                    <Button
+                      variant={isScheduled ? "outline" : "default"}
+                      className={`flex-1 justify-center font-medium h-12 rounded-xl transition-all ${isScheduled ? 'text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900' : 'bg-[#1E5EFF] text-white shadow-md hover:bg-blue-700'}`}
+                      onClick={() => {
+                        setIsScheduled(false);
+                        setScheduleTime('');
+                      }}
+                    >
+                      <Clock className="w-5 h-5 mr-2" /> Now
+                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant={isScheduled ? "default" : "outline"}
+                          className={`flex-1 justify-center font-medium h-12 rounded-xl transition-all ${isScheduled ? 'bg-[#1E5EFF] text-white shadow-md hover:bg-blue-700' : 'text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900'}`}
+                        >
+                          <Calendar className="w-5 h-5 mr-2 text-slate-500 dark:text-slate-400" /> {isScheduled ? scheduleTime : 'Schedule'}
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Schedule a Ride</DialogTitle>
+                          <DialogDescription>
+                            Choose a date and time for your upcoming trip.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Date</label>
+                            <Select defaultValue="tomorrow">
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select Date" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="today">Today</SelectItem>
+                                <SelectItem value="tomorrow">Tomorrow</SelectItem>
+                                <SelectItem value="next">Next Week</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">Time</label>
+                            <Select defaultValue="8am" onValueChange={(val) => setScheduleTime(val)}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select Time" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="06:00 AM">06:00 AM</SelectItem>
+                                <SelectItem value="07:00 AM">07:00 AM</SelectItem>
+                                <SelectItem value="08:00 AM">08:00 AM</SelectItem>
+                                <SelectItem value="09:00 AM">09:00 AM</SelectItem>
+                                <SelectItem value="10:00 AM">10:00 AM</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <DialogTrigger asChild>
+                            <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" onClick={() => {
+                              if (!scheduleTime) setScheduleTime('08:00 AM');
+                              setIsScheduled(true);
+                            }}>
+                              Confirm Pickup Time
+                            </Button>
+                          </DialogTrigger>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </CardContent>
+                <CardFooter className="bg-white dark:bg-slate-950 pt-2 pb-6 md:pb-4 border-t border-slate-100 dark:border-slate-800 rounded-b-3xl md:rounded-b-xl">
                   <Button
-                    variant={isScheduled ? "outline" : "default"}
-                    className={`flex-1 justify-center font-medium h-12 rounded-xl transition-all ${isScheduled ? 'text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900' : 'bg-[#1E5EFF] text-white shadow-md hover:bg-blue-700'}`}
-                    onClick={() => {
-                      setIsScheduled(false);
-                      setScheduleTime('');
-                    }}
+                    className="w-full h-14 text-lg font-semibold rounded-xl bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-black dark:hover:bg-slate-200 shadow-md transition-all active:scale-[0.98]"
+                    onClick={handleFindRide}
+                    disabled={!dropoffText}
                   >
-                    <Clock className="w-5 h-5 mr-2" /> Now
+                    <Search className="w-5 h-5 mr-2" />
+                    {isScheduled ? `Schedule for ${scheduleTime}` : 'Search Rides'}
                   </Button>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant={isScheduled ? "default" : "outline"}
-                        className={`flex-1 justify-center font-medium h-12 rounded-xl transition-all ${isScheduled ? 'bg-[#1E5EFF] text-white shadow-md hover:bg-blue-700' : 'text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900'}`}
-                      >
-                        <Calendar className="w-5 h-5 mr-2 text-slate-500 dark:text-slate-400" /> {isScheduled ? scheduleTime : 'Schedule'}
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Schedule a Ride</DialogTitle>
-                        <DialogDescription>
-                          Choose a date and time for your upcoming trip.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="space-y-4 py-4">
-                        <div className="space-y-2">
-                          <label className="text-sm font-medium">Date</label>
-                          <Select defaultValue="tomorrow">
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select Date" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="today">Today</SelectItem>
-                              <SelectItem value="tomorrow">Tomorrow</SelectItem>
-                              <SelectItem value="next">Next Week</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-sm font-medium">Time</label>
-                          <Select defaultValue="8am" onValueChange={(val) => setScheduleTime(val)}>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select Time" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="06:00 AM">06:00 AM</SelectItem>
-                              <SelectItem value="07:00 AM">07:00 AM</SelectItem>
-                              <SelectItem value="08:00 AM">08:00 AM</SelectItem>
-                              <SelectItem value="09:00 AM">09:00 AM</SelectItem>
-                              <SelectItem value="10:00 AM">10:00 AM</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                      <DialogFooter>
-                        <DialogTrigger asChild>
-                          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" onClick={() => {
-                            if (!scheduleTime) setScheduleTime('08:00 AM');
-                            setIsScheduled(true);
-                          }}>
-                            Confirm Pickup Time
-                          </Button>
-                        </DialogTrigger>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                </CardFooter>
+              </Card>
+            )}
+
+            {/* STATE 2: Select Ride */}
+            {flowState === 'SELECTING_RIDE' && (
+              <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
+                <div className="p-4 bg-white dark:bg-slate-950 flex items-center justify-between border-b dark:border-slate-800">
+                  <h3 className="font-semibold text-lg">Choose a ride</h3>
+                  <Button variant="ghost" size="sm" onClick={() => setFlowState('IDLE')}>Cancel</Button>
                 </div>
-              </CardContent>
-              <CardFooter className="bg-white dark:bg-slate-950 pt-2 pb-6 md:pb-4 border-t border-slate-100 dark:border-slate-800 rounded-b-3xl md:rounded-b-xl">
-                <Button
-                  className="w-full h-14 text-lg font-semibold rounded-xl bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-black dark:hover:bg-slate-200 shadow-md transition-all active:scale-[0.98]"
-                  onClick={handleFindRide}
-                  disabled={!dropoffText}
-                >
-                  <Search className="w-5 h-5 mr-2" />
-                  {isScheduled ? `Schedule for ${scheduleTime}` : 'Search Rides'}
-                </Button>
-              </CardFooter>
-            </Card>
-          )}
-
-          {/* STATE 2: Select Ride */}
-          {flowState === 'SELECTING_RIDE' && (
-            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
-              <div className="p-4 bg-white dark:bg-slate-950 flex items-center justify-between border-b dark:border-slate-800">
-                <h3 className="font-semibold text-lg">Choose a ride</h3>
-                <Button variant="ghost" size="sm" onClick={() => setFlowState('IDLE')}>Cancel</Button>
-              </div>
-              <CardContent className="p-0 bg-white dark:bg-slate-950">
-                <div className="overflow-y-auto max-h-[40vh] md:max-h-[500px]">
-                  {/* Shared Option */}
-                  <div
-                    className={`p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 border-b border-slate-100 dark:border-slate-800 transition-colors ${selectedVehicle === 'Shared' ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
-                    onClick={() => setSelectedVehicle('Shared')}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
-                        <img src="/car-icon.png" alt="Car Icon" className="w-10 h-auto object-contain dark:invert" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <h4 className="font-bold text-slate-900 dark:text-white text-base">Shared</h4>
-                          <div className="flex items-center text-slate-500 dark:text-slate-400">
-                            <span className="text-[10px] mr-0.5">👤</span>
-                            <span className="text-xs font-medium">1-2</span>
-                          </div>
+                <CardContent className="p-0 bg-white dark:bg-slate-950">
+                  <div className="overflow-y-auto max-h-[40vh] md:max-h-[500px]">
+                    {/* Shared Option */}
+                    <div
+                      className={`p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 border-b border-slate-100 dark:border-slate-800 transition-colors ${selectedVehicle === 'Shared' ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
+                      onClick={() => setSelectedVehicle('Shared')}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+                          <img src="/car-icon.png" alt="Car Icon" className="w-10 h-auto object-contain dark:invert" />
                         </div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">2 min • 15:40 dropoff</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-lg text-slate-900 dark:text-white">${(9.50 * sharedSeats).toFixed(2)}</p>
-                    </div>
-                  </div>
-
-                  {/* Economy Option */}
-                  <div
-                    className={`p-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors ${selectedVehicle === 'Economy' ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
-                    onClick={() => setSelectedVehicle('Economy')}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
-                        <img src="/car-icon.png" alt="Car Icon" className="w-10 h-auto object-contain dark:invert" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <h4 className="font-bold text-slate-900 dark:text-white text-base">Economy</h4>
-                          <div className="flex items-center text-slate-500 dark:text-slate-400">
-                            <span className="text-[10px] mr-0.5">👤</span>
-                            <span className="text-xs font-medium">4</span>
-                          </div>
-                        </div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">2 min • 15:34 dropoff</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-lg text-slate-900 dark:text-white">$14.50</p>
-                    </div>
-                  </div>
-
-                  {/* EV Option */}
-                  <div
-                    className={`p-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors ${selectedVehicle === 'EV' ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
-                    onClick={() => setSelectedVehicle('EV')}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-10 flex items-center justify-center bg-green-50 dark:bg-green-900/20 rounded-lg overflow-hidden border border-green-200 dark:border-green-800">
-                        <img src="/car-icon.png" alt="Car Icon" className="w-10 h-auto object-contain dark:invert hue-rotate-[120deg]" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <h4 className="font-bold text-slate-900 dark:text-white text-base">EV <span className="text-green-600 dark:text-green-400 text-[10px] font-bold px-1 py-0.5 bg-green-100 dark:bg-green-900/40 rounded-sm ml-1">ECO</span></h4>
-                          <div className="flex items-center text-slate-500 dark:text-slate-400">
-                            <span className="text-[10px] mr-0.5">👤</span>
-                            <span className="text-xs font-medium">4</span>
-                          </div>
-                        </div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">3 min • 15:35 dropoff</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-lg text-slate-900 dark:text-white">$15.20</p>
-                    </div>
-                  </div>
-
-                  {/* Comfort Option */}
-                  <div
-                    className={`p-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors ${selectedVehicle === 'Comfort' ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
-                    onClick={() => setSelectedVehicle('Comfort')}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-10 flex items-center justify-center bg-slate-900 dark:bg-slate-200 rounded-lg overflow-hidden border border-slate-800 dark:border-slate-300">
-                        <img src="/car-icon.png" alt="Car Icon" className="w-10 h-auto object-contain invert dark:invert-0" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <h4 className="font-bold text-slate-900 dark:text-white text-base">Comfort</h4>
-                          <div className="flex items-center text-slate-500 dark:text-slate-400">
-                            <span className="text-[10px] mr-0.5">👤</span>
-                            <span className="text-xs font-medium">4</span>
-                          </div>
-                        </div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">4 min • 15:32 dropoff</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-lg text-slate-900 dark:text-white">$21.20</p>
-                    </div>
-                  </div>
-
-                  {/* XL Option */}
-                  <div
-                    className={`p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 border-b border-slate-100 dark:border-slate-800 transition-colors ${selectedVehicle === 'XL' ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
-                    onClick={() => setSelectedVehicle('XL')}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
-                        <img src="/car-icon.png" alt="Car Icon" className="w-12 h-auto object-contain dark:invert" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <h4 className="font-bold text-slate-900 dark:text-white text-base">XL</h4>
-                          <div className="flex items-center text-slate-500 dark:text-slate-400">
-                            <span className="text-[10px] mr-0.5">👤</span>
-                            <span className="text-xs font-medium">6</span>
-                          </div>
-                        </div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">6 min • 15:34 dropoff</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-lg text-slate-900 dark:text-white">$28.90</p>
-                    </div>
-                  </div>
-
-                  {/* Shared Ride Counter - Only visible if 'Shared' is selected */}
-                  {selectedVehicle === 'Shared' && (
-                    <div className="p-4 bg-slate-50 dark:bg-slate-900/50 flex flex-row items-center justify-between border-b border-slate-100 dark:border-slate-800 animate-in slide-in-from-top-2 fade-in">
-                      <div className="space-y-0.5">
-                        <h4 className="font-medium text-sm text-slate-900 dark:text-white">Shared Ride Options</h4>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">How many seats do you need?</p>
-                      </div>
-                      <div className="flex items-center gap-4 bg-white dark:bg-slate-950 px-3 py-1 rounded-full border dark:border-slate-800 shadow-sm">
-                        <button className="text-xl font-bold text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white px-2" onClick={() => setSharedSeats(Math.max(1, sharedSeats - 1))}>-</button>
-                        <span className="font-bold text-lg w-4 text-center">{sharedSeats}</span>
-                        <button className="text-xl font-bold text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white px-2" onClick={() => setSharedSeats(Math.min(2, sharedSeats + 1))}>+</button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Selected Action */}
-                <div className="pt-4 flex items-center justify-between px-6 bg-white dark:bg-slate-950 pb-6 border-t border-slate-100 dark:border-slate-800">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <div className="flex items-center gap-2 px-4 py-3 bg-[#f5f5f5] dark:bg-slate-800 rounded-xl cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors w-[160px] justify-between">
-                        <div className="flex items-center gap-2">
-                          {renderPaymentIcon(paymentMethod)}
-                          <span className="text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis w-20">{paymentMethod}</span>
-                        </div>
-                        <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
-                      </div>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem onClick={() => setPaymentMethod('Cash')}>
-                        <Banknote className="w-4 h-4 mr-2 text-green-600" /> Cash
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setPaymentMethod('Visa •••• 1234')}>
-                        <CreditCard className="w-4 h-4 mr-2 text-slate-600" /> Visa •••• 1234
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setPaymentMethod('Paytm')}>
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" className="w-4 h-4 mr-2 object-contain" /> Paytm
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <Button className="rounded-full bg-[#0a0f25] dark:bg-white hover:bg-black dark:hover:bg-slate-200 text-white dark:text-black px-10 h-12 text-base font-semibold transition-transform active:scale-95 flex-1 ml-4" onClick={handleConfirmRide}>
-                    Confirm {selectedVehicle}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* STATE 3: Searching */}
-          {flowState === 'SEARCHING' && (
-            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden  flex flex-col items-center justify-center p-8 text-center bg-white/95 dark:bg-slate-950/95 backdrop-blur">
-              <div className="relative w-24 h-24 mb-6 flex items-center justify-center">
-                <div className="absolute inset-0 bg-blue-100 dark:bg-blue-900/50 rounded-full animate-ping opacity-75"></div>
-                <div className="absolute inset-4 bg-blue-200 dark:bg-blue-800/50 rounded-full animate-ping opacity-75" style={{ animationDelay: '0.2s' }}></div>
-                <div className="absolute inset-2 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg">
-                  <Search className="w-8 h-8" />
-                </div>
-              </div>
-              <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">Finding your ride</h3>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">Connecting you to drivers nearby...</p>
-
-              {/* Action / Payment modifier */}
-              <div className="mt-6 flex flex-col gap-3 w-full">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-900 border dark:border-slate-800 rounded-xl cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <CreditCard className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-                        <span className="font-medium text-slate-800 dark:text-slate-200">{paymentMethod}</span>
-                      </div>
-                      <span className="text-blue-600 text-sm font-semibold">Change</span>
-                    </div>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-[200px]">
-                    <DropdownMenuItem onClick={() => setPaymentMethod('Cash')}>Cash</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setPaymentMethod('Visa •••• 1234')}>Visa •••• 1234</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setPaymentMethod('Paytm')}>Paytm</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                <Button variant="outline" className="w-full h-12 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-300 rounded-xl" onClick={() => setFlowState('IDLE')}>
-                  Cancel Request
-                </Button>
-              </div>
-            </Card>
-          )}
-
-          {/* STATE 4: Accepted / Driver Incoming */}
-          {flowState === 'DRIVER_ASSIGNED' && (
-            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white dark:bg-slate-950">
-              <div className="bg-blue-600 text-white p-4">
-                <div className="flex justify-between items-end">
-                  <div>
-                    <h3 className="font-bold text-2xl mb-1">2 min</h3>
-                    <p className="text-blue-100 text-sm">Driver is arriving soon</p>
-                  </div>
-                  <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 border-0">
-                    Economy
-                  </Badge>
-                </div>
-              </div>
-              <CardContent className="p-0">
-                <div className="p-5 flex items-center justify-between border-b dark:border-slate-800">
-                  <div className="flex gap-4 items-center">
-                    <div className="relative">
-                      <Avatar className="w-14 h-14 border-2 border-white dark:border-slate-950 shadow">
-                        <AvatarImage src="https://ui.shadcn.com/avatars/03.png" />
-                        <AvatarFallback>JD</AvatarFallback>
-                      </Avatar>
-                      <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white dark:bg-slate-900 text-slate-900 dark:text-white flex items-center gap-1 px-1.5 py-0.5 rounded shadow-sm border dark:border-slate-800 text-[10px] font-bold">
-                        <span>4.9</span> <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-lg text-slate-900 dark:text-white">Michael</h4>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm">Toyota Camry - White</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded uppercase font-mono font-bold text-slate-700 dark:text-slate-300 tracking-wider">
-                      NYC 482
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 flex gap-3">
-                  <Button variant="outline" className="flex-1 rounded-xl h-12 gap-2 text-slate-700 dark:text-slate-300 dark:border-slate-800 dark:hover:bg-slate-900">
-                    <Phone className="w-4 h-4" /> Call
-                  </Button>
-                  <Button className="flex-1 rounded-xl h-12 gap-2 bg-slate-900 dark:bg-blue-600 hover:bg-black dark:hover:bg-blue-700 text-white" onClick={startTrip}>
-                    <MessageSquare className="w-4 h-4" /> Message
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* STATE 5: In Ride */}
-          {flowState === 'IN_RIDE' && (
-            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white">
-              <div className="bg-emerald-600 text-white p-4 flex justify-between items-center">
-                <div>
-                  <p className="text-emerald-100 text-sm uppercase font-semibold tracking-wider mb-1">Heading to Destination</p>
-                  <h3 className="font-bold text-xl drop-shadow-sm flex items-center gap-2"><Clock className="w-5 h-5" /> Dropoff in 12 min</h3>
-                </div>
-                <Badge className="bg-emerald-800 hover:bg-emerald-900 border-none px-3 py-1 text-sm shadow-sm">
-                  15:46
-                </Badge>
-              </div>
-              <div className="p-4 bg-slate-50 border-b flex flex-col gap-2">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <Navigation className="w-5 h-5 text-emerald-600" />
-                    <p className="font-medium text-slate-800 dark:text-slate-900">123 Broadway, New York</p>
-                  </div>
-                  <Button variant="ghost" size="sm" className="text-slate-500">Edit</Button>
-                </div>
-              </div>
-              <div className="p-4 flex flex-col gap-3">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <CreditCard className="w-5 h-5 text-slate-600" />
-                        <span className="font-medium text-slate-800">{paymentMethod}</span>
-                      </div>
-                      <span className="text-blue-600 text-sm font-semibold">Change</span>
-                    </div>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-[200px]">
-                    <DropdownMenuItem onClick={() => setPaymentMethod('Cash')}>Cash</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setPaymentMethod('Visa •••• 1234')}>Visa •••• 1234</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setPaymentMethod('Paytm')}>Paytm</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                <div className="flex gap-3">
-                  <Button variant="outline" className="rounded-xl flex-1 h-14 bg-slate-50">
-                    <Phone className="w-5 h-5 text-slate-700 mr-2" /> Call Driver
-                  </Button>
-
-                  {/* CHAT SHEET TRIGGGER */}
-                  <Sheet>
-                    <SheetTrigger asChild>
-                      <Button variant="outline" className="rounded-xl flex-1 h-14 bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100 hover:text-blue-800 relative">
-                        <MessageSquare className="w-5 h-5 mr-2" /> Chat
-                        <span className="absolute -top-2 -right-2 bg-red-500 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center font-bold">1</span>
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent side="bottom" className="h-[70vh] sm:h-[600px] flex flex-col rounded-t-3xl sm:rounded-xl">
-                      <SheetHeader className="text-left border-b pb-4 shrink-0">
-                        <div className="flex items-center gap-3">
-                          <Avatar className="w-10 h-10">
-                            <AvatarImage src="https://ui.shadcn.com/avatars/03.png" />
-                            <AvatarFallback>JD</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <SheetTitle>Michael</SheetTitle>
-                            <SheetDescription>Toyota Camry • White</SheetDescription>
-                          </div>
-                        </div>
-                      </SheetHeader>
-
-                      {/* Chat Messages Area */}
-                      <div className="flex-1 overflow-y-auto pt-4 flex flex-col gap-4">
-                        {messages.map((msg, idx) => (
-                          <div key={idx} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`px-4 py-2 rounded-2xl max-w-[80%] ${msg.sender === 'user' ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-slate-100 text-slate-900 rounded-bl-sm'}`}>
-                              {msg.text}
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            <h4 className="font-bold text-slate-900 dark:text-white text-base">Shared</h4>
+                            <div className="flex items-center text-slate-500 dark:text-slate-400">
+                              <span className="text-[10px] mr-0.5">👤</span>
+                              <span className="text-xs font-medium">1-2</span>
                             </div>
                           </div>
-                        ))}
+                          <p className="text-xs text-slate-500 dark:text-slate-400">2 min • 15:40 dropoff</p>
+                        </div>
                       </div>
-
-                      {/* Chat Input Area */}
-                      <div className="pt-4 border-t flex gap-2 shrink-0">
-                        <Input
-                          placeholder="Type a message..."
-                          className="rounded-full h-12"
-                          value={chatMessage}
-                          onChange={(e) => setChatMessage(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' && chatMessage.trim()) {
-                              setMessages([...messages, { sender: 'user', text: chatMessage }]);
-                              setChatMessage('');
-                              // Mock auto-reply
-                              setTimeout(() => {
-                                setMessages(prev => [...prev, { sender: 'driver', text: 'Got it!' }]);
-                              }, 1500);
-                            }
-                          }}
-                        />
-                        <Button
-                          className="rounded-full w-12 h-12 p-0 bg-blue-600 hover:bg-blue-700 shrink-0"
-                          onClick={() => {
-                            if (chatMessage.trim()) {
-                              setMessages([...messages, { sender: 'user', text: chatMessage }]);
-                              setChatMessage('');
-                              // Mock auto-reply
-                              setTimeout(() => {
-                                setMessages(prev => [...prev, { sender: 'driver', text: 'Got it!' }]);
-                              }, 1500);
-                            }
-                          }}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white ml-[-2px] mt-[2px]"><path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" /></svg>
-                        </Button>
+                      <div className="text-right">
+                        <p className="font-bold text-lg text-slate-900 dark:text-white">${(9.50 * sharedSeats).toFixed(2)}</p>
                       </div>
-                    </SheetContent>
-                  </Sheet>
-                </div>
+                    </div>
 
-                {/* Fast forward the simulation */}
-                <Button variant="default" className="w-full rounded-xl h-14 bg-slate-900 text-white text-lg font-medium shadow-md hover:bg-black transition-colors" onClick={completeTrip}>
-                  End Trip Simulation
-                </Button>
-              </div>
-            </Card>
-          )}
-
-          {/* STATE 6: Completed / Rating */}
-          {flowState === 'POST_RIDE' && (
-            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white p-6">
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-emerald-600 text-2xl">✓</span>
-                </div>
-                <h2 className="text-2xl font-bold">You arrived!</h2>
-                <p className="text-slate-500 mt-1">Hope you enjoyed the ride with Michael</p>
-              </div>
-
-              <div className="bg-slate-50 border rounded-2xl p-4 mb-6">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-slate-500">Trip Fare</span>
-                  <span className="font-bold font-mono text-lg">$14.50</span>
-                </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="flex items-center gap-2 text-slate-500"><CreditCard className="w-4 h-4" /> Paid with Visa 4242</span>
-                </div>
-              </div>
-
-              <div className="text-center mb-6">
-                <p className="font-medium mb-3">Rate your driver</p>
-                <div className="flex justify-center gap-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      onClick={() => setRating(star)}
-                      className={`p-1 transition-transform hover:scale-110 focus:outline-none focus:ring-0 ${rating >= star ? 'text-yellow-400' : 'text-slate-200'}`}
+                    {/* Economy Option */}
+                    <div
+                      className={`p-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors ${selectedVehicle === 'Economy' ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
+                      onClick={() => setSelectedVehicle('Economy')}
                     >
-                      <Star className={`w-10 h-10 ${rating >= star ? 'fill-yellow-400' : ''}`} />
-                    </button>
-                  ))}
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+                          <img src="/car-icon.png" alt="Car Icon" className="w-10 h-auto object-contain dark:invert" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            <h4 className="font-bold text-slate-900 dark:text-white text-base">Economy</h4>
+                            <div className="flex items-center text-slate-500 dark:text-slate-400">
+                              <span className="text-[10px] mr-0.5">👤</span>
+                              <span className="text-xs font-medium">4</span>
+                            </div>
+                          </div>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">2 min • 15:34 dropoff</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-lg text-slate-900 dark:text-white">$14.50</p>
+                      </div>
+                    </div>
+
+                    {/* EV Option */}
+                    <div
+                      className={`p-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors ${selectedVehicle === 'EV' ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
+                      onClick={() => setSelectedVehicle('EV')}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-10 flex items-center justify-center bg-green-50 dark:bg-green-900/20 rounded-lg overflow-hidden border border-green-200 dark:border-green-800">
+                          <img src="/car-icon.png" alt="Car Icon" className="w-10 h-auto object-contain dark:invert hue-rotate-[120deg]" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            <h4 className="font-bold text-slate-900 dark:text-white text-base">EV <span className="text-green-600 dark:text-green-400 text-[10px] font-bold px-1 py-0.5 bg-green-100 dark:bg-green-900/40 rounded-sm ml-1">ECO</span></h4>
+                            <div className="flex items-center text-slate-500 dark:text-slate-400">
+                              <span className="text-[10px] mr-0.5">👤</span>
+                              <span className="text-xs font-medium">4</span>
+                            </div>
+                          </div>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">3 min • 15:35 dropoff</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-lg text-slate-900 dark:text-white">$15.20</p>
+                      </div>
+                    </div>
+
+                    {/* Comfort Option */}
+                    <div
+                      className={`p-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors ${selectedVehicle === 'Comfort' ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
+                      onClick={() => setSelectedVehicle('Comfort')}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-10 flex items-center justify-center bg-slate-900 dark:bg-slate-200 rounded-lg overflow-hidden border border-slate-800 dark:border-slate-300">
+                          <img src="/car-icon.png" alt="Car Icon" className="w-10 h-auto object-contain invert dark:invert-0" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            <h4 className="font-bold text-slate-900 dark:text-white text-base">Comfort</h4>
+                            <div className="flex items-center text-slate-500 dark:text-slate-400">
+                              <span className="text-[10px] mr-0.5">👤</span>
+                              <span className="text-xs font-medium">4</span>
+                            </div>
+                          </div>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">4 min • 15:32 dropoff</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-lg text-slate-900 dark:text-white">$21.20</p>
+                      </div>
+                    </div>
+
+                    {/* XL Option */}
+                    <div
+                      className={`p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 border-b border-slate-100 dark:border-slate-800 transition-colors ${selectedVehicle === 'XL' ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
+                      onClick={() => setSelectedVehicle('XL')}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+                          <img src="/car-icon.png" alt="Car Icon" className="w-12 h-auto object-contain dark:invert" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            <h4 className="font-bold text-slate-900 dark:text-white text-base">XL</h4>
+                            <div className="flex items-center text-slate-500 dark:text-slate-400">
+                              <span className="text-[10px] mr-0.5">👤</span>
+                              <span className="text-xs font-medium">6</span>
+                            </div>
+                          </div>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">6 min • 15:34 dropoff</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-lg text-slate-900 dark:text-white">$28.90</p>
+                      </div>
+                    </div>
+
+                    {/* Shared Ride Counter - Only visible if 'Shared' is selected */}
+                    {selectedVehicle === 'Shared' && (
+                      <div className="p-4 bg-slate-50 dark:bg-slate-900/50 flex flex-row items-center justify-between border-b border-slate-100 dark:border-slate-800 animate-in slide-in-from-top-2 fade-in">
+                        <div className="space-y-0.5">
+                          <h4 className="font-medium text-sm text-slate-900 dark:text-white">Shared Ride Options</h4>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">How many seats do you need?</p>
+                        </div>
+                        <div className="flex items-center gap-4 bg-white dark:bg-slate-950 px-3 py-1 rounded-full border dark:border-slate-800 shadow-sm">
+                          <button className="text-xl font-bold text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white px-2" onClick={() => setSharedSeats(Math.max(1, sharedSeats - 1))}>-</button>
+                          <span className="font-bold text-lg w-4 text-center">{sharedSeats}</span>
+                          <button className="text-xl font-bold text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white px-2" onClick={() => setSharedSeats(Math.min(2, sharedSeats + 1))}>+</button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Selected Action */}
+                  <div className="pt-4 flex items-center justify-between px-6 bg-white dark:bg-slate-950 pb-6 border-t border-slate-100 dark:border-slate-800">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <div className="flex items-center gap-2 px-4 py-3 bg-[#f5f5f5] dark:bg-slate-800 rounded-xl cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors w-[160px] justify-between">
+                          <div className="flex items-center gap-2">
+                            {renderPaymentIcon(paymentMethod)}
+                            <span className="text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis w-20">{paymentMethod}</span>
+                          </div>
+                          <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
+                        </div>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuItem onClick={() => setPaymentMethod('Cash')}>
+                          <Banknote className="w-4 h-4 mr-2 text-green-600" /> Cash
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setPaymentMethod('Visa •••• 1234')}>
+                          <CreditCard className="w-4 h-4 mr-2 text-slate-600" /> Visa •••• 1234
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setPaymentMethod('Paytm')}>
+                          <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" className="w-4 h-4 mr-2 object-contain" /> Paytm
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Button className="rounded-full bg-[#0a0f25] dark:bg-white hover:bg-black dark:hover:bg-slate-200 text-white dark:text-black px-10 h-12 text-base font-semibold transition-transform active:scale-95 flex-1 ml-4" onClick={handleConfirmRide}>
+                      Confirm {selectedVehicle}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* STATE 3: Searching */}
+            {flowState === 'SEARCHING' && (
+              <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden  flex flex-col items-center justify-center p-8 text-center bg-white/95 dark:bg-slate-950/95 backdrop-blur">
+                <div className="relative w-24 h-24 mb-6 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-blue-100 dark:bg-blue-900/50 rounded-full animate-ping opacity-75"></div>
+                  <div className="absolute inset-4 bg-blue-200 dark:bg-blue-800/50 rounded-full animate-ping opacity-75" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="absolute inset-2 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg">
+                    <Search className="w-8 h-8" />
+                  </div>
                 </div>
-              </div>
+                <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">Finding your ride</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">Connecting you to drivers nearby...</p>
 
-              <Button className="w-full bg-black hover:bg-slate-800 h-14 rounded-xl text-lg text-white" disabled={rating === 0} onClick={resetFlow}>
-                {rating > 0 ? 'Submit Rating' : 'Rate to continue'}
-              </Button>
-            </Card>
-          )}
+                {/* Action / Payment modifier */}
+                <div className="mt-6 flex flex-col gap-3 w-full">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-900 border dark:border-slate-800 rounded-xl cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <CreditCard className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                          <span className="font-medium text-slate-800 dark:text-slate-200">{paymentMethod}</span>
+                        </div>
+                        <span className="text-blue-600 text-sm font-semibold">Change</span>
+                      </div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-[200px]">
+                      <DropdownMenuItem onClick={() => setPaymentMethod('Cash')}>Cash</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setPaymentMethod('Visa •••• 1234')}>Visa •••• 1234</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setPaymentMethod('Paytm')}>Paytm</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <Button variant="outline" className="w-full h-12 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-300 rounded-xl" onClick={() => setFlowState('IDLE')}>
+                    Cancel Request
+                  </Button>
+                </div>
+              </Card>
+            )}
 
+            {/* STATE 4: Accepted / Driver Incoming */}
+            {flowState === 'DRIVER_ASSIGNED' && (
+              <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white dark:bg-slate-950">
+                <div className="bg-blue-600 text-white p-4">
+                  <div className="flex justify-between items-end">
+                    <div>
+                      <h3 className="font-bold text-2xl mb-1">2 min</h3>
+                      <p className="text-blue-100 text-sm">Driver is arriving soon</p>
+                    </div>
+                    <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 border-0">
+                      Economy
+                    </Badge>
+                  </div>
+                </div>
+                <CardContent className="p-0">
+                  <div className="p-5 flex items-center justify-between border-b dark:border-slate-800">
+                    <div className="flex gap-4 items-center">
+                      <div className="relative">
+                        <Avatar className="w-14 h-14 border-2 border-white dark:border-slate-950 shadow">
+                          <AvatarImage src="https://ui.shadcn.com/avatars/03.png" />
+                          <AvatarFallback>JD</AvatarFallback>
+                        </Avatar>
+                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white dark:bg-slate-900 text-slate-900 dark:text-white flex items-center gap-1 px-1.5 py-0.5 rounded shadow-sm border dark:border-slate-800 text-[10px] font-bold">
+                          <span>4.9</span> <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-lg text-slate-900 dark:text-white">Michael</h4>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm">Toyota Camry - White</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded uppercase font-mono font-bold text-slate-700 dark:text-slate-300 tracking-wider">
+                        NYC 482
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 flex gap-3">
+                    <Button variant="outline" className="flex-1 rounded-xl h-12 gap-2 text-slate-700 dark:text-slate-300 dark:border-slate-800 dark:hover:bg-slate-900">
+                      <Phone className="w-4 h-4" /> Call
+                    </Button>
+                    <Button className="flex-1 rounded-xl h-12 gap-2 bg-slate-900 dark:bg-blue-600 hover:bg-black dark:hover:bg-blue-700 text-white" onClick={startTrip}>
+                      <MessageSquare className="w-4 h-4" /> Message
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* STATE 5: In Ride */}
+            {flowState === 'IN_RIDE' && (
+              <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white">
+                <div className="bg-emerald-600 text-white p-4 flex justify-between items-center">
+                  <div>
+                    <p className="text-emerald-100 text-sm uppercase font-semibold tracking-wider mb-1">Heading to Destination</p>
+                    <h3 className="font-bold text-xl drop-shadow-sm flex items-center gap-2"><Clock className="w-5 h-5" /> Dropoff in 12 min</h3>
+                  </div>
+                  <Badge className="bg-emerald-800 hover:bg-emerald-900 border-none px-3 py-1 text-sm shadow-sm">
+                    15:46
+                  </Badge>
+                </div>
+                <div className="p-4 bg-slate-50 border-b flex flex-col gap-2">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <Navigation className="w-5 h-5 text-emerald-600" />
+                      <p className="font-medium text-slate-800 dark:text-slate-900">123 Broadway, New York</p>
+                    </div>
+                    <Button variant="ghost" size="sm" className="text-slate-500">Edit</Button>
+                  </div>
+                </div>
+                <div className="p-4 flex flex-col gap-3">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <CreditCard className="w-5 h-5 text-slate-600" />
+                          <span className="font-medium text-slate-800">{paymentMethod}</span>
+                        </div>
+                        <span className="text-blue-600 text-sm font-semibold">Change</span>
+                      </div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-[200px]">
+                      <DropdownMenuItem onClick={() => setPaymentMethod('Cash')}>Cash</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setPaymentMethod('Visa •••• 1234')}>Visa •••• 1234</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setPaymentMethod('Paytm')}>Paytm</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  <div className="flex gap-3">
+                    <Button variant="outline" className="rounded-xl flex-1 h-14 bg-slate-50">
+                      <Phone className="w-5 h-5 text-slate-700 mr-2" /> Call Driver
+                    </Button>
+
+                    {/* CHAT SHEET TRIGGGER */}
+                    <Sheet>
+                      <SheetTrigger asChild>
+                        <Button variant="outline" className="rounded-xl flex-1 h-14 bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100 hover:text-blue-800 relative">
+                          <MessageSquare className="w-5 h-5 mr-2" /> Chat
+                          <span className="absolute -top-2 -right-2 bg-red-500 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center font-bold">1</span>
+                        </Button>
+                      </SheetTrigger>
+                      <SheetContent side="bottom" className="h-[70vh] sm:h-[600px] flex flex-col rounded-t-3xl sm:rounded-xl">
+                        <SheetHeader className="text-left border-b pb-4 shrink-0">
+                          <div className="flex items-center gap-3">
+                            <Avatar className="w-10 h-10">
+                              <AvatarImage src="https://ui.shadcn.com/avatars/03.png" />
+                              <AvatarFallback>JD</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <SheetTitle>Michael</SheetTitle>
+                              <SheetDescription>Toyota Camry • White</SheetDescription>
+                            </div>
+                          </div>
+                        </SheetHeader>
+
+                        {/* Chat Messages Area */}
+                        <div className="flex-1 overflow-y-auto pt-4 flex flex-col gap-4">
+                          {messages.map((msg, idx) => (
+                            <div key={idx} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                              <div className={`px-4 py-2 rounded-2xl max-w-[80%] ${msg.sender === 'user' ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-slate-100 text-slate-900 rounded-bl-sm'}`}>
+                                {msg.text}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Chat Input Area */}
+                        <div className="pt-4 border-t flex gap-2 shrink-0">
+                          <Input
+                            placeholder="Type a message..."
+                            className="rounded-full h-12"
+                            value={chatMessage}
+                            onChange={(e) => setChatMessage(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' && chatMessage.trim()) {
+                                setMessages([...messages, { sender: 'user', text: chatMessage }]);
+                                setChatMessage('');
+                                // Mock auto-reply
+                                setTimeout(() => {
+                                  setMessages(prev => [...prev, { sender: 'driver', text: 'Got it!' }]);
+                                }, 1500);
+                              }
+                            }}
+                          />
+                          <Button
+                            className="rounded-full w-12 h-12 p-0 bg-blue-600 hover:bg-blue-700 shrink-0"
+                            onClick={() => {
+                              if (chatMessage.trim()) {
+                                setMessages([...messages, { sender: 'user', text: chatMessage }]);
+                                setChatMessage('');
+                                // Mock auto-reply
+                                setTimeout(() => {
+                                  setMessages(prev => [...prev, { sender: 'driver', text: 'Got it!' }]);
+                                }, 1500);
+                              }
+                            }}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white ml-[-2px] mt-[2px]"><path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" /></svg>
+                          </Button>
+                        </div>
+                      </SheetContent>
+                    </Sheet>
+                  </div>
+
+                  {/* Fast forward the simulation */}
+                  <Button variant="default" className="w-full rounded-xl h-14 bg-slate-900 text-white text-lg font-medium shadow-md hover:bg-black transition-colors" onClick={completeTrip}>
+                    End Trip
+                  </Button>
+                </div>
+              </Card>
+            )}
+
+            {/* STATE 6: Completed / Rating */}
+            {flowState === 'POST_RIDE' && (
+              <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white p-6">
+                <div className="text-center mb-6">
+                  <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-emerald-600 text-2xl">✓</span>
+                  </div>
+                  <h2 className="text-2xl font-bold">You arrived!</h2>
+                  <p className="text-slate-500 mt-1">Hope you enjoyed the ride with Michael</p>
+                </div>
+
+                <div className="bg-slate-50 border rounded-2xl p-4 mb-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-slate-500">Trip Fare</span>
+                    <span className="font-bold font-mono text-lg">$14.50</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="flex items-center gap-2 text-slate-500"><CreditCard className="w-4 h-4" /> Paid with Visa 4242</span>
+                  </div>
+                </div>
+
+                <div className="text-center mb-6">
+                  <p className="font-medium mb-3">Rate your driver</p>
+                  <div className="flex justify-center gap-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        onClick={() => setRating(star)}
+                        className={`p-1 transition-transform hover:scale-110 focus:outline-none focus:ring-0 ${rating >= star ? 'text-yellow-400' : 'text-slate-200'}`}
+                      >
+                        <Star className={`w-10 h-10 ${rating >= star ? 'fill-yellow-400' : ''}`} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <Button className="w-full bg-black hover:bg-slate-800 h-14 rounded-xl text-lg text-white" disabled={rating === 0} onClick={resetFlow}>
+                  {rating > 0 ? 'Submit Rating' : 'Rate to continue'}
+                </Button>
+              </Card>
+            )}
+
+          </div>
         </div>
       </main>
 

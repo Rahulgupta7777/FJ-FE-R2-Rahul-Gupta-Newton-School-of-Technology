@@ -23,6 +23,13 @@ const customMarker = new L.Icon({
     popupAnchor: [1, -34],
 });
 
+const carIcon = new L.Icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/3202/3202926.png', // Modern car icon
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+    popupAnchor: [0, -20],
+});
+
 // Component to dynamically adjust map view based on markers
 function ChangeView({ center, zoom, bounds }: { center: [number, number]; zoom: number, bounds?: L.LatLngBoundsExpression }) {
     const map = useMap();
@@ -64,6 +71,32 @@ export default function Map({ pickup, dropoff, driverLocation, showRoute, onLoca
             );
         }
     }, [pickup, onLocationSensed]);
+
+    const [route, setRoute] = useState<[number, number][]>([]);
+
+    useEffect(() => {
+        if (showRoute && pickup && dropoff) {
+            const fetchRoute = async () => {
+                try {
+                    const response = await fetch(
+                        `https://router.project-osrm.org/route/v1/driving/${pickup[1]},${pickup[0]};${dropoff[1]},${dropoff[0]}?overview=full&geometries=geojson`
+                    );
+                    const data = await response.json();
+                    if (data.routes && data.routes.length > 0) {
+                        const coords = data.routes[0].geometry.coordinates.map((coord: [number, number]) => [coord[1], coord[0]]) as [number, number][];
+                        setRoute(coords);
+                    }
+                } catch (error) {
+                    console.error("Error fetching OSRM route:", error);
+                    // Fallback to straight line if OSRM fails
+                    setRoute([pickup, dropoff]);
+                }
+            };
+            fetchRoute();
+        } else {
+            setRoute([]);
+        }
+    }, [showRoute, pickup, dropoff]);
 
     // Calculate bounds if we have both points
     let bounds: L.LatLngBoundsExpression | undefined = undefined;
@@ -107,9 +140,16 @@ export default function Map({ pickup, dropoff, driverLocation, showRoute, onLoca
                 </Marker>
             )}
 
+            {/* Driver Marker */}
+            {driverLocation && (
+                <Marker position={driverLocation} icon={carIcon}>
+                    <Popup>Your Driver is Here</Popup>
+                </Marker>
+            )}
+
             {/* Route Line */}
-            {showRoute && pickup && dropoff && (
-                <Polyline positions={[pickup, dropoff]} color="#2563eb" weight={4} opacity={0.7} />
+            {showRoute && route.length > 0 && (
+                <Polyline positions={route} color="#2563eb" weight={5} opacity={0.8} />
             )}
         </MapContainer>
     );
