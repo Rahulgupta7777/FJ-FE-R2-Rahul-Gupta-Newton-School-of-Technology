@@ -192,41 +192,52 @@ export default function LoginPage() {
                 {/* Step 4: Profile */}
                 {step === 'PROFILE' && (
                     <form onSubmit={handleProfileSubmit}>
-                        <CardHeader>
-                            <CardTitle className="text-2xl">Create your profile</CardTitle>
-                            <CardDescription>Just a few details to get you moving</CardDescription>
+                        <div className="bg-black rounded-t-xl pt-12 pb-8 flex flex-col items-center justify-center">
+                            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4">
+                                <span className="text-3xl font-black tracking-tighter text-black">R</span>
+                            </div>
+                            <h1 className="text-white text-3xl font-bold tracking-tight">RideShare</h1>
+                        </div>
+                        <CardHeader className="pt-6 pb-2">
+                            <CardTitle className="text-2xl font-bold">Create your profile</CardTitle>
+                            <CardDescription className="text-slate-500 text-base">Just a few details to get you moving</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="firstName">First Name</Label>
+                                <div className="space-y-1">
+                                    <Label htmlFor="firstName" className="text-base font-medium">First Name</Label>
                                     <Input
                                         id="firstName"
                                         type="text"
                                         placeholder="e.g. Rahul"
                                         value={firstName}
                                         onChange={(e) => setFirstName(e.target.value)}
-                                        className="h-12"
+                                        className="h-12 text-lg border-2 border-slate-300 rounded-lg placeholder:text-slate-500 shadow-sm"
                                         autoFocus
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="lastName">Last Name <span className="text-slate-400 font-normal">(Optional)</span></Label>
+                                <div className="space-y-1">
+                                    <Label htmlFor="lastName" className="text-base font-medium">Last Name <span className="text-slate-400 font-normal">(Optional)</span></Label>
                                     <Input
                                         id="lastName"
                                         type="text"
                                         placeholder="e.g. Gupta"
                                         value={lastName}
                                         onChange={(e) => setLastName(e.target.value)}
-                                        className="h-12"
+                                        className="h-12 text-lg border border-slate-200 rounded-lg placeholder:text-slate-500 shadow-sm"
                                     />
                                 </div>
                             </div>
                         </CardContent>
-                        <CardFooter>
-                            <Button type="submit" className="w-full h-12 text-lg rounded-xl" disabled={!firstName || isLoading}>
+                        <CardFooter className="flex-col gap-4">
+                            <Button type="submit" className="w-full h-12 text-lg rounded-xl bg-[#878787] hover:bg-slate-500 text-white font-medium" disabled={!firstName || isLoading}>
                                 {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Start Riding'}
                             </Button>
+                            <div className="text-center px-2">
+                                <p className="text-xs text-slate-500 leading-relaxed">
+                                    By proceeding, you agree to our <a href="#" className="font-semibold text-slate-700 hover:underline">Terms of Service</a> and <a href="#" className="font-semibold text-slate-700 hover:underline">Privacy Policy</a>.
+                                </p>
+                            </div>
                         </CardFooter>
                     </form>
                 )}
