@@ -577,96 +577,126 @@ export default function Home() {
                 <div className="overflow-y-auto max-h-[40vh] md:max-h-[500px]">
                   {/* Shared Option */}
                   <div
-                    className={`p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 border-b border-slate-100 dark:border-slate-800 transition-colors ${selectedVehicle === 'Shared' ? 'bg-blue-50/50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' : ''}`}
+                    className={`p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 border-b border-slate-100 dark:border-slate-800 transition-colors ${selectedVehicle === 'Shared' ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
                     onClick={() => setSelectedVehicle('Shared')}
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-10 flex items-center justify-center">
-                        <div className="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-md">
-                          <Car className="w-8 h-8 text-blue-600" />
-                          <div className="absolute -bottom-1 -right-1 bg-white rounded-full">
-                            <span className="text-[10px] p-0.5">👥</span>
-                          </div>
-                        </div>
+                      <div className="w-16 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+                        <img src="/car-icon.png" alt="Car Icon" className="w-10 h-auto object-contain dark:invert" />
                       </div>
                       <div>
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-slate-900">Shared <span className="text-slate-500 font-normal text-sm">👤 1-2</span></h4>
+                        <div className="flex items-center gap-1.5">
+                          <h4 className="font-bold text-slate-900 dark:text-white text-base">Shared</h4>
+                          <div className="flex items-center text-slate-500 dark:text-slate-400">
+                            <span className="text-[10px] mr-0.5">👤</span>
+                            <span className="text-xs font-medium">1-2</span>
+                          </div>
                         </div>
-                        <p className="text-sm text-slate-500">2 min • 15:40 dropoff</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">2 min • 15:40 dropoff</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg">${(9.50 * sharedSeats).toFixed(2)}</p>
+                      <p className="font-bold text-lg text-slate-900 dark:text-white">${(9.50 * sharedSeats).toFixed(2)}</p>
                     </div>
                   </div>
 
                   {/* Economy Option */}
                   <div
-                    className={`p-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors ${selectedVehicle === 'Economy' ? 'bg-blue-50/50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' : ''}`}
+                    className={`p-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors ${selectedVehicle === 'Economy' ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
                     onClick={() => setSelectedVehicle('Economy')}
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-10 flex items-center justify-center">
-                        <div className="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-md">
-                          <Car className="w-8 h-8 text-blue-500" />
-                        </div>
+                      <div className="w-16 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+                        <img src="/car-icon.png" alt="Car Icon" className="w-10 h-auto object-contain dark:invert" />
                       </div>
                       <div>
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-slate-900">Economy <span className="text-slate-500 font-normal text-sm">👤 4</span></h4>
+                        <div className="flex items-center gap-1.5">
+                          <h4 className="font-bold text-slate-900 dark:text-white text-base">Economy</h4>
+                          <div className="flex items-center text-slate-500 dark:text-slate-400">
+                            <span className="text-[10px] mr-0.5">👤</span>
+                            <span className="text-xs font-medium">4</span>
+                          </div>
                         </div>
-                        <p className="text-sm text-slate-500">2 min • 15:34 dropoff</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">2 min • 15:34 dropoff</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg">$14.50</p>
+                      <p className="font-bold text-lg text-slate-900 dark:text-white">$14.50</p>
+                    </div>
+                  </div>
+
+                  {/* EV Option */}
+                  <div
+                    className={`p-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors ${selectedVehicle === 'EV' ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
+                    onClick={() => setSelectedVehicle('EV')}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-10 flex items-center justify-center bg-green-50 dark:bg-green-900/20 rounded-lg overflow-hidden border border-green-200 dark:border-green-800">
+                        <img src="/car-icon.png" alt="Car Icon" className="w-10 h-auto object-contain dark:invert hue-rotate-[120deg]" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-1.5">
+                          <h4 className="font-bold text-slate-900 dark:text-white text-base">EV <span className="text-green-600 dark:text-green-400 text-[10px] font-bold px-1 py-0.5 bg-green-100 dark:bg-green-900/40 rounded-sm ml-1">ECO</span></h4>
+                          <div className="flex items-center text-slate-500 dark:text-slate-400">
+                            <span className="text-[10px] mr-0.5">👤</span>
+                            <span className="text-xs font-medium">4</span>
+                          </div>
+                        </div>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">3 min • 15:35 dropoff</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-lg text-slate-900 dark:text-white">$15.20</p>
                     </div>
                   </div>
 
                   {/* Comfort Option */}
                   <div
-                    className={`p-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors ${selectedVehicle === 'Comfort' ? 'bg-blue-50/50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' : ''}`}
+                    className={`p-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors ${selectedVehicle === 'Comfort' ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
                     onClick={() => setSelectedVehicle('Comfort')}
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-10 flex items-center justify-center">
-                        <div className="w-full h-full flex items-center justify-center bg-slate-900 dark:bg-slate-200 rounded-md">
-                          <Car className="w-9 h-9 text-slate-100 dark:text-slate-800" />
-                        </div>
+                      <div className="w-16 h-10 flex items-center justify-center bg-slate-900 dark:bg-slate-200 rounded-lg overflow-hidden border border-slate-800 dark:border-slate-300">
+                        <img src="/car-icon.png" alt="Car Icon" className="w-10 h-auto object-contain invert dark:invert-0" />
                       </div>
                       <div>
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-slate-900">Comfort <span className="text-slate-500 font-normal text-sm">👤 4</span></h4>
+                        <div className="flex items-center gap-1.5">
+                          <h4 className="font-bold text-slate-900 dark:text-white text-base">Comfort</h4>
+                          <div className="flex items-center text-slate-500 dark:text-slate-400">
+                            <span className="text-[10px] mr-0.5">👤</span>
+                            <span className="text-xs font-medium">4</span>
+                          </div>
                         </div>
-                        <p className="text-sm text-slate-500">4 min • 15:32 dropoff</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">4 min • 15:32 dropoff</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg">$21.20</p>
+                      <p className="font-bold text-lg text-slate-900 dark:text-white">$21.20</p>
                     </div>
                   </div>
 
                   {/* XL Option */}
                   <div
-                    className={`p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 border-b border-slate-100 dark:border-slate-800 transition-colors ${selectedVehicle === 'XL' ? 'bg-blue-50/50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' : ''}`}
+                    className={`p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 border-b border-slate-100 dark:border-slate-800 transition-colors ${selectedVehicle === 'XL' ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
                     onClick={() => setSelectedVehicle('XL')}
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-10 flex items-center justify-center">
-                        <div className="w-full h-full flex items-center justify-center bg-slate-200 dark:bg-slate-700 rounded-md">
-                          <Car className="w-10 h-10 text-slate-800 dark:text-slate-200" />
-                        </div>
+                      <div className="w-16 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+                        <img src="/car-icon.png" alt="Car Icon" className="w-12 h-auto object-contain dark:invert" />
                       </div>
                       <div>
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-slate-900">XL <span className="text-slate-500 font-normal text-sm">👤 6</span></h4>
+                        <div className="flex items-center gap-1.5">
+                          <h4 className="font-bold text-slate-900 dark:text-white text-base">XL</h4>
+                          <div className="flex items-center text-slate-500 dark:text-slate-400">
+                            <span className="text-[10px] mr-0.5">👤</span>
+                            <span className="text-xs font-medium">6</span>
+                          </div>
                         </div>
-                        <p className="text-sm text-slate-500">6 min • 15:34 dropoff</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">6 min • 15:34 dropoff</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg">$28.90</p>
+                      <p className="font-bold text-lg text-slate-900 dark:text-white">$28.90</p>
                     </div>
                   </div>
 
@@ -687,13 +717,15 @@ export default function Home() {
                 </div>
 
                 {/* Selected Action */}
-                <div className="pt-4 flex items-center justify-between px-4 bg-white dark:bg-slate-950 pb-4">
+                <div className="pt-4 flex items-center justify-between px-6 bg-white dark:bg-slate-950 pb-6 border-t border-slate-100 dark:border-slate-800">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <div className="flex items-center gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
-                        {renderPaymentIcon(paymentMethod)}
-                        <span className="text-sm font-semibold">{paymentMethod}</span>
-                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                      <div className="flex items-center gap-2 px-4 py-3 bg-[#f5f5f5] dark:bg-slate-800 rounded-xl cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors w-[160px] justify-between">
+                        <div className="flex items-center gap-2">
+                          {renderPaymentIcon(paymentMethod)}
+                          <span className="text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis w-20">{paymentMethod}</span>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
                       </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
@@ -708,7 +740,7 @@ export default function Home() {
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  <Button className="rounded-full bg-slate-900 dark:bg-white hover:bg-black dark:hover:bg-slate-200 text-white dark:text-black px-8 transition-transform active:scale-95" onClick={handleConfirmRide}>
+                  <Button className="rounded-full bg-[#0a0f25] dark:bg-white hover:bg-black dark:hover:bg-slate-200 text-white dark:text-black px-10 h-12 text-base font-semibold transition-transform active:scale-95 flex-1 ml-4" onClick={handleConfirmRide}>
                     Confirm {selectedVehicle}
                   </Button>
                 </div>
