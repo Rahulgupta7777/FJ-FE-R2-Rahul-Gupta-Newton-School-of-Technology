@@ -49,7 +49,7 @@ export default function Home() {
   const [pickupText, setPickupText] = useState('Current Location');
   const [dropoffText, setDropoffText] = useState('');
 
-  const [selectedVehicle, setSelectedVehicle] = useState<'Economy' | 'Comfort' | 'XL' | 'Shared'>('Economy');
+  const [selectedVehicle, setSelectedVehicle] = useState<'Economy' | 'Comfort' | 'XL' | 'Shared' | 'EV'>('Economy');
   const [sharedSeats, setSharedSeats] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState<'Cash' | 'Visa •••• 1234' | 'Paytm'>('Visa •••• 1234');
 
