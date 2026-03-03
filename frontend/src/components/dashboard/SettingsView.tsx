@@ -42,26 +42,28 @@ export function SettingsView() {
                         <div className="grid grid-cols-3 gap-4">
                             <button
                                 onClick={() => setTheme("light")}
-                                className={`border-2 rounded-xl p-4 flex flex-col items-center gap-3 transition-colors ${theme === 'light' ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'}`}
+                                className={`group relative overflow-hidden rounded-2xl p-5 flex flex-col items-center gap-3 transition-all duration-300 ${theme === 'light' ? 'ring-2 ring-blue-600 ring-offset-2 dark:ring-offset-slate-950 bg-white shadow-lg' : 'border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-transparent opacity-70 hover:opacity-100'}`}
                             >
-                                <Sun className="w-6 h-6" />
-                                <span className="font-medium text-sm">Light</span>
+                                {theme === 'light' && <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-50" />}
+                                <Sun className={`w-6 h-6 z-10 ${theme === 'light' ? 'text-blue-600 animate-in spin-in-90 duration-500' : 'text-slate-400'}`} />
+                                <span className={`font-semibold text-sm z-10 ${theme === 'light' ? 'text-blue-900' : 'text-slate-500'}`}>Light</span>
                             </button>
 
                             <button
                                 onClick={() => setTheme("dark")}
-                                className={`border-2 rounded-xl p-4 flex flex-col items-center gap-3 transition-colors ${theme === 'dark' ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'}`}
+                                className={`group relative overflow-hidden rounded-2xl p-5 flex flex-col items-center gap-3 transition-all duration-300 ${theme === 'dark' ? 'ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-slate-950 bg-slate-900 shadow-lg' : 'border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-transparent opacity-70 hover:opacity-100'}`}
                             >
-                                <Moon className="w-6 h-6" />
-                                <span className="font-medium text-sm">Dark</span>
+                                {theme === 'dark' && <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-50" />}
+                                <Moon className={`w-6 h-6 z-10 ${theme === 'dark' ? 'text-indigo-400 animate-in zoom-in-50 duration-500' : 'text-slate-400'}`} />
+                                <span className={`font-semibold text-sm z-10 ${theme === 'dark' ? 'text-indigo-100' : 'text-slate-500'}`}>Dark</span>
                             </button>
 
                             <button
                                 onClick={() => setTheme("system")}
-                                className={`border-2 rounded-xl p-4 flex flex-col items-center gap-3 transition-colors ${theme === 'system' ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'}`}
+                                className={`group relative overflow-hidden rounded-2xl p-5 flex flex-col items-center gap-3 transition-all duration-300 ${theme === 'system' ? 'ring-2 ring-slate-600 ring-offset-2 dark:ring-offset-slate-950 bg-slate-100 dark:bg-slate-800 shadow-lg' : 'border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-transparent opacity-70 hover:opacity-100'}`}
                             >
-                                <Monitor className="w-6 h-6" />
-                                <span className="font-medium text-sm">System</span>
+                                <Monitor className={`w-6 h-6 z-10 ${theme === 'system' ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400'}`} />
+                                <span className={`font-semibold text-sm z-10 ${theme === 'system' ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>System</span>
                             </button>
                         </div>
                     </CardContent>

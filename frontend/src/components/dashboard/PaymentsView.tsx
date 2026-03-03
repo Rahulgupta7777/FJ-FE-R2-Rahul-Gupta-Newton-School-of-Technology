@@ -156,8 +156,8 @@ export function PaymentsView() {
                         <Card className="border shadow-sm hover:border-blue-500 transition-colors cursor-pointer group">
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden shadow-sm bg-white">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" className="w-8 h-8 object-contain" />
+                                    <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden shadow-sm bg-white p-1">
+                                        <img src="https://logos-world.net/wp-content/uploads/2020/11/Paytm-Logo.png" alt="Paytm" className="w-full h-full object-contain" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold group-hover:text-blue-600 transition-colors">Paytm Wallet</h4>
@@ -172,8 +172,8 @@ export function PaymentsView() {
                         <Card className="border shadow-sm hover:border-purple-500 transition-colors cursor-pointer group">
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-[#5f259f] rounded-xl flex items-center justify-center shadow-sm">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/df/PhonePe_Logo.svg" alt="PhonePe" className="w-7 h-7 object-contain invert brightness-0" />
+                                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm p-1">
+                                        <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/phonepe-logo-icon.png" alt="PhonePe" className="w-full h-full object-contain" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold group-hover:text-purple-600 transition-colors">PhonePe</h4>
@@ -189,7 +189,7 @@ export function PaymentsView() {
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 bg-white border border-slate-100 rounded-xl flex items-center justify-center p-1 shadow-sm">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Amazon_Pay_logo.svg" alt="Amazon Pay" className="w-10 h-10 object-contain" />
+                                        <img src="https://logos-world.net/wp-content/uploads/2021/04/Amazon-Pay-Logo.png" alt="Amazon Pay" className="w-full h-full object-contain" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold group-hover:text-orange-500 transition-colors">Amazon Pay</h4>
@@ -212,14 +212,14 @@ export function PaymentsView() {
                         <CardContent>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                                 {[
-                                    { name: 'HDFC Bank', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/28/HDFC_Bank_Logo.svg' },
-                                    { name: 'SBI', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/cc/SBI-logo.svg' },
-                                    { name: 'ICICI Bank', logo: 'https://upload.wikimedia.org/wikipedia/commons/1/12/ICICI_Bank_Logo.svg' },
-                                    { name: 'Axis Bank', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c2/Axis_Bank_logo.svg' },
-                                    { name: 'Kotak Bank', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c3/Kotak_Mahindra_Bank_logo.svg' },
-                                    { name: 'Yes Bank', logo: 'https://upload.wikimedia.org/wikipedia/en/e/e0/Yes_Bank_Logo.svg' },
-                                    { name: 'PNB', logo: 'https://upload.wikimedia.org/wikipedia/commons/1/14/PNB_Logo.svg' },
-                                    { name: 'Bank of Baroda', logo: 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Bank_of_Baroda_logo.svg' }
+                                    { name: 'HDFC Bank', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2020/11/hdfc_bank_logo.png' },
+                                    { name: 'SBI', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2023/05/sbi_logo-freelogovectors.net_.png' },
+                                    { name: 'ICICI Bank', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2018/02/icici-bank-logo.png' },
+                                    { name: 'Axis Bank', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2023/11/axis_bank_logo-freelogovectors.net_.png' },
+                                    { name: 'Kotak Bank', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2021/11/kotak-mahindra-bank-logo-freelogovectors.net_.png' },
+                                    { name: 'Yes Bank', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2021/11/yes-bank-logo-freelogovectors.net_.png' },
+                                    { name: 'PNB', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2021/11/punjab-national-bank-logo-freelogovectors.net_.png' },
+                                    { name: 'Bank of Baroda', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2021/11/bank-of-baroda-logo-freelogovectors.net_.png' }
                                 ].map(bank => (
                                     <Button key={bank.name} variant="outline" className="h-20 justify-center flex-col gap-2 bg-white dark:bg-slate-900 border hover:border-blue-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors rounded-xl overflow-hidden p-2">
                                         <div className="h-8 flex items-center justify-center w-full">

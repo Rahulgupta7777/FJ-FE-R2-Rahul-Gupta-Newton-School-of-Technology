@@ -38,6 +38,7 @@ export default function Home() {
   const [flowState, setFlowState] = useState<FlowState>('IDLE');
 
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [tripDuration, setTripDuration] = useState(12); // Initial estimate
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -50,8 +51,10 @@ export default function Home() {
     return date.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
   };
 
-  const getDropoffTime = (minutes: number) => {
-    const dropoff = new Date(currentTime.getTime() + minutes * 60000);
+  const getDropoffTime = (minutes?: number) => {
+    // If no minutes provided, use the current tripDuration estimate
+    const estimate = minutes || tripDuration;
+    const dropoff = new Date(currentTime.getTime() + estimate * 60000);
     return formatTime(dropoff);
   };
 
@@ -142,6 +145,8 @@ export default function Home() {
   // Transitions
   const handleFindRide = () => {
     if (pickup && dropoff) {
+      const simulatedDistance = Math.floor(Math.random() * 20) + 5; // 5-25 km
+      setTripDuration(Math.max(10, simulatedDistance * 2)); // roughly 2 min per km
       setFlowState('SELECTING_RIDE');
     }
   };
@@ -183,7 +188,7 @@ export default function Home() {
     <div className="relative h-screen w-full flex overflow-hidden bg-slate-50 font-sans">
 
       {/* Sidebar Navigation - Common App Style */}
-      <aside className="hidden md:flex flex-col w-64 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 h-full z-10 shadow-sm">
+      <aside className="hidden md:flex flex-col w-64 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-r border-slate-200 dark:border-white/10 h-full z-10 shadow-sm transition-all duration-300">
         <div className="p-6">
           <h1 className="text-2xl font-black tracking-tight flex items-center gap-2 text-slate-900 dark:text-white">
             <span className="w-8 h-8 rounded-full bg-black dark:bg-white text-white dark:text-black flex items-center justify-center text-sm">R</span>
@@ -374,80 +379,97 @@ export default function Home() {
                 <Menu className="w-5 h-5 text-slate-700 dark:text-slate-300" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-64 p-0 flex flex-col bg-white dark:bg-slate-950 border-r dark:border-slate-800">
-              <div className="p-6">
-                <h1 className="text-2xl font-black tracking-tight flex items-center gap-2 text-slate-900 dark:text-white">
-                  <span className="w-8 h-8 rounded-full bg-black dark:bg-white text-white dark:text-black flex items-center justify-center text-sm">R</span>
-                  RideShare
-                </h1>
+            <SheetContent side="left" className="w-[300px] sm:w-[400px] p-0 flex flex-col bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-white/10 z-[100]">
+              <div className="p-6 border-b">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src="https://ui.shadcn.com/avatars/03.png" />
+                    <AvatarFallback>RG</AvatarFallback>
+                  </Avatar>
+                  My Account
+                </h2>
               </div>
-              {/* Nav Items */}
-              <nav className="flex-1 overflow-y-auto px-4 py-4 space-y-2 pb-24">
-                <Button
-                  variant="ghost"
-                  className={`w-full justify-start h-12 rounded-xl text-base font-medium ${activeTab === 'BOOKING' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300'}`}
-                  onClick={() => { setActiveTab('BOOKING'); setIsSidebarOpen(false); }}
-                >
-                  <Navigation className="w-5 h-5 mr-3" /> Book a Ride
-                </Button>
-                <Button
-                  variant="ghost"
-                  className={`w-full justify-start h-12 rounded-xl text-base font-medium ${activeTab === 'TRIPS' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300'}`}
-                  onClick={() => { setActiveTab('TRIPS'); setIsSidebarOpen(false); }}
-                >
-                  <History className="w-5 h-5 mr-3" /> My Trips
-                </Button>
-                <Button
-                  variant="ghost"
-                  className={`w-full justify-start h-12 rounded-xl text-base font-medium ${activeTab === 'PAYMENTS' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300'}`}
-                  onClick={() => { setActiveTab('PAYMENTS'); setIsSidebarOpen(false); }}
-                >
-                  <Wallet className="w-5 h-5 mr-3" /> Payments
-                </Button>
-                <Button
-                  variant="ghost"
-                  className={`w-full justify-start h-12 rounded-xl text-base font-medium ${activeTab === 'SETTINGS' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300'}`}
-                  onClick={() => { setActiveTab('SETTINGS'); setIsSidebarOpen(false); }}
-                >
-                  <Settings className="w-5 h-5 mr-3" /> Settings
-                </Button>
-              </nav>
+              <div className="flex-1 p-6 space-y-6 overflow-y-auto">
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Nearby Drivers</h3>
+                  <div className="flex -space-x-3 overflow-hidden p-1">
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
+                      <Avatar key={i} className="inline-block border-2 border-white dark:border-slate-950 w-10 h-10 ring-2 ring-slate-100 dark:ring-slate-800 hover:scale-110 transition-transform cursor-pointer">
+                        <AvatarImage src={`https://i.pravatar.cc/150?u=driver${i}`} />
+                        <AvatarFallback>D{i}</AvatarFallback>
+                      </Avatar>
+                    ))}
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold border-2 border-white dark:border-slate-950 z-10">
+                      +5
+                    </div>
+                  </div>
+                </div>
+                <nav className="space-y-1">
+                  <Button
+                    variant="ghost"
+                    className={`w-full justify-start h-12 rounded-xl text-base font-medium ${activeTab === 'BOOKING' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300'}`}
+                    onClick={() => { setActiveTab('BOOKING'); setIsSidebarOpen(false); }}
+                  >
+                    <Navigation className="w-5 h-5 mr-3" /> Book a Ride
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className={`w-full justify-start h-12 rounded-xl text-base font-medium ${activeTab === 'TRIPS' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300'}`}
+                    onClick={() => { setActiveTab('TRIPS'); setIsSidebarOpen(false); }}
+                  >
+                    <History className="w-5 h-5 mr-3" /> My Trips
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className={`w-full justify-start h-12 rounded-xl text-base font-medium ${activeTab === 'PAYMENTS' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300'}`}
+                    onClick={() => { setActiveTab('PAYMENTS'); setIsSidebarOpen(false); }}
+                  >
+                    <Wallet className="w-5 h-5 mr-3" /> Payments
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className={`w-full justify-start h-12 rounded-xl text-base font-medium ${activeTab === 'SETTINGS' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600' : 'text-slate-700 dark:text-slate-300'}`}
+                    onClick={() => { setActiveTab('SETTINGS'); setIsSidebarOpen(false); }}
+                  >
+                    <Settings className="w-5 h-5 mr-3" /> Settings
+                  </Button>
+                </nav>
 
-              {/* Bottom Footer Area */}
-              <div className="p-4 border-t border-slate-100 dark:border-slate-800 mt-auto bg-slate-50 dark:bg-slate-900 absolute bottom-0 w-full flex justify-between px-6 text-xs text-slate-400">
-                <Dialog>
-                  <DialogTrigger className="hover:underline">Terms</DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Terms of Service</DialogTitle>
-                      <DialogDescription className="max-h-96 overflow-y-auto mt-4 text-justify space-y-4">
-                        <div><strong>1. Acceptance of Terms:</strong> By accessing and using this Ride Sharing application, you accept and agree to be bound by the terms and provision of this agreement.</div>
-                        <div><strong>2. User Accounts:</strong> You must create an account to use the service. You are responsible for maintaining the confidentiality of your account information.</div>
-                        <div><strong>3. Use of Services:</strong> You agree to use the service for lawful purposes only and in a manner consistent with any and all applicable local, national and international laws.</div>
-                        <div><strong>4. Payments:</strong> Fares are calculated dynamically based on distance, time, and demand. You agree to pay all charges incurred under your account.</div>
-                        <div><strong>5. Limitation of Liability:</strong> We shall not be liable for any direct, indirect, incidental, special or consequential damages resulting from the use or inability to use the service.</div>
-                        <Button className="w-full mt-4" onClick={(e) => (e.target as any).closest('dialog')?.close()}>I Accept</Button>
-                      </DialogDescription>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
-                <Dialog>
-                  <DialogTrigger className="hover:underline">Privacy</DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Privacy Policy</DialogTitle>
-                      <DialogDescription className="max-h-96 overflow-y-auto mt-4 text-justify space-y-4">
-                        <div><strong>1. Information Collection:</strong> We collect information you provide directly to us, such as when you create or modify your account, request on-demand services, or contact customer support.</div>
-                        <div><strong>2. Location Data:</strong> When you use our services, we collect precise location data from your device to provide the rides and for safety and security purposes.</div>
-                        <div><strong>3. Use of Information:</strong> We use the information we collect to integrate with drivers, process payments, and improve our platform.</div>
-                        <div><strong>4. Sharing of Information:</strong> We may share your information with our driver partners to enable them to provide the requested services. Your profile picture and name will be shared during active rides.</div>
-                        <div><strong>5. Data Security:</strong> We take reasonable measures to help protect information about you from loss, theft, misuse and unauthorized access.</div>
-                        <Button className="w-full mt-4" onClick={(e) => (e.target as any).closest('dialog')?.close()}>Understood</Button>
-                      </DialogDescription>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
-              </div>
+                {/* Bottom Footer Area */}
+                <div className="p-4 border-t border-slate-100 dark:border-slate-800 mt-auto bg-slate-50 dark:bg-slate-900 absolute bottom-0 w-full flex justify-between px-6 text-xs text-slate-400">
+                  <Dialog>
+                    <DialogTrigger className="hover:underline">Terms</DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Terms of Service</DialogTitle>
+                        <DialogDescription className="max-h-96 overflow-y-auto mt-4 text-justify space-y-4">
+                          <div><strong>1. Acceptance of Terms:</strong> By accessing and using this Ride Sharing application, you accept and agree to be bound by the terms and provision of this agreement.</div>
+                          <div><strong>2. User Accounts:</strong> You must create an account to use the service. You are responsible for maintaining the confidentiality of your account information.</div>
+                          <div><strong>3. Use of Services:</strong> You agree to use the service for lawful purposes only and in a manner consistent with any and all applicable local, national and international laws.</div>
+                          <div><strong>4. Payments:</strong> Fares are calculated dynamically based on distance, time, and demand. You agree to pay all charges incurred under your account.</div>
+                          <div><strong>5. Limitation of Liability:</strong> We shall not be liable for any direct, indirect, incidental, special or consequential damages resulting from the use or inability to use the service.</div>
+                          <Button className="w-full mt-4" onClick={(e) => (e.target as any).closest('dialog')?.close()}>I Accept</Button>
+                        </DialogDescription>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+                  <Dialog>
+                    <DialogTrigger className="hover:underline">Privacy</DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Privacy Policy</DialogTitle>
+                        <DialogDescription className="max-h-96 overflow-y-auto mt-4 text-justify space-y-4">
+                          <div><strong>1. Information Collection:</strong> We collect information you provide directly to us, such as when you create or modify your account, request on-demand services, or contact customer support.</div>
+                          <div><strong>2. Location Data:</strong> When you use our services, we collect precise location data from your device to provide the rides and for safety and security purposes.</div>
+                          <div><strong>3. Use of Information:</strong> We use the information we collect to integrate with drivers, process payments, and improve our platform.</div>
+                          <div><strong>4. Sharing of Information:</strong> We may share your information with our driver partners to enable them to provide the requested services. Your profile picture and name will be shared during active rides.</div>
+                          <div><strong>5. Data Security:</strong> We take reasonable measures to help protect information about you from loss, theft, misuse and unauthorized access.</div>
+                          <Button className="w-full mt-4" onClick={(e) => (e.target as any).closest('dialog')?.close()}>Understood</Button>
+                        </DialogDescription>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+                </div>
             </SheetContent>
           </Sheet>
           <Avatar className="pointer-events-auto border-2 border-white shadow-lg">
@@ -483,12 +505,12 @@ export default function Home() {
 
             {/* STATE 1: Search Location */}
             {(flowState === 'IDLE' || flowState === 'SEARCHING') && (
-              <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-2xl border-0 overflow-hidden animate-in slide-in-from-bottom-5">
-                <CardHeader className="bg-white dark:bg-slate-950 pb-2">
+              <Card className="pointer-events-auto glass-card shadow-2xl rounded-t-3xl md:rounded-2xl border-0 overflow-hidden animate-in slide-in-from-bottom-5">
+                <CardHeader className="bg-transparent pb-2">
                   <CardTitle className="text-xl">Where to?</CardTitle>
                   <CardDescription>Find a ride instantly</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4 bg-white dark:bg-slate-950 pb-6">
+                <CardContent className="space-y-4 bg-transparent pb-6">
                   <div className="relative flex flex-col gap-3">
                     {/* Connecting Line */}
                     <div className="absolute left-[23.5px] top-[24px] bottom-[24px] w-0.5 bg-slate-200 dark:bg-slate-800 z-0 border-l border-dashed border-slate-300 dark:border-slate-700"></div>
@@ -585,7 +607,7 @@ export default function Home() {
                     </Dialog>
                   </div>
                 </CardContent>
-                <CardFooter className="bg-white dark:bg-slate-950 pt-2 pb-6 md:pb-4 border-t border-slate-100 dark:border-slate-800 rounded-b-3xl md:rounded-b-xl">
+                <CardFooter className="bg-transparent pt-2 pb-6 md:pb-4 border-t border-slate-100 dark:border-white/10 rounded-b-3xl md:rounded-b-xl">
                   <Button
                     className="w-full h-14 text-lg font-semibold rounded-xl bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-black dark:hover:bg-slate-200 shadow-md transition-all active:scale-[0.98]"
                     onClick={handleFindRide}
@@ -600,8 +622,8 @@ export default function Home() {
 
             {/* STATE 2: Select Ride */}
             {flowState === 'SELECTING_RIDE' && (
-              <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
-                <div className="relative h-40 w-full bg-blue-50 dark:bg-slate-900 flex items-center justify-center border-b dark:border-slate-800 p-6 overflow-hidden">
+              <Card className="pointer-events-auto glass-card shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
+                <div className="relative h-40 w-full bg-blue-50/50 dark:bg-slate-900/40 flex items-center justify-center border-b border-slate-200/50 dark:border-white/10 p-6 overflow-hidden">
                   <div className="absolute top-0 left-0 w-full h-full opacity-5 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-400 via-transparent to-transparent"></div>
                   <img src="/mult_cab.png" alt="Available Cabs" className="h-32 w-auto object-contain drop-shadow-2xl animate-in fade-in zoom-in duration-700" />
                   <Button
@@ -613,11 +635,11 @@ export default function Home() {
                     <ArrowLeft className="w-4 h-4" />
                   </Button>
                 </div>
-                <div className="p-4 bg-white dark:bg-slate-950 border-b dark:border-slate-800">
+                <div className="p-4 bg-transparent border-b border-slate-200/50 dark:border-white/10">
                   <h3 className="font-bold text-xl tracking-tight">Choose your ride</h3>
                   <p className="text-sm text-slate-500 font-medium">Safe and reliable options for any trip</p>
                 </div>
-                <CardContent className="p-0 bg-white dark:bg-slate-950">
+                <CardContent className="p-0 bg-transparent">
                   <div className="overflow-y-auto max-h-[40vh] md:max-h-[500px]">
                     {/* Shared Option */}
                     <div
@@ -761,7 +783,7 @@ export default function Home() {
                   </div>
 
                   {/* Selected Action */}
-                  <div className="pt-4 flex items-center justify-between px-6 bg-white dark:bg-slate-950 pb-6 border-t border-slate-100 dark:border-slate-800">
+                  <div className="pt-4 flex items-center justify-between px-6 bg-transparent pb-6 border-t border-slate-200/50 dark:border-white/10">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <div className="flex items-center gap-2 px-4 py-3 bg-[#f5f5f5] dark:bg-slate-800 rounded-xl cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors w-[160px] justify-between">
@@ -884,9 +906,9 @@ export default function Home() {
             {flowState === 'IN_RIDE' && (
               <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white">
                 <div className="bg-emerald-600 text-white p-4 flex justify-between items-center">
-                  <div>
-                    <p className="text-emerald-100 text-sm uppercase font-semibold tracking-wider mb-1">Heading to Destination</p>
-                    <h3 className="font-bold text-xl drop-shadow-sm flex items-center gap-2"><Clock className="w-5 h-5" /> Dropoff in 12 min</h3>
+                  <div className="flex flex-col">
+                    <p className="text-slate-200 text-xs font-medium opacity-80 uppercase tracking-widest">Arrival Estimate</p>
+                    <h3 className="font-bold text-xl drop-shadow-sm flex items-center gap-2"><Clock className="w-5 h-5" /> Dropoff at {getDropoffTime(tripDuration)}</h3>
                   </div>
                   <Badge className="bg-emerald-800 hover:bg-emerald-900 border-none px-3 py-1 text-sm shadow-sm">
                     {formatTime(currentTime)}
