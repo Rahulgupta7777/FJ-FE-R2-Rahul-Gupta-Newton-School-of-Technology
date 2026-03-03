@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { User, MapPin, Navigation, Clock, CreditCard, ChevronRight, Menu, Phone, MessageSquare, Star, Search, Car, Loader2, Calendar, History, Wallet, Settings, Banknote } from 'lucide-react';
+import { User, MapPin, Navigation, Clock, CreditCard, ChevronRight, Menu, Phone, MessageSquare, Star, Search, Car, Loader2, Calendar, History, Wallet, Settings, Banknote, ArrowLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -36,6 +36,24 @@ export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'BOOKING' | 'TRIPS' | 'PAYMENTS' | 'SETTINGS'>('BOOKING');
   const [flowState, setFlowState] = useState<FlowState>('IDLE');
+
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 10000); // Update every 10s for responsiveness
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+  };
+
+  const getDropoffTime = (minutes: number) => {
+    const dropoff = new Date(currentTime.getTime() + minutes * 60000);
+    return formatTime(dropoff);
+  };
 
   // Profile Edit State
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -72,8 +90,11 @@ export default function Home() {
   const [isScheduled, setIsScheduled] = useState(false);
   const [scheduleTime, setScheduleTime] = useState<string>('');
 
-  // Rating
+  // Rating & Tip
   const [rating, setRating] = useState(0);
+  const [tip, setTip] = useState(0);
+  const [showCustomTip, setShowCustomTip] = useState(false);
+  const [customTipValue, setCustomTipValue] = useState('');
 
   useEffect(() => {
     // Basic auth check
@@ -153,6 +174,9 @@ export default function Home() {
     setDropoffText('');
     setFlowState('IDLE');
     setRating(0);
+    setTip(0);
+    setShowCustomTip(false);
+    setCustomTipValue('');
   };
 
   return (
@@ -577,9 +601,21 @@ export default function Home() {
             {/* STATE 2: Select Ride */}
             {flowState === 'SELECTING_RIDE' && (
               <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
-                <div className="p-4 bg-white dark:bg-slate-950 flex items-center justify-between border-b dark:border-slate-800">
-                  <h3 className="font-semibold text-lg">Choose a ride</h3>
-                  <Button variant="ghost" size="sm" onClick={() => setFlowState('IDLE')}>Cancel</Button>
+                <div className="relative h-40 w-full bg-blue-50 dark:bg-slate-900 flex items-center justify-center border-b dark:border-slate-800 p-6 overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-full opacity-5 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-400 via-transparent to-transparent"></div>
+                  <img src="/mult_cab.png" alt="Available Cabs" className="h-32 w-auto object-contain drop-shadow-2xl animate-in fade-in zoom-in duration-700" />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-4 right-4 bg-white/50 dark:bg-black/50 hover:bg-white dark:hover:bg-black rounded-full h-8 w-8 z-10"
+                    onClick={() => setFlowState('IDLE')}
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                  </Button>
+                </div>
+                <div className="p-4 bg-white dark:bg-slate-950 border-b dark:border-slate-800">
+                  <h3 className="font-bold text-xl tracking-tight">Choose your ride</h3>
+                  <p className="text-sm text-slate-500 font-medium">Safe and reliable options for any trip</p>
                 </div>
                 <CardContent className="p-0 bg-white dark:bg-slate-950">
                   <div className="overflow-y-auto max-h-[40vh] md:max-h-[500px]">
@@ -600,7 +636,7 @@ export default function Home() {
                               <span className="text-xs font-medium">1-2</span>
                             </div>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">2 min • 15:40 dropoff</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">2 min • {getDropoffTime(8)} dropoff</p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -625,7 +661,7 @@ export default function Home() {
                               <span className="text-xs font-medium">4</span>
                             </div>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">2 min • 15:34 dropoff</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">2 min • {getDropoffTime(2)} dropoff</p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -650,7 +686,7 @@ export default function Home() {
                               <span className="text-xs font-medium">4</span>
                             </div>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">3 min • 15:35 dropoff</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">3 min • {getDropoffTime(3)} dropoff</p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -675,7 +711,7 @@ export default function Home() {
                               <span className="text-xs font-medium">4</span>
                             </div>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">4 min • 15:32 dropoff</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">4 min • {getDropoffTime(7)} dropoff</p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -700,7 +736,7 @@ export default function Home() {
                               <span className="text-xs font-medium">6</span>
                             </div>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">6 min • 15:34 dropoff</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">6 min • {getDropoffTime(10)} dropoff</p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -853,7 +889,7 @@ export default function Home() {
                     <h3 className="font-bold text-xl drop-shadow-sm flex items-center gap-2"><Clock className="w-5 h-5" /> Dropoff in 12 min</h3>
                   </div>
                   <Badge className="bg-emerald-800 hover:bg-emerald-900 border-none px-3 py-1 text-sm shadow-sm">
-                    15:46
+                    {formatTime(currentTime)}
                   </Badge>
                 </div>
                 <div className="p-4 bg-slate-50 border-b flex flex-col gap-2">
@@ -978,14 +1014,63 @@ export default function Home() {
                   <p className="text-slate-500 mt-1">Hope you enjoyed the ride with Michael</p>
                 </div>
 
-                <div className="bg-slate-50 border rounded-2xl p-4 mb-6">
-                  <div className="flex justify-between items-center mb-2">
+                <div className="bg-slate-50 border rounded-2xl p-4 mb-6 space-y-3">
+                  <div className="flex justify-between items-center">
                     <span className="text-slate-500">Trip Fare</span>
                     <span className="font-bold font-mono text-lg">$14.50</span>
                   </div>
-                  <div className="flex justify-between items-center text-sm">
+                  {tip > 0 && (
+                    <div className="flex justify-between items-center text-emerald-600 animate-in fade-in slide-in-from-top-1">
+                      <span className="text-sm font-medium">Tip</span>
+                      <span className="font-bold font-mono">+${tip.toFixed(2)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center text-sm pt-2 border-t border-slate-200">
                     <span className="flex items-center gap-2 text-slate-500"><CreditCard className="w-4 h-4" /> Paid with Visa 4242</span>
+                    {tip > 0 && <span className="font-bold text-slate-900 font-mono">${(14.50 + tip).toFixed(2)}</span>}
                   </div>
+                </div>
+
+                <div className="mb-6">
+                  <p className="font-medium mb-3 text-center">Add a tip for Michael</p>
+                  <div className="flex justify-center gap-2 mb-4">
+                    {[1, 2, 5].map((amount) => (
+                      <Button
+                        key={amount}
+                        variant={tip === amount && !showCustomTip ? "default" : "outline"}
+                        className={`flex-1 rounded-xl h-12 font-bold ${tip === amount && !showCustomTip ? 'bg-blue-600 text-white border-blue-600' : 'text-slate-600 dark:text-slate-300'}`}
+                        onClick={() => {
+                          setTip(amount);
+                          setShowCustomTip(false);
+                        }}
+                      >
+                        ${amount}
+                      </Button>
+                    ))}
+                    <Button
+                      variant={showCustomTip ? "default" : "outline"}
+                      className={`flex-1 rounded-xl h-12 font-bold ${showCustomTip ? 'bg-blue-600 text-white border-blue-600' : 'text-slate-600 dark:text-slate-300'}`}
+                      onClick={() => setShowCustomTip(!showCustomTip)}
+                    >
+                      Other
+                    </Button>
+                  </div>
+
+                  {showCustomTip && (
+                    <div className="relative animate-in slide-in-from-top-2 fade-in">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+                      <Input
+                        type="number"
+                        placeholder="Enter custom amount"
+                        className="h-12 pl-8 rounded-xl border-slate-200"
+                        value={customTipValue}
+                        onChange={(e) => {
+                          setCustomTipValue(e.target.value);
+                          setTip(parseFloat(e.target.value) || 0);
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="text-center mb-6">
