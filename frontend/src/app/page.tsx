@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { User, MapPin, Navigation, Clock, CreditCard, ChevronRight, Menu, Phone, MessageSquare, Star, Search, Car, Loader2, Calendar, History, Wallet, Settings, Banknote, ArrowLeft } from 'lucide-react';
+import { User, MapPin, Navigation, Clock, CreditCard, ChevronRight, Menu, Phone, MessageSquare, Star, Search, Car, Loader2, Calendar, History, Wallet, Settings, Banknote, ArrowLeft, Plus } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -294,22 +294,27 @@ export default function Home() {
                   <div className="space-y-4 py-4">
                     <div className="flex justify-center mb-6">
                       <div
-                        className="relative w-20 h-20 border-2 border-dashed border-slate-300 rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 overflow-hidden"
+                        className="w-32 h-32 rounded-full border-4 border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all group relative overflow-hidden"
                         onClick={() => fileInputRef.current?.click()}
                       >
                         {profileImage ? (
                           <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
-                          <div className="text-lg bg-slate-100 w-full h-full flex items-center justify-center text-slate-500 font-medium">Upload</div>
+                          <div className="flex flex-col items-center">
+                            <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                              <Plus className="w-6 h-6 text-slate-400 group-hover:text-blue-500" />
+                            </div>
+                            <span className="text-sm font-medium text-slate-500 group-hover:text-blue-500 text-xs px-2 text-center leading-tight">Upload Profile Image</span>
+                          </div>
                         )}
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          className="hidden"
+                          accept="image/*"
+                          onChange={handleProfileImageUpload}
+                        />
                       </div>
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        className="hidden"
-                        accept="image/*"
-                        onChange={handleProfileImageUpload}
-                      />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Display Name</label>
@@ -434,42 +439,43 @@ export default function Home() {
                     <Settings className="w-5 h-5 mr-3" /> Settings
                   </Button>
                 </nav>
+              </div>
 
-                {/* Bottom Footer Area */}
-                <div className="p-4 border-t border-slate-100 dark:border-slate-800 mt-auto bg-slate-50 dark:bg-slate-900 absolute bottom-0 w-full flex justify-between px-6 text-xs text-slate-400">
-                  <Dialog>
-                    <DialogTrigger className="hover:underline">Terms</DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Terms of Service</DialogTitle>
-                        <DialogDescription className="max-h-96 overflow-y-auto mt-4 text-justify space-y-4">
-                          <div><strong>1. Acceptance of Terms:</strong> By accessing and using this Ride Sharing application, you accept and agree to be bound by the terms and provision of this agreement.</div>
-                          <div><strong>2. User Accounts:</strong> You must create an account to use the service. You are responsible for maintaining the confidentiality of your account information.</div>
-                          <div><strong>3. Use of Services:</strong> You agree to use the service for lawful purposes only and in a manner consistent with any and all applicable local, national and international laws.</div>
-                          <div><strong>4. Payments:</strong> Fares are calculated dynamically based on distance, time, and demand. You agree to pay all charges incurred under your account.</div>
-                          <div><strong>5. Limitation of Liability:</strong> We shall not be liable for any direct, indirect, incidental, special or consequential damages resulting from the use or inability to use the service.</div>
-                          <Button className="w-full mt-4" onClick={(e) => (e.target as any).closest('dialog')?.close()}>I Accept</Button>
-                        </DialogDescription>
-                      </DialogHeader>
-                    </DialogContent>
-                  </Dialog>
-                  <Dialog>
-                    <DialogTrigger className="hover:underline">Privacy</DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Privacy Policy</DialogTitle>
-                        <DialogDescription className="max-h-96 overflow-y-auto mt-4 text-justify space-y-4">
-                          <div><strong>1. Information Collection:</strong> We collect information you provide directly to us, such as when you create or modify your account, request on-demand services, or contact customer support.</div>
-                          <div><strong>2. Location Data:</strong> When you use our services, we collect precise location data from your device to provide the rides and for safety and security purposes.</div>
-                          <div><strong>3. Use of Information:</strong> We use the information we collect to integrate with drivers, process payments, and improve our platform.</div>
-                          <div><strong>4. Sharing of Information:</strong> We may share your information with our driver partners to enable them to provide the requested services. Your profile picture and name will be shared during active rides.</div>
-                          <div><strong>5. Data Security:</strong> We take reasonable measures to help protect information about you from loss, theft, misuse and unauthorized access.</div>
-                          <Button className="w-full mt-4" onClick={(e) => (e.target as any).closest('dialog')?.close()}>Understood</Button>
-                        </DialogDescription>
-                      </DialogHeader>
-                    </DialogContent>
-                  </Dialog>
-                </div>
+              {/* Bottom Footer Area */}
+              <div className="p-4 border-t border-slate-100 dark:border-slate-800 mt-auto bg-slate-50 dark:bg-slate-900 absolute bottom-0 w-full flex justify-between px-6 text-xs text-slate-400">
+                <Dialog>
+                  <DialogTrigger className="hover:underline">Terms</DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Terms of Service</DialogTitle>
+                      <DialogDescription className="max-h-96 overflow-y-auto mt-4 text-justify space-y-4">
+                        <div><strong>1. Acceptance of Terms:</strong> By accessing and using this Ride Sharing application, you accept and agree to be bound by the terms and provision of this agreement.</div>
+                        <div><strong>2. User Accounts:</strong> You must create an account to use the service. You are responsible for maintaining the confidentiality of your account information.</div>
+                        <div><strong>3. Use of Services:</strong> You agree to use the service for lawful purposes only and in a manner consistent with any and all applicable local, national and international laws.</div>
+                        <div><strong>4. Payments:</strong> Fares are calculated dynamically based on distance, time, and demand. You agree to pay all charges incurred under your account.</div>
+                        <div><strong>5. Limitation of Liability:</strong> We shall not be liable for any direct, indirect, incidental, special or consequential damages resulting from the use or inability to use the service.</div>
+                        <Button className="w-full mt-4" onClick={(e) => (e.target as any).closest('dialog')?.close()}>I Accept</Button>
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+                <Dialog>
+                  <DialogTrigger className="hover:underline">Privacy</DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Privacy Policy</DialogTitle>
+                      <DialogDescription className="max-h-96 overflow-y-auto mt-4 text-justify space-y-4">
+                        <div><strong>1. Information Collection:</strong> We collect information you provide directly to us, such as when you create or modify your account, request on-demand services, or contact customer support.</div>
+                        <div><strong>2. Location Data:</strong> When you use our services, we collect precise location data from your device to provide the rides and for safety and security purposes.</div>
+                        <div><strong>3. Use of Information:</strong> We use the information we collect to integrate with drivers, process payments, and improve our platform.</div>
+                        <div><strong>4. Sharing of Information:</strong> We may share your information with our driver partners to enable them to provide the requested services. Your profile picture and name will be shared during active rides.</div>
+                        <div><strong>5. Data Security:</strong> We take reasonable measures to help protect information about you from loss, theft, misuse and unauthorized access.</div>
+                        <Button className="w-full mt-4" onClick={(e) => (e.target as any).closest('dialog')?.close()}>Understood</Button>
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </SheetContent>
           </Sheet>
           <Avatar className="pointer-events-auto border-2 border-white shadow-lg">
@@ -658,7 +664,7 @@ export default function Home() {
                               <span className="text-xs font-medium">1-2</span>
                             </div>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">2 min • {getDropoffTime(8)} dropoff</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">2 min • {getDropoffTime(tripDuration + 2)} dropoff</p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -683,7 +689,7 @@ export default function Home() {
                               <span className="text-xs font-medium">4</span>
                             </div>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">2 min • {getDropoffTime(2)} dropoff</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">2 min • {getDropoffTime(tripDuration)} dropoff</p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -708,7 +714,7 @@ export default function Home() {
                               <span className="text-xs font-medium">4</span>
                             </div>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">3 min • {getDropoffTime(3)} dropoff</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">3 min • {getDropoffTime(tripDuration + 1)} dropoff</p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -733,7 +739,7 @@ export default function Home() {
                               <span className="text-xs font-medium">4</span>
                             </div>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">4 min • {getDropoffTime(7)} dropoff</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">4 min • {getDropoffTime(tripDuration + 5)} dropoff</p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -758,7 +764,7 @@ export default function Home() {
                               <span className="text-xs font-medium">6</span>
                             </div>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">6 min • {getDropoffTime(10)} dropoff</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">6 min • {getDropoffTime(tripDuration + 8)} dropoff</p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -802,7 +808,7 @@ export default function Home() {
                           <CreditCard className="w-4 h-4 mr-2 text-slate-600" /> Visa •••• 1234
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setPaymentMethod('Paytm')}>
-                          <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" className="w-4 h-4 mr-2 object-contain" /> Paytm
+                          <img src="https://logos-world.net/wp-content/uploads/2020/11/Paytm-Logo.png" alt="Paytm" className="w-4 h-4 mr-2 object-contain" /> Paytm
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

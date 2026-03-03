@@ -156,8 +156,8 @@ export function PaymentsView() {
                         <Card className="border shadow-sm hover:border-blue-500 transition-colors cursor-pointer group">
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden shadow-sm bg-white p-1">
-                                        <img src="https://logos-world.net/wp-content/uploads/2020/11/Paytm-Logo.png" alt="Paytm" className="w-full h-full object-contain" />
+                                    <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden shadow-sm bg-white p-2">
+                                        <img src="https://www.vectorlogo.zone/logos/paytm/paytm-ar21.svg" alt="Paytm" className="w-full h-full object-contain" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold group-hover:text-blue-600 transition-colors">Paytm Wallet</h4>
@@ -172,8 +172,8 @@ export function PaymentsView() {
                         <Card className="border shadow-sm hover:border-purple-500 transition-colors cursor-pointer group">
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm p-1">
-                                        <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/phonepe-logo-icon.png" alt="PhonePe" className="w-full h-full object-contain" />
+                                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm p-2">
+                                        <img src="https://www.vectorlogo.zone/logos/phonepe/phonepe-ar21.svg" alt="PhonePe" className="w-full h-full object-contain" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold group-hover:text-purple-600 transition-colors">PhonePe</h4>
@@ -188,8 +188,8 @@ export function PaymentsView() {
                         <Card className="border shadow-sm hover:border-orange-500 transition-colors cursor-pointer group">
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-white border border-slate-100 rounded-xl flex items-center justify-center p-1 shadow-sm">
-                                        <img src="https://logos-world.net/wp-content/uploads/2021/04/Amazon-Pay-Logo.png" alt="Amazon Pay" className="w-full h-full object-contain" />
+                                    <div className="w-12 h-12 bg-white border border-slate-100 rounded-xl flex items-center justify-center p-2 shadow-sm">
+                                        <img src="https://www.vectorlogo.zone/logos/amazon/amazon-ar21.svg" alt="Amazon Pay" className="w-full h-full object-contain" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold group-hover:text-orange-500 transition-colors">Amazon Pay</h4>
