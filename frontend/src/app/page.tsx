@@ -25,6 +25,14 @@ const DynamicMap = dynamic(() => import('@/components/DynamicMap'), {
   loading: () => <div className="w-full h-full bg-slate-100 animate-pulse flex items-center justify-center">Loading...</div>
 });
 
+const AVATAR_LIST = [
+  "https://ui.shadcn.com/avatars/01.png",
+  "https://ui.shadcn.com/avatars/02.png",
+  "https://ui.shadcn.com/avatars/03.png",
+  "https://ui.shadcn.com/avatars/04.png",
+  "https://ui.shadcn.com/avatars/05.png"
+];
+
 type FlowState = 'IDLE' | 'SELECTING_RIDE' | 'SEARCHING' | 'DRIVER_ASSIGNED' | 'IN_RIDE' | 'POST_RIDE';
 
 export default function Home() {
@@ -304,8 +312,8 @@ export default function Home() {
               ) : (
                 // EDIT MODE
                 <>
-                  <div className="space-y-4 py-4">
-                    <div className="flex justify-center mb-6">
+                  <div className="space-y-6 py-4">
+                    <div className="flex flex-col items-center gap-6">
                       <div
                         className="w-32 h-32 rounded-full border-4 border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all group relative overflow-hidden"
                         onClick={() => fileInputRef.current?.click()}
@@ -313,11 +321,11 @@ export default function Home() {
                         {profileImage ? (
                           <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
-                          <div className="flex flex-col items-center">
+                          <div className="flex flex-col items-center justify-center text-center p-2">
                             <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
                               <Plus className="w-6 h-6 text-slate-400 group-hover:text-blue-500" />
                             </div>
-                            <span className="text-sm font-medium text-slate-500 group-hover:text-blue-500 text-xs px-2 text-center leading-tight">Upload Profile Image</span>
+                            <span className="text-[10px] font-bold uppercase tracking-tight text-slate-500 group-hover:text-blue-500">Upload Profile Image</span>
                           </div>
                         )}
                         <input
@@ -327,6 +335,32 @@ export default function Home() {
                           accept="image/*"
                           onChange={handleProfileImageUpload}
                         />
+                      </div>
+
+                      <div className="w-full">
+                        <p className="text-xs font-bold uppercase tracking-widest text-slate-400 text-center mb-4">Quick Select Avatar</p>
+                        <div className="flex flex-wrap justify-center gap-3 px-4">
+                          {/* Upload Action Button */}
+                          <button
+                            onClick={() => fileInputRef.current?.click()}
+                            className="w-10 h-10 rounded-full border-2 border-dashed border-slate-300 dark:border-slate-700 flex items-center justify-center hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all group"
+                          >
+                            <Plus className="w-5 h-5 text-slate-400 group-hover:text-blue-500" />
+                          </button>
+
+                          {AVATAR_LIST.map((url, i) => (
+                            <button
+                              key={i}
+                              onClick={() => {
+                                setProfileImage(url);
+                                localStorage.setItem('profile_image', url);
+                              }}
+                              className={`w-10 h-10 rounded-full border-2 transition-all hover:scale-110 active:scale-95 overflow-hidden ${profileImage === url ? 'border-blue-500 ring-2 ring-blue-100' : 'border-slate-100 dark:border-slate-800'}`}
+                            >
+                              <img src={url} alt={`Avatar ${i + 1}`} className="w-full h-full object-cover" />
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     </div>
                     <div className="space-y-2">
