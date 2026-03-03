@@ -17,6 +17,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescri
 import { TripsView } from '@/components/dashboard/TripsView';
 import { PaymentsView } from '@/components/dashboard/PaymentsView';
 import { SettingsView } from '@/components/dashboard/SettingsView';
+import LocationSearch from '@/components/LocationSearch';
 import Image from 'next/image';
 
 const DynamicMap = dynamic(() => import('@/components/DynamicMap'), {
@@ -41,7 +42,7 @@ export default function Home() {
   const [editName, setEditName] = useState(userName);
 
   // Mocks
-  const [pickup, setPickup] = useState<[number, number]>([40.7128, -74.0060]); // NYC Start
+  const [pickup, setPickup] = useState<[number, number] | null>(null);
   const [dropoff, setDropoff] = useState<[number, number] | null>(null);
   const [driverLoc, setDriverLoc] = useState<[number, number] | null>(null);
 
@@ -432,7 +433,18 @@ export default function Home() {
 
         {/* Map Area (Only visible on Booking Tab) */}
         <div className={`absolute inset-0 z-0 ${activeTab !== 'BOOKING' ? 'hidden' : ''}`}>
-          <DynamicMap pickup={pickup} dropoff={dropoff} driverLocation={driverLoc} showRoute={flowState === 'IN_RIDE'} />
+          <DynamicMap
+            pickup={pickup}
+            dropoff={dropoff}
+            driverLocation={driverLoc}
+            showRoute={flowState === 'IN_RIDE'}
+            onLocationSensed={(lat, lon) => {
+              if (!pickup) {
+                setPickup([lat, lon]);
+                setPickupText('Current Location');
+              }
+            }}
+          />
         </div>
 
         {/* Floating UI Overlay Base (Only visible on Booking Tab) */}
@@ -448,38 +460,27 @@ export default function Home() {
               <CardContent className="space-y-4 bg-white dark:bg-slate-950 pb-6">
                 <div className="relative flex flex-col gap-3">
                   {/* Connecting Line */}
-                  <div className="absolute left-[23px] top-[24px] bottom-[24px] w-0.5 bg-slate-200 dark:bg-slate-800 z-0"></div>
+                  <div className="absolute left-[23.5px] top-[24px] bottom-[24px] w-0.5 bg-slate-200 dark:bg-slate-800 z-0 border-l border-dashed border-slate-300 dark:border-slate-700"></div>
 
-                  <div className="relative group">
-                    <div className="absolute left-6 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-blue-600 rounded-full z-10 ring-4 ring-slate-50 dark:ring-slate-900 group-focus-within:ring-white dark:group-focus-within:ring-slate-950"></div>
-                    <Input
-                      placeholder="Current Location"
-                      className="pl-14 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:bg-white dark:focus-visible:bg-slate-950 border-transparent focus-visible:ring-blue-600 h-14 text-base rounded-2xl transition-colors font-medium border-0 shadow-none text-slate-900 dark:text-white"
-                      value={pickupText}
-                      onChange={(e) => setPickupText(e.target.value)}
-                    />
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-600 hover:bg-blue-50 hover:text-blue-700 h-10 px-3 font-medium bg-transparent"
-                      onClick={() => {
-                        setPickupText('Current Location');
-                        setPickup([40.7128, -74.0060]);
-                      }}
-                    >
-                      <Navigation className="w-4 h-4 mr-1.5" /> Locate
-                    </Button>
-                  </div>
+                  <LocationSearch
+                    placeholder="Enter pickup location"
+                    value={pickupText}
+                    onChange={setPickupText}
+                    onSelect={(lat, lon, name) => {
+                      setPickup([lat, lon]);
+                      setPickupText(name);
+                    }}
+                  />
 
-                  <div className="relative group">
-                    <div className="absolute left-6 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-black dark:bg-white rounded-full z-10 ring-4 ring-slate-100 dark:ring-slate-800 group-focus-within:ring-white dark:group-focus-within:ring-slate-950"></div>
-                    <Input
-                      placeholder="Enter Dropoff location"
-                      value={dropoffText}
-                      onChange={(e) => setDropoffText(e.target.value)}
-                      className="pl-14 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 focus-visible:bg-white dark:focus-visible:bg-slate-950 border-transparent font-medium focus-visible:ring-blue-600 h-14 text-base rounded-2xl transition-colors border-0 shadow-none text-slate-900 dark:text-white"
-                    />
-                  </div>
+                  <LocationSearch
+                    placeholder="Enter Dropoff location"
+                    value={dropoffText}
+                    onChange={setDropoffText}
+                    onSelect={(lat, lon, name) => {
+                      setDropoff([lat, lon]);
+                      setDropoffText(name);
+                    }}
+                  />
                 </div>
 
                 <div className="pt-2 flex gap-3">
