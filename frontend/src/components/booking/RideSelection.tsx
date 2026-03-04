@@ -34,9 +34,8 @@ export function RideSelection({
 }: RideSelectionProps) {
     return (
         <Card className="pointer-events-auto glass-card shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
-            <div className="relative h-40 w-full bg-blue-50/50 dark:bg-slate-900/40 flex items-center justify-center border-b border-slate-200/50 dark:border-white/10 p-6 overflow-hidden">
+            <div className="relative h-4 flex items-center justify-center bg-white dark:bg-slate-950 border-b border-slate-200/50 dark:border-white/10 p-0 overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full opacity-5 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-400 via-transparent to-transparent"></div>
-                <img src="/mult_cab.png" alt="Available Cabs" className="h-32 w-auto object-contain drop-shadow-2xl animate-in fade-in zoom-in duration-700" />
                 <Button
                     variant="ghost"
                     size="icon"
@@ -59,7 +58,7 @@ export function RideSelection({
                     >
                         <div className="flex items-center gap-5">
                             <div className="w-20 h-14 flex items-center justify-center bg-slate-100/80 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200/50 dark:border-white/10 shadow-sm transition-transform group-hover:scale-105 group-hover:shadow-md">
-                                <img src="/car-icon.png" alt="Car Icon" className="w-12 h-auto object-contain dark:invert transition-transform group-hover:rotate-2" />
+                                <img src="/cab_car_logos/economy_and_shared.png" alt="Shared Icon" className="w-16 h-auto object-contain transition-transform group-hover:rotate-2" />
                             </div>
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
@@ -73,7 +72,7 @@ export function RideSelection({
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">${((2.50 + tripDuration * 1.50) * sharedSeats).toFixed(2)}</p>
+                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">₹{((2.50 + tripDuration * 1.50) * sharedSeats * 80).toFixed(0)}</p>
                         </div>
                     </div>
 
@@ -84,7 +83,7 @@ export function RideSelection({
                     >
                         <div className="flex items-center gap-5">
                             <div className="w-20 h-14 flex items-center justify-center bg-slate-100/80 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200/50 dark:border-white/10 shadow-sm transition-transform group-hover:scale-105 group-hover:shadow-md">
-                                <img src="/car-icon.png" alt="Car Icon" className="w-12 h-auto object-contain dark:invert transition-transform group-hover:rotate-2" />
+                                <img src="/cab_car_logos/economy_and_shared.png" alt="Economy Icon" className="w-16 h-auto object-contain transition-transform group-hover:rotate-2" />
                             </div>
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
@@ -98,7 +97,7 @@ export function RideSelection({
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">${(5.00 + tripDuration * 2.10).toFixed(2)}</p>
+                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">₹{((5.00 + tripDuration * 2.10) * 80).toFixed(0)}</p>
                         </div>
                     </div>
 
@@ -109,7 +108,7 @@ export function RideSelection({
                     >
                         <div className="flex items-center gap-5">
                             <div className="w-20 h-14 flex items-center justify-center bg-green-50/50 dark:bg-green-900/10 rounded-2xl overflow-hidden border border-green-100 dark:border-green-900/30 shadow-sm transition-transform group-hover:scale-105 group-hover:shadow-md">
-                                <img src="/car-icon.png" alt="Car Icon" className="w-12 h-auto object-contain dark:invert hue-rotate-[120deg] transition-transform group-hover:rotate-2" />
+                                <img src="/cab_car_logos/ev.png" alt="EV Icon" className="w-16 h-auto object-contain transition-transform group-hover:rotate-2" />
                             </div>
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
@@ -124,7 +123,7 @@ export function RideSelection({
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">${(6.00 + tripDuration * 2.30).toFixed(2)}</p>
+                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">₹{((6.00 + tripDuration * 2.30) * 80).toFixed(0)}</p>
                         </div>
                     </div>
 
@@ -134,8 +133,8 @@ export function RideSelection({
                         onClick={() => setSelectedVehicle('Comfort')}
                     >
                         <div className="flex items-center gap-5">
-                            <div className="w-20 h-14 flex items-center justify-center bg-slate-900 dark:bg-white rounded-2xl overflow-hidden shadow-lg transition-transform group-hover:scale-105">
-                                <img src="/car-icon.png" alt="Car Icon" className="w-12 h-auto object-contain invert dark:invert-0 transition-transform group-hover:rotate-2" />
+                            <div className="w-20 h-14 flex items-center justify-center dark:bg-transparent rounded-2xl overflow-hidden shadow-none transition-transform group-hover:scale-105">
+                                <img src="/cab_car_logos/comfort.png" alt="Comfort Icon" className="w-16 h-auto object-contain transition-transform group-hover:rotate-2" />
                             </div>
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
@@ -149,7 +148,7 @@ export function RideSelection({
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">${(10.00 + tripDuration * 3.50).toFixed(2)}</p>
+                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">₹{((10.00 + tripDuration * 3.50) * 80).toFixed(0)}</p>
                         </div>
                     </div>
 
@@ -160,7 +159,7 @@ export function RideSelection({
                     >
                         <div className="flex items-center gap-5">
                             <div className="w-20 h-14 flex items-center justify-center bg-slate-100/80 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200/50 dark:border-white/10 shadow-sm transition-transform group-hover:scale-105 group-hover:shadow-md">
-                                <img src="/car-icon.png" alt="Car Icon" className="w-14 h-auto object-contain dark:invert transition-transform group-hover:rotate-2" />
+                                <img src="/cab_car_logos/xl.png" alt="XL Icon" className="w-18 h-auto object-contain transition-transform group-hover:rotate-2" />
                             </div>
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
@@ -174,7 +173,7 @@ export function RideSelection({
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">${(15.00 + tripDuration * 5.20).toFixed(2)}</p>
+                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">₹{((15.00 + tripDuration * 5.20) * 80).toFixed(0)}</p>
                         </div>
                     </div>
 

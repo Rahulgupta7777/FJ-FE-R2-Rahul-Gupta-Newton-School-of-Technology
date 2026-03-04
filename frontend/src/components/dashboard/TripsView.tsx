@@ -13,7 +13,7 @@ export function TripsView() {
             pickup: "123 Broadway, NYC",
             dropoff: "Central Park West",
             driver: "Michael (Toyota Camry)",
-            amount: "$14.50",
+            amount: "₹1200",
             rating: 5,
         },
         {
@@ -23,7 +23,7 @@ export function TripsView() {
             pickup: "JFK Airport",
             dropoff: "123 Broadway, NYC",
             driver: "Sarah (Honda Accord)",
-            amount: "$45.20",
+            amount: "₹3800",
             rating: 4,
         },
         {
@@ -33,7 +33,7 @@ export function TripsView() {
             pickup: "Times Square",
             dropoff: "Brooklyn Bridge",
             driver: "Unknown",
-            amount: "$0.00",
+            amount: "₹0",
             rating: null,
         },
         {
@@ -43,7 +43,7 @@ export function TripsView() {
             pickup: "123 Broadway, NYC",
             dropoff: "JFK Airport",
             driver: "Pending",
-            amount: "~$45.00",
+            amount: "~₹3800",
             rating: null,
         }
     ];

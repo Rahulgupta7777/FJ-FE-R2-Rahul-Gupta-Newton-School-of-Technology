@@ -288,17 +288,17 @@ export function TripStatus({
                 <div className="bg-slate-50 border rounded-2xl p-4 mb-6 space-y-3">
                     <div className="flex justify-between items-center">
                         <span className="text-slate-500">Trip Fare</span>
-                        <span className="font-bold font-mono text-lg">$14.50</span>
+                        <span className="font-bold font-mono text-lg">₹1200</span>
                     </div>
                     {tip > 0 && (
                         <div className="flex justify-between items-center text-emerald-600 animate-in fade-in slide-in-from-top-1">
                             <span className="text-sm font-medium">Tip</span>
-                            <span className="font-bold font-mono">+${tip.toFixed(2)}</span>
+                            <span className="font-bold font-mono">+₹{tip.toFixed(0)}</span>
                         </div>
                     )}
                     <div className="flex justify-between items-center text-sm pt-2 border-t border-slate-200">
                         <span className="flex items-center gap-2 text-slate-500"><CreditCard className="w-4 h-4" /> Paid with Visa 4242</span>
-                        {tip > 0 && <span className="font-bold text-slate-900 font-mono">${(14.50 + tip).toFixed(2)}</span>}
+                        {tip > 0 && <span className="font-bold text-slate-900 font-mono">₹{(1200 + tip).toFixed(0)}</span>}
                     </div>
                 </div>
 
@@ -311,11 +311,11 @@ export function TripStatus({
                                 variant={tip === amount && !showCustomTip ? "default" : "outline"}
                                 className={`flex-1 rounded-xl h-12 font-bold ${tip === amount && !showCustomTip ? 'bg-black dark:bg-white text-white dark:text-black border-black dark:border-white shadow-md' : 'text-slate-600'}`}
                                 onClick={() => {
-                                    setTip(amount);
+                                    setTip(amount * 80);
                                     setShowCustomTip(false);
                                 }}
                             >
-                                ${amount}
+                                ₹{amount * 80}
                             </Button>
                         ))}
                         <Button
@@ -329,7 +329,7 @@ export function TripStatus({
 
                     {showCustomTip && (
                         <div className="relative animate-in slide-in-from-top-2 fade-in">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
                             <Input
                                 type="number"
                                 placeholder="Enter custom amount"
@@ -357,6 +357,14 @@ export function TripStatus({
                             </button>
                         ))}
                     </div>
+                </div>
+
+                <div className="mb-6">
+                    <p className="font-medium mb-3 text-center text-sm text-slate-500">How was your ride?</p>
+                    <textarea
+                        className="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border-0 focus:ring-2 focus:ring-black dark:focus:ring-white transition-all resize-none h-24 text-sm font-medium"
+                        placeholder="Add a comment or feedback..."
+                    />
                 </div>
 
                 <Button className="w-full bg-black hover:bg-slate-800 h-14 rounded-xl text-lg text-white" disabled={rating === 0} onClick={onReset}>

@@ -162,7 +162,7 @@ export default function Map({ pickup, dropoff, driverLocation, showRoute, onLoca
 
             {/* Route Line */}
             {showRoute && route.length > 0 && (
-                <Polyline positions={route} color="#2563eb" weight={5} opacity={0.8} />
+                <Polyline positions={route} color="#000000" weight={5} opacity={0.6} lineJoin="round" lineCap="round" />
             )}
         </MapContainer>
     );
