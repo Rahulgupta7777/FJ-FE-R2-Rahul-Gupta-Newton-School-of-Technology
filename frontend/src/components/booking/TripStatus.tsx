@@ -13,8 +13,8 @@ interface TripStatusProps {
     flowState: 'IDLE' | 'SELECTING_RIDE' | 'SEARCHING' | 'DRIVER_ASSIGNED' | 'IN_RIDE' | 'POST_RIDE';
     selectedVehicle: string;
     userName: string;
-    paymentMethod: string;
-    setPaymentMethod: (m: string) => void;
+    paymentMethod: 'Cash' | 'Visa •••• 1234' | 'Paytm';
+    setPaymentMethod: (m: 'Cash' | 'Visa •••• 1234' | 'Paytm') => void;
     rating: number;
     setRating: (r: number) => void;
     tip: number;
@@ -69,9 +69,9 @@ export function TripStatus({
         return (
             <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden  flex flex-col items-center justify-center p-8 text-center bg-white/95 dark:bg-slate-950/95 backdrop-blur">
                 <div className="relative w-24 h-24 mb-6 flex items-center justify-center">
-                    <div className="absolute inset-0 bg-blue-100 dark:bg-blue-900/50 rounded-full animate-ping opacity-75"></div>
-                    <div className="absolute inset-4 bg-blue-200 dark:bg-blue-800/50 rounded-full animate-ping opacity-75" style={{ animationDelay: '0.2s' }}></div>
-                    <div className="absolute inset-2 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg">
+                    <div className="absolute inset-0 bg-slate-100 dark:bg-slate-900/50 rounded-full animate-ping opacity-75"></div>
+                    <div className="absolute inset-4 bg-slate-200 dark:bg-slate-800/50 rounded-full animate-ping opacity-75" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="absolute inset-2 bg-black dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black shadow-lg">
                         <Search className="w-8 h-8" />
                     </div>
                 </div>
@@ -86,7 +86,7 @@ export function TripStatus({
                                     <CreditCard className="w-5 h-5 text-slate-600 dark:text-slate-400" />
                                     <span className="font-medium text-slate-800 dark:text-slate-200">{paymentMethod}</span>
                                 </div>
-                                <span className="text-blue-600 text-sm font-semibold">Change</span>
+                                <span className="text-black dark:text-white text-sm font-semibold">Change</span>
                             </div>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-[200px]">
@@ -106,11 +106,11 @@ export function TripStatus({
     if (flowState === 'DRIVER_ASSIGNED') {
         return (
             <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white dark:bg-slate-950">
-                <div className="bg-blue-600 text-white p-4">
+                <div className="bg-black dark:bg-white text-white dark:text-black p-4">
                     <div className="flex justify-between items-end">
                         <div>
                             <h3 className="font-bold text-2xl mb-1">2 min</h3>
-                            <p className="text-blue-100 text-sm">Driver is arriving soon</p>
+                            <p className="text-slate-300 dark:text-slate-600 text-sm">Driver is arriving soon</p>
                         </div>
                         <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 border-0">
                             {selectedVehicle}
@@ -145,7 +145,7 @@ export function TripStatus({
                         <Button variant="outline" className="flex-1 rounded-xl h-12 gap-2 text-slate-700 dark:text-slate-300 dark:border-slate-800 dark:hover:bg-slate-900">
                             <Phone className="w-4 h-4" /> Call
                         </Button>
-                        <Button className="flex-1 rounded-xl h-12 gap-2 bg-slate-900 dark:bg-blue-600 hover:bg-black dark:hover:bg-blue-700 text-white" onClick={onStartTrip}>
+                        <Button className="flex-1 rounded-xl h-12 gap-2 bg-black dark:bg-white hover:bg-slate-900 dark:hover:bg-slate-100 text-white dark:text-black" onClick={onStartTrip}>
                             <MessageSquare className="w-4 h-4" /> Message
                         </Button>
                     </div>
@@ -169,8 +169,8 @@ export function TripStatus({
                 <div className="p-4 bg-slate-50 border-b flex flex-col gap-2">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-3">
-                            <Navigation className="w-5 h-5 text-emerald-600" />
-                            <p className="font-medium text-slate-800 dark:text-slate-900">123 Broadway, New York</p>
+                            <Navigation className="w-5 h-5 text-black dark:text-white" />
+                            <p className="font-medium text-slate-800 dark:text-slate-200">123 Broadway, New York</p>
                         </div>
                         <Button variant="ghost" size="sm" className="text-slate-500">Edit</Button>
                     </div>
@@ -183,7 +183,7 @@ export function TripStatus({
                                     <CreditCard className="w-5 h-5 text-slate-600" />
                                     <span className="font-medium text-slate-800">{paymentMethod}</span>
                                 </div>
-                                <span className="text-blue-600 text-sm font-semibold">Change</span>
+                                <span className="text-black dark:text-white text-sm font-semibold">Change</span>
                             </div>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-[200px]">
@@ -200,9 +200,9 @@ export function TripStatus({
 
                         <Sheet>
                             <SheetTrigger asChild>
-                                <Button variant="outline" className="rounded-xl flex-1 h-14 bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100 hover:text-blue-800 relative">
+                                <Button variant="outline" className="rounded-xl flex-1 h-14 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 relative">
                                     <MessageSquare className="w-5 h-5 mr-2" /> Chat
-                                    <span className="absolute -top-2 -right-2 bg-red-500 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center font-bold">1</span>
+                                    <span className="absolute -top-2 -right-2 bg-black dark:bg-white text-white dark:text-black w-5 h-5 rounded-full text-xs flex items-center justify-center font-bold">1</span>
                                 </Button>
                             </SheetTrigger>
                             <SheetContent side="bottom" className="h-[70vh] sm:h-[600px] flex flex-col rounded-t-3xl sm:rounded-xl">
@@ -222,7 +222,7 @@ export function TripStatus({
                                 <div className="flex-1 overflow-y-auto pt-4 flex flex-col gap-4">
                                     {messages.map((msg, idx) => (
                                         <div key={idx} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                            <div className={`px-4 py-2 rounded-2xl max-w-[80%] ${msg.sender === 'user' ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-slate-100 text-slate-900 rounded-bl-sm'}`}>
+                                            <div className={`px-4 py-2 rounded-2xl max-w-[80%] ${msg.sender === 'user' ? 'bg-black dark:bg-white text-white dark:text-black rounded-br-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-bl-sm'}`}>
                                                 {msg.text}
                                             </div>
                                         </div>
@@ -247,7 +247,7 @@ export function TripStatus({
                                         }}
                                     />
                                     <Button
-                                        className="rounded-full w-12 h-12 p-0 bg-blue-600 hover:bg-blue-700 shrink-0"
+                                        className="rounded-full w-12 h-12 p-0 bg-black dark:bg-white text-white dark:text-black hover:bg-slate-900 dark:hover:bg-slate-100 shrink-0"
                                         onClick={() => {
                                             if (chatMessage.trim()) {
                                                 setMessages([...messages, { sender: 'user', text: chatMessage }]);
@@ -309,7 +309,7 @@ export function TripStatus({
                             <Button
                                 key={amount}
                                 variant={tip === amount && !showCustomTip ? "default" : "outline"}
-                                className={`flex-1 rounded-xl h-12 font-bold ${tip === amount && !showCustomTip ? 'bg-blue-600 text-white border-blue-600' : 'text-slate-600'}`}
+                                className={`flex-1 rounded-xl h-12 font-bold ${tip === amount && !showCustomTip ? 'bg-black dark:bg-white text-white dark:text-black border-black dark:border-white shadow-md' : 'text-slate-600'}`}
                                 onClick={() => {
                                     setTip(amount);
                                     setShowCustomTip(false);
@@ -320,7 +320,7 @@ export function TripStatus({
                         ))}
                         <Button
                             variant={showCustomTip ? "default" : "outline"}
-                            className={`flex-1 rounded-xl h-12 font-bold ${showCustomTip ? 'bg-blue-600 text-white border-blue-600' : 'text-slate-600'}`}
+                            className={`flex-1 rounded-xl h-12 font-bold ${showCustomTip ? 'bg-black dark:bg-white text-white dark:text-black border-black dark:border-white shadow-md' : 'text-slate-600'}`}
                             onClick={() => setShowCustomTip(!showCustomTip)}
                         >
                             Other

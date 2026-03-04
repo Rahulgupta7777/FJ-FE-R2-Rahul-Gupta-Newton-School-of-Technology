@@ -152,7 +152,7 @@ export default function Home() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] p-0 flex flex-col bg-white dark:bg-slate-950">
-               <div className="p-6">
+              <div className="p-6">
                 <h2 className="text-xl font-bold">NexRide</h2>
                 <nav className="mt-6 flex flex-col gap-2">
                   <Button variant="ghost" className="justify-start" onClick={() => { setActiveTab('BOOKING'); setIsSidebarOpen(false); }}>Booking</Button>
@@ -160,96 +160,110 @@ export default function Home() {
                   <Button variant="ghost" className="justify-start" onClick={() => { setActiveTab('PAYMENTS'); setIsSidebarOpen(false); }}>Payments</Button>
                   <Button variant="ghost" className="justify-start" onClick={() => { setActiveTab('SETTINGS'); setIsSidebarOpen(false); }}>Settings</Button>
                 </nav>
-               </div>
+              </div>
             </SheetContent>
           </Sheet>
         </header>
 
         <div className="flex-1 relative overflow-hidden flex flex-col">
-          <div className="flex-1 relative">
-            <DynamicMap 
-              pickup={pickup} 
-              dropoff={dropoff} 
-              driverLoc={driverLoc}
-              onMapClick={(lat, lon) => {
-                if (!pickup) {
-                  setPickup([lat, lon]);
-                  setPickupText(`${lat.toFixed(4)}, ${lon.toFixed(4)}`);
-                } else if (!dropoff) {
-                  setDropoff([lat, lon]);
-                  setDropoffText(`${lat.toFixed(4)}, ${lon.toFixed(4)}`);
-                }
-              }}
-            />
-          </div>
-
-          <div className={`absolute bottom-0 left-0 right-0 md:left-6 md:top-6 md:bottom-auto md:w-[400px] z-20 pointer-events-none ${activeTab !== 'BOOKING' ? 'hidden' : ''}`}>
-            {/* Search Card */}
-            {(flowState === 'IDLE' || flowState === 'SEARCHING') && flowState !== 'SEARCHING' && (
-              <Card className="pointer-events-auto glass-card shadow-2xl rounded-t-3xl md:rounded-2xl border-0 overflow-hidden animate-in slide-in-from-bottom-5">
-                <CardHeader className="bg-transparent pb-2">
-                  <CardTitle className="text-xl">Where to?</CardTitle>
-                  <CardDescription>Find a ride instantly</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4 bg-transparent pb-6">
-                  <div className="relative flex flex-col gap-3">
-                    <LocationSearch placeholder="Enter pickup location" value={pickupText} onChange={setPickupText} onSelect={(lat, lon, name) => { setPickup([lat, lon]); setPickupText(name); }} />
-                    <LocationSearch placeholder="Enter Dropoff location" value={dropoffText} onChange={setDropoffText} onSelect={(lat, lon, name) => { setDropoff([lat, lon]); setDropoffText(name); }} />
-                  </div>
-                  <div className="pt-2 flex gap-3">
-                    <Button variant={isScheduled ? "outline" : "default"} className="flex-1 h-12 rounded-xl" onClick={() => setIsScheduled(false)}><Clock className="w-5 h-5 mr-2" /> Now</Button>
-                    <Dialog>
-                      <DialogTrigger asChild><Button variant={isScheduled ? "default" : "outline"} className="flex-1 h-12 rounded-xl"><Calendar className="w-5 h-5 mr-2" /> {isScheduled ? scheduleTime : 'Schedule'}</Button></DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader><DialogTitle>Schedule a Ride</DialogTitle></DialogHeader>
-                        <div className="space-y-4 py-4">
-                          <Select onValueChange={setScheduleTime}><SelectTrigger><SelectValue placeholder="Select Time" /></SelectTrigger>
-                          <SelectContent><SelectItem value="08:00 AM">08:00 AM</SelectItem><SelectItem value="09:00 AM">09:00 AM</SelectItem></SelectContent></Select>
-                        </div>
-                        <DialogFooter><Button className="w-full bg-blue-600" onClick={() => setIsScheduled(true)}>Confirm</Button></DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                </CardContent>
-                <CardFooter className="bg-transparent pt-2 pb-6 border-t border-slate-100">
-                  <Button className="w-full h-14 text-lg font-semibold rounded-xl bg-slate-900 text-white" onClick={handleFindRide} disabled={!dropoffText}><Search className="w-5 h-5 mr-2" /> {isScheduled ? `Schedule for ${scheduleTime}` : 'Search Rides'}</Button>
-                </CardFooter>
-              </Card>
-            )}
-
-            {flowState === 'SELECTING_RIDE' && (
-              <RideSelection
-                selectedVehicle={selectedVehicle} setSelectedVehicle={setSelectedVehicle}
-                sharedSeats={sharedSeats} setSharedSeats={setSharedSeats}
-                paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod}
-                getDropoffTime={getDropoffTime} tripDuration={tripDuration}
-                renderPaymentIcon={renderPaymentIcon} onConfirm={handleConfirmRide} onBack={() => setFlowState('IDLE')}
+          <main className="flex-1 relative flex flex-col h-full w-full">
+            <div className={`absolute inset-0 transition-all duration-1000 ${activeTab === 'BOOKING' ? 'opacity-100 blur-0 scale-100' : 'opacity-40 blur-sm scale-110'}`}>
+              <DynamicMap
+                pickup={pickup}
+                dropoff={dropoff}
+                driverLocation={driverLoc}
+                onMapClick={(lat: number, lon: number) => {
+                  if (!pickup) {
+                    setPickup([lat, lon]);
+                    setPickupText(`${lat.toFixed(4)}, ${lon.toFixed(4)}`);
+                  } else if (!dropoff) {
+                    setDropoff([lat, lon]);
+                    setDropoffText(`${lat.toFixed(4)}, ${lon.toFixed(4)}`);
+                  }
+                }}
               />
+            </div>
+
+            <div className={`absolute inset-0 z-10 pointer-events-none flex flex-col p-6 md:p-10 ${activeTab !== 'BOOKING' ? 'hidden' : ''}`}>
+              {/* Search Card Overlay */}
+              {(flowState === 'IDLE' || flowState === 'SEARCHING') && flowState !== 'SEARCHING' && (
+                <Card className="pointer-events-auto glass-card max-w-[440px] shadow-2xl rounded-3xl border-0 overflow-hidden animate-in slide-in-from-left-10 duration-500">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-3xl font-black italic tracking-tighter">Where to?</CardTitle>
+                    <CardDescription className="text-base text-slate-500">Find your next destination</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6 pb-8">
+                    <div className="relative flex flex-col gap-4">
+                      <div className="relative">
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-slate-400 z-10"></div>
+                        <LocationSearch placeholder="Enter pickup location" value={pickupText} onChange={setPickupText} onSelect={(lat, lon, name) => { setPickup([lat, lon]); setPickupText(name); }} />
+                      </div>
+                      <div className="relative">
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-black z-10"></div>
+                        <LocationSearch placeholder="Enter dropoff location" value={dropoffText} onChange={setDropoffText} onSelect={(lat, lon, name) => { setDropoff([lat, lon]); setDropoffText(name); }} />
+                      </div>
+                    </div>
+                    <div className="flex gap-4">
+                      <Button variant={isScheduled ? "outline" : "default"} className={`flex-1 h-14 rounded-2xl font-bold ${!isScheduled ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-slate-900 dark:hover:bg-slate-100 shadow-lg' : ''}`} onClick={() => setIsScheduled(false)}><Clock className="w-5 h-5 mr-3" /> Now</Button>
+                      <Dialog>
+                        <DialogTrigger asChild><Button variant={isScheduled ? "default" : "outline"} className={`flex-1 h-14 rounded-2xl font-bold ${isScheduled ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-slate-900 dark:hover:bg-slate-100 shadow-lg' : ''}`}><Calendar className="w-5 h-5 mr-3" /> {isScheduled ? scheduleTime : 'Later'}</Button></DialogTrigger>
+                        <DialogContent className="glass-card border-0">
+                          <DialogHeader><DialogTitle className="text-2xl font-black">Schedule a Ride</DialogTitle></DialogHeader>
+                          <div className="space-y-4 py-6">
+                            <Select onValueChange={setScheduleTime}><SelectTrigger className="h-12 rounded-xl"><SelectValue placeholder="Select Pickup Time" /></SelectTrigger>
+                              <SelectContent><SelectItem value="08:00 AM">08:00 AM</SelectItem><SelectItem value="09:00 AM">09:00 AM</SelectItem></SelectContent></Select>
+                          </div>
+                          <DialogFooter><Button className="w-full h-14 rounded-xl bg-black dark:bg-white text-white dark:text-black hover:bg-slate-900 dark:hover:bg-slate-100" onClick={() => setIsScheduled(true)}>Set Schedule</Button></DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="pt-0 pb-10 px-8">
+                    <Button className="w-full h-[64px] text-xl font-black rounded-2xl bg-black dark:bg-white text-white dark:text-black premium-shadow transition-all active:scale-[0.98]" onClick={handleFindRide} disabled={!dropoffText}><Search className="w-6 h-6 mr-3" /> {isScheduled ? `Book for ${scheduleTime}` : 'Search NexRide'}</Button>
+                  </CardFooter>
+                </Card>
+              )}
+
+              {flowState === 'SELECTING_RIDE' && (
+                <div className="pointer-events-auto max-w-[440px] animate-in slide-in-from-left-10 duration-500">
+                  <RideSelection
+                    selectedVehicle={selectedVehicle} setSelectedVehicle={setSelectedVehicle}
+                    sharedSeats={sharedSeats} setSharedSeats={setSharedSeats}
+                    paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod}
+                    getDropoffTime={getDropoffTime} tripDuration={tripDuration}
+                    renderPaymentIcon={renderPaymentIcon} onConfirm={handleConfirmRide} onBack={() => setFlowState('IDLE')}
+                  />
+                </div>
+              )}
+
+              <div className="pointer-events-auto max-w-[440px] animate-in slide-in-from-left-10 duration-500">
+                <TripStatus
+                  flowState={flowState} selectedVehicle={selectedVehicle} userName={userName}
+                  paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod}
+                  rating={rating} setRating={setRating}
+                  tip={tip} setTip={setTip}
+                  showCustomTip={showCustomTip} setShowCustomTip={setShowCustomTip}
+                  customTipValue={customTipValue} setCustomTipValue={setCustomTipValue}
+                  chatMessage={chatMessage} setChatMessage={setChatMessage}
+                  messages={messages} setMessages={setMessages}
+                  currentTime={currentTime} tripDuration={tripDuration}
+                  getDropoffTime={getDropoffTime} formatTime={formatTime}
+                  onCancel={() => setFlowState('IDLE')}
+                  onStartTrip={() => setFlowState('IN_RIDE')}
+                  onCompleteTrip={() => { setFlowState('POST_RIDE'); setDriverLoc(null); }}
+                  onReset={() => { setDropoff(null); setDriverLoc(null); setDropoffText(''); setFlowState('IDLE'); setRating(0); setTip(0); }}
+                />
+              </div>
+            </div>
+
+            {(activeTab === 'TRIPS' || activeTab === 'PAYMENTS' || activeTab === 'SETTINGS') && (
+              <div className="absolute inset-0 z-20 bg-slate-50/50 dark:bg-black/50 backdrop-blur-xl animate-in fade-in duration-700">
+                {activeTab === 'TRIPS' && <TripsView />}
+                {activeTab === 'PAYMENTS' && <PaymentsView />}
+                {activeTab === 'SETTINGS' && <SettingsView />}
+              </div>
             )}
-
-            <TripStatus
-              flowState={flowState} selectedVehicle={selectedVehicle} userName={userName}
-              paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod}
-              rating={rating} setRating={setRating}
-              tip={tip} setTip={setTip}
-              showCustomTip={showCustomTip} setShowCustomTip={setShowCustomTip}
-              customTipValue={customTipValue} setCustomTipValue={setCustomTipValue}
-              chatMessage={chatMessage} setChatMessage={setChatMessage}
-              messages={messages} setMessages={setMessages}
-              currentTime={currentTime} tripDuration={tripDuration}
-              getDropoffTime={getDropoffTime} formatTime={formatTime}
-              onCancel={() => setFlowState('IDLE')}
-              onStartTrip={() => setFlowState('IN_RIDE')}
-              onCompleteTrip={() => { setFlowState('POST_RIDE'); setDriverLoc(null); }}
-              onReset={() => { setDropoff(null); setDriverLoc(null); setDropoffText(''); setFlowState('IDLE'); setRating(0); setTip(0); }}
-            />
-          </div>
-
-          <div className={`flex-1 overflow-y-auto ${activeTab === 'BOOKING' ? 'hidden' : ''}`}>
-            {activeTab === 'TRIPS' && <TripsView />}
-            {activeTab === 'PAYMENTS' && <PaymentsView />}
-            {activeTab === 'SETTINGS' && <SettingsView />}
-          </div>
+          </main>
         </div>
       </main>
     </div>

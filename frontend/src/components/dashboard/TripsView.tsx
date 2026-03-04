@@ -49,15 +49,15 @@ export function TripsView() {
     ];
 
     return (
-        <div className="p-6 md:p-8 h-full overflow-y-auto w-full max-w-4xl mx-auto animate-in fade-in duration-300">
-            <div className="mb-8">
-                <h2 className="text-3xl font-bold tracking-tight mb-2">My Trips</h2>
-                <p className="text-slate-500 dark:text-slate-400">View your past rides and upcoming scheduled trips.</p>
+        <div className="p-10 md:p-12 h-screen overflow-y-auto w-full max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-500">
+            <div className="mb-12">
+                <h2 className="text-4xl font-black tracking-tight mb-3 text-slate-900 dark:text-white">My Trips</h2>
+                <p className="text-lg text-slate-500 dark:text-slate-400 font-medium">Manage your past rides and upcoming schedules.</p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-6 pb-20">
                 {trips.map((trip) => (
-                    <Card key={trip.id} className="border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                    <Card key={trip.id} className="glass-card border-0 hover:scale-[1.01] transition-all duration-300 ease-out p-2">
                         <CardHeader className="pb-3 flex flex-row items-center justify-between">
                             <div>
                                 <CardTitle className="text-lg flex items-center gap-2">
@@ -85,8 +85,8 @@ export function TripsView() {
                                         <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{trip.pickup}</p>
                                     </div>
                                     <div className="relative pl-6 ml-2">
-                                        <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-sm bg-blue-100 dark:bg-blue-900 border-2 border-white dark:border-slate-950 flex items-center justify-center">
-                                            <div className="w-1.5 h-1.5 bg-blue-600 dark:bg-blue-400 rounded-sm"></div>
+                                        <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-sm bg-slate-100 dark:bg-slate-800 border-2 border-white dark:border-slate-950 flex items-center justify-center">
+                                            <div className="w-1.5 h-1.5 bg-black dark:bg-white rounded-sm"></div>
                                         </div>
                                         <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{trip.dropoff}</p>
                                     </div>

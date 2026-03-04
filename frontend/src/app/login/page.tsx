@@ -172,15 +172,13 @@ export default function LoginPage() {
 
                     {/* Brand Logo for Mobile */}
                     <div className="md:hidden flex flex-col items-center mb-10">
-                        <div className="w-14 h-14 bg-black rounded-full flex items-center justify-center mb-3">
-                            <span className="text-white font-black text-2xl">N</span>
-                        </div>
+                        <img src="/e66735a8-370d-4668-b6b8-11a487bcd3cc" alt="NexRide Logo" className="h-16 w-auto mb-3 object-contain" />
                         <h1 className="text-2xl font-black tracking-tighter uppercase">NexRide</h1>
                     </div>
 
-                    <Card className="w-full shadow-[0_32px_64px_-12px_rgba(0,0,0,0.12)] rounded-[48px] border border-slate-100/50 overflow-hidden bg-white/80 backdrop-blur-xl relative transition-all duration-500 ease-in-out">
+                    <Card className="w-full shadow-2xl rounded-[48px] border-0 overflow-hidden glass transition-all duration-500 ease-in-out">
                         {error && (
-                            <div className="absolute top-0 left-0 w-full bg-red-50 text-red-600 text-xs py-3 px-6 text-center border-b border-red-100 z-50 animate-in fade-in slide-in-from-top-2">
+                            <div className="absolute top-0 left-0 w-full bg-red-500/10 backdrop-blur-md text-red-500 text-xs py-3 px-6 text-center border-b border-red-500/20 z-50 animate-in fade-in slide-in-from-top-2">
                                 {error}
                             </div>
                         )}
@@ -190,8 +188,8 @@ export default function LoginPage() {
                             {step === 'IDENTIFIER' && (
                                 <form onSubmit={handleIdentifierSubmit}>
                                     <CardHeader className="pt-12 pb-8 px-10 flex flex-col items-center text-center">
-                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mb-6 text-slate-900 border border-slate-100 shadow-sm">
-                                            <Fingerprint className="w-6 h-6" />
+                                        <div className="mb-6">
+                                            <img src="/e66735a8-370d-4668-b6b8-11a487bcd3cc" alt="NexRide Logo" className="h-20 w-auto object-contain" />
                                         </div>
                                         <CardTitle className="text-3xl font-extrabold text-slate-900 mb-3">Login or Sign up</CardTitle>
                                         <CardDescription className="text-base text-slate-500 font-medium leading-relaxed">
@@ -213,7 +211,7 @@ export default function LoginPage() {
                                         </div>
                                     </CardContent>
                                     <CardFooter className="px-10 pb-12">
-                                        <Button type="submit" className="w-full h-[56px] text-lg font-bold rounded-2xl bg-black hover:bg-slate-900 text-white shadow-lg shadow-slate-200 transition-all active:scale-[0.98]" disabled={!identifier || isLoading}>
+                                        <Button type="submit" className="w-full h-[56px] text-lg font-bold rounded-2xl bg-black dark:bg-white text-white dark:text-black hover:bg-slate-900 dark:hover:bg-slate-100 premium-shadow transition-all active:scale-[0.98]" disabled={!identifier || isLoading}>
                                             {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Continue'}
                                         </Button>
                                     </CardFooter>
@@ -228,24 +226,26 @@ export default function LoginPage() {
                                             <ArrowLeft className="w-5 h-5" />
                                         </Button>
                                         <div className="flex flex-col items-center text-center">
-                                            <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mb-6 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800 shadow-sm">
+                                            <div className="w-12 h-12 bg-slate-50 dark:bg-slate-900/30 rounded-2xl flex items-center justify-center mb-6 text-black dark:text-white border border-slate-100 dark:border-slate-800 shadow-sm">
                                                 <ShieldCheck className="w-6 h-6" />
                                             </div>
                                             <CardTitle className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3 text-center">Verify Identity</CardTitle>
                                             <CardDescription className="text-center dark:text-slate-400">A 6-digit code has been sent to your device. Enter code <span className="text-black dark:text-white font-bold">123456</span> to proceed.</CardDescription>
                                         </div>
                                     </CardHeader>
-                                    <CardContent className="flex justify-center py-8 px-10">
-                                        <InputOTP maxLength={6} value={otp} onChange={setOtp} autoFocus onComplete={() => handleOtpVerify()}>
-                                            <InputOTPGroup className="gap-3">
-                                                {[0, 1, 2, 3, 4, 5].map((i) => (
-                                                    <InputOTPSlot key={i} index={i} className="w-12 h-16 text-2xl font-bold border-2 rounded-2xl border-slate-200 dark:border-slate-800 dark:bg-slate-900 dark:text-white focus:border-black dark:focus:border-white transition-all" />
-                                                ))}
-                                            </InputOTPGroup>
-                                        </InputOTP>
+                                    <CardContent className="flex justify-center items-center py-10 px-6 sm:px-10">
+                                        <div className="w-full flex justify-center">
+                                            <InputOTP maxLength={6} value={otp} onChange={setOtp} autoFocus onComplete={() => handleOtpVerify()}>
+                                                <InputOTPGroup className="gap-2 sm:gap-3 flex justify-center w-full">
+                                                    {[0, 1, 2, 3, 4, 5].map((i) => (
+                                                        <InputOTPSlot key={i} index={i} className="w-10 h-14 sm:w-12 sm:h-16 text-xl sm:text-2xl font-bold border-2 rounded-xl sm:rounded-2xl border-slate-200 dark:border-slate-800 dark:bg-slate-900 dark:text-white focus:border-black dark:focus:border-white transition-all" />
+                                                    ))}
+                                                </InputOTPGroup>
+                                            </InputOTP>
+                                        </div>
                                     </CardContent>
                                     <CardFooter className="px-10 pb-12">
-                                        <Button type="submit" className="w-full h-[56px] text-lg font-bold rounded-2xl bg-black transition-all active:scale-[0.98]" disabled={otp.length !== 6 || isLoading}>
+                                        <Button type="submit" className="w-full h-[56px] text-lg font-bold rounded-2xl bg-black dark:bg-white text-white dark:text-black transition-all active:scale-[0.98] premium-shadow" disabled={otp.length !== 6 || isLoading}>
                                             {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Verify Account'}
                                         </Button>
                                     </CardFooter>
@@ -323,7 +323,7 @@ export default function LoginPage() {
                                             <ArrowLeft className="w-5 h-5" />
                                         </Button>
                                         <div className="flex flex-col items-center text-center">
-                                            <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 text-blue-600 border border-blue-100">
+                                            <div className="w-12 h-12 bg-slate-50 dark:bg-slate-900/30 rounded-2xl flex items-center justify-center mb-6 text-black dark:text-white border border-slate-100 dark:border-slate-800 shadow-sm">
                                                 <UserPlus className="w-6 h-6" />
                                             </div>
                                             <CardTitle className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3">Create Profile</CardTitle>
@@ -369,7 +369,7 @@ export default function LoginPage() {
                                     <CardFooter className="px-10 pb-12">
                                         <Button
                                             type="submit"
-                                            className="w-full h-[56px] text-lg font-bold rounded-2xl bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200 transition-all active:scale-[0.98]"
+                                            className="w-full h-[56px] text-lg font-bold rounded-2xl bg-black dark:bg-white text-white dark:text-black hover:bg-slate-900 dark:hover:bg-slate-100 transition-all active:scale-[0.98] premium-shadow"
                                             disabled={isLoading}
                                         >
                                             {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Set up Account'}
@@ -387,14 +387,16 @@ export default function LoginPage() {
             </div>
 
             {/* Right Side: Visuals */}
-            <div className="hidden md:flex flex-1 relative bg-black overflow-hidden">
-                <Image src="/hero.gif" alt="Hero" fill className="object-cover opacity-80 scale-105" priority />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                <div className="absolute bottom-24 left-24 max-w-xl animate-in slide-in-from-bottom-10 duration-700">
-                    <h2 className="text-7xl font-black text-white mb-6 leading-[1.1] tracking-tighter">
-                        Reliability at your <span className="text-blue-500 italic">fingertips.</span>
+            <div className="hidden md:flex flex-1 relative bg-black overflow-hidden items-center justify-center">
+                <Image src="/hero.gif" alt="Hero" fill className="object-cover opacity-60 scale-105" priority />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+
+                <div className="relative z-10 text-center p-12 max-w-xl animate-in slide-in-from-bottom-10 duration-700">
+                    <img src="/e66735a8-370d-4668-b6b8-11a487bcd3cc" alt="Logo" className="w-24 h-auto mx-auto mb-10 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" />
+                    <h2 className="text-6xl font-black text-white mb-6 leading-[1.1] tracking-tighter">
+                        RELIABILITY AT YOUR <span className="text-slate-400 italic">FINGERTIPS.</span>
                     </h2>
-                    <p className="text-slate-300 text-xl font-medium max-w-md">
+                    <p className="text-slate-300 text-xl font-medium max-w-md mx-auto">
                         Join millions of riders who trust our world-class safety and speed.
                     </p>
                 </div>

@@ -13,10 +13,10 @@ export function PaymentsView() {
     const [upiId, setUpiId] = useState("");
 
     return (
-        <div className="p-6 md:p-8 h-full overflow-y-auto w-full max-w-4xl mx-auto animate-in fade-in duration-300">
-            <div className="mb-8">
-                <h2 className="text-3xl font-bold tracking-tight mb-2">Payment Methods</h2>
-                <p className="text-slate-500 dark:text-slate-400">Manage how you pay for your rides. All transactions are secure.</p>
+        <div className="p-10 md:p-12 h-screen overflow-y-auto w-full max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-500">
+            <div className="mb-12">
+                <h2 className="text-4xl font-black tracking-tight mb-3 text-slate-900 dark:text-white">Payment Methods</h2>
+                <p className="text-lg text-slate-500 dark:text-slate-400 font-medium">Securely manage your preferred ways to pay for rides.</p>
             </div>
 
             <Tabs defaultValue="upi" className="w-full">
@@ -40,7 +40,7 @@ export function PaymentsView() {
                     <Card className="border-0 shadow-md">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <Smartphone className="w-5 h-5 text-blue-600" /> Add UPI ID
+                                <Smartphone className="w-5 h-5 text-black dark:text-white" /> Add UPI ID
                             </CardTitle>
                             <CardDescription>Enter your Virtual Payment Address (VPA)</CardDescription>
                         </CardHeader>
@@ -72,7 +72,7 @@ export function PaymentsView() {
                         <CardContent className="p-0">
                             <div className="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-bold">G</div>
+                                    <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-full flex items-center justify-center font-bold">G</div>
                                     <div>
                                         <p className="font-medium">Google Pay</p>
                                         <p className="text-sm text-slate-500">rahul.123@okaxis</p>
@@ -142,7 +142,7 @@ export function PaymentsView() {
                             </div>
                             <DialogFooter>
                                 <DialogTrigger asChild>
-                                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">Save Card</Button>
+                                    <Button className="w-full bg-black dark:bg-white text-white dark:text-black hover:bg-slate-900 dark:hover:bg-slate-100">Save Card</Button>
                                 </DialogTrigger>
                             </DialogFooter>
                         </DialogContent>
@@ -153,14 +153,14 @@ export function PaymentsView() {
                 <TabsContent value="wallets" className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {/* Paytm */}
-                        <Card className="border shadow-sm hover:border-blue-500 transition-colors cursor-pointer group">
+                        <Card className="border shadow-sm hover:border-black dark:hover:border-white transition-colors cursor-pointer group">
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden shadow-sm bg-white p-2">
                                         <img src="https://www.vectorlogo.zone/logos/paytm/paytm-ar21.svg" alt="Paytm" className="w-full h-full object-contain" />
                                     </div>
                                     <div>
-                                        <h4 className="font-bold group-hover:text-blue-600 transition-colors">Paytm Wallet</h4>
+                                        <h4 className="font-bold group-hover:text-black dark:group-hover:text-white transition-colors">Paytm Wallet</h4>
                                         <p className="text-sm text-slate-500">Link your account</p>
                                     </div>
                                 </div>
@@ -210,7 +210,7 @@ export function PaymentsView() {
                             <CardDescription>We support all major Indian banks for seamless payments.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 {[
                                     { name: 'HDFC Bank', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2020/11/hdfc_bank_logo.png' },
                                     { name: 'SBI', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2023/05/sbi_logo-freelogovectors.net_.png' },
@@ -221,11 +221,11 @@ export function PaymentsView() {
                                     { name: 'PNB', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2021/11/punjab-national-bank-logo-freelogovectors.net_.png' },
                                     { name: 'Bank of Baroda', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2021/11/bank-of-baroda-logo-freelogovectors.net_.png' }
                                 ].map(bank => (
-                                    <Button key={bank.name} variant="outline" className="h-20 justify-center flex-col gap-2 bg-white dark:bg-slate-900 border hover:border-blue-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors rounded-xl overflow-hidden p-2">
-                                        <div className="h-8 flex items-center justify-center w-full">
-                                            <img src={bank.logo} alt={bank.name} className="max-h-full max-w-full object-contain dark:brightness-200 dark:contrast-200" />
+                                    <Button key={bank.name} variant="outline" className="h-24 justify-center flex-col gap-3 glass-card border-0 hover:scale-105 transition-all duration-300 rounded-2xl overflow-hidden p-3">
+                                        <div className="h-10 flex items-center justify-center w-full">
+                                            <img src={bank.logo} alt={bank.name} className="max-h-full max-w-full object-contain dark:brightness-200" />
                                         </div>
-                                        <span className="text-[10px] font-semibold truncate w-full px-1 text-center text-slate-600 dark:text-slate-300">{bank.name}</span>
+                                        <span className="text-[11px] font-bold truncate w-full px-1 text-center text-slate-700 dark:text-slate-200">{bank.name}</span>
                                     </Button>
                                 ))}
                             </div>

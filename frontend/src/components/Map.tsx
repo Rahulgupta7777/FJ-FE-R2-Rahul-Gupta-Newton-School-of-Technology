@@ -49,9 +49,20 @@ interface MapProps {
     driverLocation?: [number, number] | null;
     showRoute?: boolean;
     onLocationSensed?: (lat: number, lon: number) => void;
+    onMapClick?: (lat: number, lon: number) => void;
 }
 
-export default function Map({ pickup, dropoff, driverLocation, showRoute, onLocationSensed }: MapProps) {
+function MapEvents({ onMapClick }: { onMapClick?: (lat: number, lon: number) => void }) {
+    const { useMapEvents } = require('react-leaflet');
+    useMapEvents({
+        click: (e: any) => {
+            if (onMapClick) onMapClick(e.latlng.lat, e.latlng.lng);
+        },
+    });
+    return null;
+}
+
+export default function Map({ pickup, dropoff, driverLocation, showRoute, onLocationSensed, onMapClick }: MapProps) {
     const [currentPos, setCurrentPos] = useState<[number, number]>([40.7128, -74.0060]); // Default to NY
     const [isSensed, setIsSensed] = useState(false);
 
@@ -112,6 +123,8 @@ export default function Map({ pickup, dropoff, driverLocation, showRoute, onLoca
                 url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
+
+            <MapEvents onMapClick={onMapClick} />
 
             <ChangeView
                 center={mapCenter}

@@ -10,8 +10,8 @@ interface RideSelectionProps {
     setSelectedVehicle: (v: any) => void;
     sharedSeats: number;
     setSharedSeats: (s: number) => void;
-    paymentMethod: string;
-    setPaymentMethod: (m: string) => void;
+    paymentMethod: 'Cash' | 'Visa •••• 1234' | 'Paytm';
+    setPaymentMethod: (m: 'Cash' | 'Visa •••• 1234' | 'Paytm') => void;
     getDropoffTime: (mins?: number) => string;
     tripDuration: number;
     renderPaymentIcon: (method: string) => React.ReactNode;
@@ -35,7 +35,7 @@ export function RideSelection({
     return (
         <Card className="pointer-events-auto glass-card shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
             <div className="relative h-40 w-full bg-blue-50/50 dark:bg-slate-900/40 flex items-center justify-center border-b border-slate-200/50 dark:border-white/10 p-6 overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full opacity-5 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-400 via-transparent to-transparent"></div>
+                <div className="absolute top-0 left-0 w-full h-full opacity-5 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-400 via-transparent to-transparent"></div>
                 <img src="/mult_cab.png" alt="Available Cabs" className="h-32 w-auto object-contain drop-shadow-2xl animate-in fade-in zoom-in duration-700" />
                 <Button
                     variant="ghost"
@@ -54,16 +54,16 @@ export function RideSelection({
                 <div className="overflow-y-auto max-h-[40vh] md:max-h-[500px]">
                     {/* Shared Option */}
                     <div
-                        className={`p-5 flex items-center justify-between cursor-pointer border-b border-slate-50 dark:border-white/5 transition-all duration-300 ${selectedVehicle === 'Shared' ? 'bg-blue-50/40 dark:bg-blue-900/10' : 'bg-white dark:bg-slate-950'} hover:bg-slate-50 dark:hover:bg-slate-900/50`}
+                        className={`p-5 flex items-center justify-between cursor-pointer border-b border-slate-50 dark:border-white/5 transition-all duration-300 group ${selectedVehicle === 'Shared' ? 'bg-black/5 dark:bg-white/10' : 'bg-white dark:bg-slate-950'} hover:bg-slate-50 dark:hover:bg-slate-900/50`}
                         onClick={() => setSelectedVehicle('Shared')}
                     >
                         <div className="flex items-center gap-5">
-                            <div className="w-20 h-14 flex items-center justify-center bg-slate-100/80 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200/50 dark:border-white/10 shadow-sm">
-                                <img src="/car-icon.png" alt="Car Icon" className="w-12 h-auto object-contain dark:invert" />
+                            <div className="w-20 h-14 flex items-center justify-center bg-slate-100/80 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200/50 dark:border-white/10 shadow-sm transition-transform group-hover:scale-105 group-hover:shadow-md">
+                                <img src="/car-icon.png" alt="Car Icon" className="w-12 h-auto object-contain dark:invert transition-transform group-hover:rotate-2" />
                             </div>
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
-                                    <h4 className="font-bold text-slate-900 dark:text-white text-lg tracking-tight">Shared</h4>
+                                    <h4 className="font-bold text-slate-900 dark:text-white text-lg tracking-tight group-hover:text-black dark:group-hover:text-slate-300">Shared</h4>
                                     <div className="flex items-center text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md">
                                         <span className="text-[10px] mr-1">👤</span>
                                         <span className="text-xs font-bold">1-2</span>
@@ -73,22 +73,22 @@ export function RideSelection({
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">${(9.50 * sharedSeats).toFixed(2)}</p>
+                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">${((2.50 + tripDuration * 1.50) * sharedSeats).toFixed(2)}</p>
                         </div>
                     </div>
 
                     {/* Economy Option */}
                     <div
-                        className={`p-5 flex items-center justify-between cursor-pointer border-b border-slate-50 dark:border-white/5 transition-all duration-300 ${selectedVehicle === 'Economy' ? 'bg-blue-50/40 dark:bg-blue-900/10' : 'bg-white dark:bg-slate-950'} hover:bg-slate-50 dark:hover:bg-slate-900/50`}
+                        className={`p-5 flex items-center justify-between cursor-pointer border-b border-slate-50 dark:border-white/5 transition-all duration-300 group ${selectedVehicle === 'Economy' ? 'bg-black/5 dark:bg-white/10' : 'bg-white dark:bg-slate-950'} hover:bg-slate-50 dark:hover:bg-slate-900/50`}
                         onClick={() => setSelectedVehicle('Economy')}
                     >
                         <div className="flex items-center gap-5">
-                            <div className="w-20 h-14 flex items-center justify-center bg-slate-100/80 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200/50 dark:border-white/10 shadow-sm">
-                                <img src="/car-icon.png" alt="Car Icon" className="w-12 h-auto object-contain dark:invert" />
+                            <div className="w-20 h-14 flex items-center justify-center bg-slate-100/80 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200/50 dark:border-white/10 shadow-sm transition-transform group-hover:scale-105 group-hover:shadow-md">
+                                <img src="/car-icon.png" alt="Car Icon" className="w-12 h-auto object-contain dark:invert transition-transform group-hover:rotate-2" />
                             </div>
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
-                                    <h4 className="font-bold text-slate-900 dark:text-white text-lg tracking-tight">Economy</h4>
+                                    <h4 className="font-bold text-slate-900 dark:text-white text-lg tracking-tight group-hover:text-black dark:group-hover:text-slate-300">Economy</h4>
                                     <div className="flex items-center text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md">
                                         <span className="text-[10px] mr-1">👤</span>
                                         <span className="text-xs font-bold">4</span>
@@ -98,22 +98,22 @@ export function RideSelection({
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">$14.50</p>
+                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">${(5.00 + tripDuration * 2.10).toFixed(2)}</p>
                         </div>
                     </div>
 
                     {/* EV Option */}
                     <div
-                        className={`p-5 flex items-center justify-between cursor-pointer border-b border-slate-50 dark:border-white/5 transition-all duration-300 ${selectedVehicle === 'EV' ? 'bg-blue-50/40 dark:bg-blue-900/10' : 'bg-white dark:bg-slate-950'} hover:bg-slate-50 dark:hover:bg-slate-900/50`}
+                        className={`p-5 flex items-center justify-between cursor-pointer border-b border-slate-50 dark:border-white/5 transition-all duration-300 group ${selectedVehicle === 'EV' ? 'bg-green-600/5 dark:bg-green-500/10' : 'bg-white dark:bg-slate-950'} hover:bg-slate-50 dark:hover:bg-slate-900/50`}
                         onClick={() => setSelectedVehicle('EV')}
                     >
                         <div className="flex items-center gap-5">
-                            <div className="w-20 h-14 flex items-center justify-center bg-green-50/50 dark:bg-green-900/10 rounded-2xl overflow-hidden border border-green-100 dark:border-green-900/30 shadow-sm">
-                                <img src="/car-icon.png" alt="Car Icon" className="w-12 h-auto object-contain dark:invert hue-rotate-[120deg]" />
+                            <div className="w-20 h-14 flex items-center justify-center bg-green-50/50 dark:bg-green-900/10 rounded-2xl overflow-hidden border border-green-100 dark:border-green-900/30 shadow-sm transition-transform group-hover:scale-105 group-hover:shadow-md">
+                                <img src="/car-icon.png" alt="Car Icon" className="w-12 h-auto object-contain dark:invert hue-rotate-[120deg] transition-transform group-hover:rotate-2" />
                             </div>
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
-                                    <h4 className="font-bold text-slate-900 dark:text-white text-lg tracking-tight">EV</h4>
+                                    <h4 className="font-bold text-slate-900 dark:text-white text-lg tracking-tight group-hover:text-black dark:group-hover:text-slate-300">EV</h4>
                                     <span className="text-green-600 dark:text-green-400 text-[10px] font-black px-1.5 py-0.5 bg-green-100 dark:bg-green-900/40 rounded-md tracking-wider">ECO</span>
                                     <div className="flex items-center text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md">
                                         <span className="text-[10px] mr-1">👤</span>
@@ -124,22 +124,22 @@ export function RideSelection({
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">$15.20</p>
+                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">${(6.00 + tripDuration * 2.30).toFixed(2)}</p>
                         </div>
                     </div>
 
                     {/* Comfort Option */}
                     <div
-                        className={`p-5 flex items-center justify-between cursor-pointer border-b border-slate-50 dark:border-white/5 transition-all duration-300 ${selectedVehicle === 'Comfort' ? 'bg-blue-50/40 dark:bg-blue-900/10' : 'bg-white dark:bg-slate-950'} hover:bg-slate-50 dark:hover:bg-slate-900/50`}
+                        className={`p-5 flex items-center justify-between cursor-pointer border-b border-slate-50 dark:border-white/5 transition-all duration-300 group ${selectedVehicle === 'Comfort' ? 'bg-black/5 dark:bg-white/10' : 'bg-white dark:bg-slate-950'} hover:bg-slate-50 dark:hover:bg-slate-900/50`}
                         onClick={() => setSelectedVehicle('Comfort')}
                     >
                         <div className="flex items-center gap-5">
-                            <div className="w-20 h-14 flex items-center justify-center bg-slate-900 dark:bg-white rounded-2xl overflow-hidden shadow-lg">
-                                <img src="/car-icon.png" alt="Car Icon" className="w-12 h-auto object-contain invert dark:invert-0" />
+                            <div className="w-20 h-14 flex items-center justify-center bg-slate-900 dark:bg-white rounded-2xl overflow-hidden shadow-lg transition-transform group-hover:scale-105">
+                                <img src="/car-icon.png" alt="Car Icon" className="w-12 h-auto object-contain invert dark:invert-0 transition-transform group-hover:rotate-2" />
                             </div>
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
-                                    <h4 className="font-bold text-slate-900 dark:text-white text-lg tracking-tight">Comfort</h4>
+                                    <h4 className="font-bold text-slate-900 dark:text-white text-lg tracking-tight group-hover:text-black dark:group-hover:text-slate-300">Comfort</h4>
                                     <div className="flex items-center text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md">
                                         <span className="text-[10px] mr-1">👤</span>
                                         <span className="text-xs font-bold">4</span>
@@ -149,22 +149,22 @@ export function RideSelection({
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">$21.20</p>
+                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">${(10.00 + tripDuration * 3.50).toFixed(2)}</p>
                         </div>
                     </div>
 
                     {/* XL Option */}
                     <div
-                        className={`p-5 flex items-center justify-between cursor-pointer border-b border-slate-50 dark:border-white/5 transition-all duration-300 ${selectedVehicle === 'XL' ? 'bg-blue-50/40 dark:bg-blue-900/10' : 'bg-white dark:bg-slate-950'} hover:bg-slate-50 dark:hover:bg-slate-900/50`}
+                        className={`p-5 flex items-center justify-between cursor-pointer border-b border-slate-50 dark:border-white/5 transition-all duration-300 group ${selectedVehicle === 'XL' ? 'bg-black/5 dark:bg-white/10' : 'bg-white dark:bg-slate-950'} hover:bg-slate-50 dark:hover:bg-slate-900/50`}
                         onClick={() => setSelectedVehicle('XL')}
                     >
                         <div className="flex items-center gap-5">
-                            <div className="w-20 h-14 flex items-center justify-center bg-slate-100/80 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200/50 dark:border-white/10 shadow-sm">
-                                <img src="/car-icon.png" alt="Car Icon" className="w-14 h-auto object-contain dark:invert" />
+                            <div className="w-20 h-14 flex items-center justify-center bg-slate-100/80 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200/50 dark:border-white/10 shadow-sm transition-transform group-hover:scale-105 group-hover:shadow-md">
+                                <img src="/car-icon.png" alt="Car Icon" className="w-14 h-auto object-contain dark:invert transition-transform group-hover:rotate-2" />
                             </div>
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
-                                    <h4 className="font-bold text-slate-900 dark:text-white text-lg tracking-tight">XL</h4>
+                                    <h4 className="font-bold text-slate-900 dark:text-white text-lg tracking-tight group-hover:text-black dark:group-hover:text-slate-300">XL</h4>
                                     <div className="flex items-center text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md">
                                         <span className="text-[10px] mr-1">👤</span>
                                         <span className="text-xs font-bold">6</span>
@@ -174,7 +174,7 @@ export function RideSelection({
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">$28.90</p>
+                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">${(15.00 + tripDuration * 5.20).toFixed(2)}</p>
                         </div>
                     </div>
 
@@ -222,10 +222,10 @@ export function RideSelection({
                     </DropdownMenu>
 
                     <Button
-                        className="flex-1 h-[52px] ml-4 text-lg font-bold rounded-2xl bg-[#000000] dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 shadow-xl shadow-blue-500/10 transition-all active:scale-[0.98] group relative overflow-hidden"
+                        className="flex-1 h-[52px] ml-4 text-lg font-bold rounded-2xl bg-[#000000] dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 shadow-xl shadow-slate-500/10 transition-all active:scale-[0.98] group relative overflow-hidden"
                         onClick={onConfirm}
                     >
-                        <div className="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div className="absolute inset-0 bg-slate-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         Confirm {selectedVehicle}
                     </Button>
                 </div>
