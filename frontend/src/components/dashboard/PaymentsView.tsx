@@ -176,7 +176,7 @@ export function PaymentsView() {
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden shadow-sm bg-white p-2">
-                                        <img src="frontend/styling_assets/paytm.png" alt="Paytm" className="w-full h-full object-contain" />
+                                        <img src="/styling_assets/paytm.png" alt="Paytm" className="w-full h-full object-contain" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold group-hover:text-black dark:group-hover:text-white transition-colors">Paytm Wallet</h4>
@@ -192,7 +192,7 @@ export function PaymentsView() {
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm p-2">
-                                        <img src="frontend/styling_assets/phonepe.png" alt="PhonePe" className="w-full h-full object-contain" />
+                                        <img src="/styling_assets/phonepe.png" alt="PhonePe" className="w-full h-full object-contain" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold group-hover:text-indigo-600 transition-colors">PhonePe</h4>
@@ -231,14 +231,14 @@ export function PaymentsView() {
                         <CardContent>
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                                 {[
-                                    { name: 'HDFC Bank', logo: 'frontend/styling_assets/hdfc.png' },
-                                    { name: 'SBI', logo: 'frontend/styling_assets/sbi.png' },
-                                    { name: 'ICICI Bank', logo: 'frontend/styling_assets/icici.png' },
-                                    { name: 'Axis Bank', logo: 'frontend/styling_assets/axis.png' },
-                                    { name: 'Kotak Bank', logo: 'frontend/styling_assets/kotak.png' },
-                                    { name: 'Yes Bank', logo: 'frontend/styling_assets/yes.png' },
-                                    { name: 'PNB', logo: 'frontend/styling_assets/pnb.png' },
-                                    { name: 'Bank of Baroda', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2021/11/bank-of-baroda-logo-freelogovectors.net_.png' }
+                                    { name: 'HDFC Bank', logo: '/styling_assets/hdfc.png' },
+                                    { name: 'SBI', logo: '/styling_assets/sbi.png' },
+                                    { name: 'ICICI Bank', logo: '/styling_assets/icici.png' },
+                                    { name: 'Axis Bank', logo: '/styling_assets/axis.png' },
+                                    { name: 'Kotak Bank', logo: '/styling_assets/kotak.png' },
+                                    { name: 'Yes Bank', logo: '/styling_assets/yes.png' },
+                                    { name: 'PNB', logo: '/styling_assets/pnb.png' },
+                                    { name: 'Bank of Baroda', logo: '/styling_assets/bob.png' }
                                 ].map(bank => (
                                     <Button key={bank.name} variant="outline" className="h-20 sm:h-24 justify-center flex-col gap-2 sm:gap-3 glass-card border-0 hover:scale-105 transition-all duration-300 rounded-xl sm:rounded-2xl overflow-hidden p-2 sm:p-3">
                                         <div className="h-8 sm:h-10 flex items-center justify-center w-full">
