@@ -41,6 +41,7 @@ export default function Home() {
   const router = useRouter();
   const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [userName, setUserName] = useState('Rahul Gupta');
+  const [phoneNumber, setPhoneNumber] = useState('+1 (555) 123-4567');
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'BOOKING' | 'TRIPS' | 'PAYMENTS' | 'SETTINGS'>('BOOKING');
@@ -141,8 +142,10 @@ export default function Home() {
       router.push('/login');
     } else {
       const storedName = localStorage.getItem('user_name');
+      const storedPhone = localStorage.getItem('user_phone');
       const storedAvatar = localStorage.getItem('profile_image');
       if (storedName) setUserName(storedName);
+      if (storedPhone) setPhoneNumber(storedPhone);
       if (storedAvatar) setProfileImage(storedAvatar);
       setIsAuthChecking(false);
     }
@@ -187,6 +190,8 @@ export default function Home() {
         profileImage={profileImage}
         setProfileImage={setProfileImage}
         avatarList={AVATAR_LIST}
+        phoneNumber={phoneNumber}
+        setPhoneNumber={setPhoneNumber}
       />
 
       <main className="flex-1 relative flex flex-col h-full w-full">

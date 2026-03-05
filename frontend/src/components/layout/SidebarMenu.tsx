@@ -15,6 +15,8 @@ interface SidebarMenuProps {
     profileImage: string | null;
     setProfileImage: (image: string | null) => void;
     avatarList: string[];
+    phoneNumber: string;
+    setPhoneNumber: (phone: string) => void;
 }
 
 export function SidebarMenu({
@@ -24,7 +26,9 @@ export function SidebarMenu({
     setUserName,
     profileImage,
     setProfileImage,
-    avatarList
+    avatarList,
+    phoneNumber,
+    setPhoneNumber
 }: SidebarMenuProps) {
     return (
         <aside className="hidden md:flex flex-col w-72 glass h-full z-10 transition-all duration-500 ease-in-out border-r border-slate-200/60 dark:border-white/5">
@@ -79,6 +83,8 @@ export function SidebarMenu({
                     profileImage={profileImage}
                     setProfileImage={setProfileImage}
                     avatarList={avatarList}
+                    phoneNumber={phoneNumber}
+                    setPhoneNumber={setPhoneNumber}
                 />
             </div>
             <div className="p-4 border-t border-slate-100 dark:border-slate-800 mt-auto bg-slate-50 dark:bg-slate-900 flex justify-between text-xs text-slate-400">
