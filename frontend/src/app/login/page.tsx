@@ -413,7 +413,6 @@ export default function LoginPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
 
                 <div className="relative z-10 text-center p-12 max-w-xl animate-in slide-in-from-bottom-10 duration-700">
-                    <img src="/e66735a8-370d-4668-b6b8-11a487bcd3cc" alt="Logo" className="w-24 h-auto mx-auto mb-10 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] invert rounded-2xl" />
                     <h2 className="text-6xl font-black text-white mb-6 leading-[1.1] tracking-tighter">
                         RELIABILITY AT YOUR <span className="text-slate-400 italic">FINGERTIPS.</span>
                     </h2>
