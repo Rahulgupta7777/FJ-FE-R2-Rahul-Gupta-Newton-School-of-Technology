@@ -30,7 +30,7 @@ export function SidebarMenu({
         <aside className="hidden md:flex flex-col w-72 glass h-full z-10 transition-all duration-500 ease-in-out border-r border-slate-200/40 dark:border-white/5">
             <div className="p-8">
                 <div className="flex items-center gap-3">
-                    <img src="/e66735a8-370d-4668-b6b8-11a487bcd3cc" alt="Logo" className="w-10 h-10 object-contain" />
+                    <img src="/cab_car_logos/newlog.png" alt="Logo" className="w-10 h-10 object-contain" />
                     <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">NexRide</span>
                 </div>
             </div>

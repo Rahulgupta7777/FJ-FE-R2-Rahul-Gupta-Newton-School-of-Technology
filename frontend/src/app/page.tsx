@@ -19,7 +19,7 @@ import LocationSearch from '@/components/LocationSearch';
 import { SidebarMenu } from '@/components/layout/SidebarMenu';
 import { RideSelection } from '@/components/booking/RideSelection';
 import { TripStatus } from '@/components/booking/TripStatus';
-import { NotificationStack } from '@/components/notifications/NotificationStack';
+import { NotificationStack } from '@/components/notifications';
 import { useNotifications } from '@/hooks/useNotifications';
 
 const DynamicMap = dynamic(() => import('@/components/DynamicMap'), {
@@ -201,7 +201,7 @@ export default function Home() {
             <SheetContent side="left" className="w-[300px] p-0 flex flex-col bg-background border-0">
               <div className="p-8">
                 <div className="flex items-center gap-3 mb-8">
-                  <img src="/e66735a8-370d-4668-b6b8-11a487bcd3cc" alt="Logo" className="w-8 h-8 object-contain" />
+                  <img src="/cab_car_logos/newlog.png" alt="Logo" className="w-8 h-8 object-contain" />
                   <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">NexRide</span>
                 </div>
                 <nav className="flex flex-col gap-2">
@@ -222,7 +222,7 @@ export default function Home() {
                 pickup={pickup}
                 dropoff={dropoff}
                 driverLocation={driverLoc}
-                showRoute={!!(pickup && dropoff)}
+                showRoute={!!(pickup && dropoff) && ['SELECTING_RIDE', 'SEARCHING', 'DRIVER_ASSIGNED', 'IN_RIDE'].includes(flowState)}
                 onMapClick={(lat: number, lon: number) => {
                   if (!pickup) {
                     setPickup([lat, lon]);
@@ -375,7 +375,7 @@ export default function Home() {
                     </div>
                   </CardContent>
                   <CardFooter className="pt-0 pb-10 px-8">
-                    <Button className="w-full h-[64px] text-xl font-black rounded-2xl bg-black dark:bg-white text-white dark:text-black premium-shadow transition-all active:scale-[0.98]" onClick={handleFindRide} disabled={!dropoffText}><Search className="w-6 h-6 mr-3" /> {isScheduled ? `Book for ${scheduleTime}` : 'Search NexRide'}</Button>
+                    <Button className="w-full h-[64px] text-xl font-black rounded-2xl bg-black dark:bg-white text-white dark:text-black premium-shadow transition-all active:scale-[0.98]" onClick={handleFindRide} disabled={!dropoffText}><Search className="w-6 h-6 mr-3" /> {isScheduled ? `Book for ${scheduleTime}` : 'Search Ride'}</Button>
                   </CardFooter>
                 </Card>
               )}
@@ -395,6 +395,7 @@ export default function Home() {
 
               <div className="pointer-events-auto max-w-[440px] animate-in slide-in-from-left-10 duration-500">
                 <TripStatus
+                  pickupText={pickupText} dropoffText={dropoffText}
                   flowState={flowState} selectedVehicle={selectedVehicle} userName={userName}
                   paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod}
                   rating={rating} setRating={setRating}

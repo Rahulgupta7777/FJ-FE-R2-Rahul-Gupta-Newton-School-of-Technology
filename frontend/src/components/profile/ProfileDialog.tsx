@@ -55,7 +55,7 @@ export function ProfileDialog({ userName, setUserName, profileImage, setProfileI
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>{isEditingProfile ? 'Edit Profile' : 'User Profile'}</DialogTitle>
-                    <DialogDescription>
+                    <DialogDescription className="text-slate-500 dark:text-slate-400">
                         {isEditingProfile ? 'Update your personal details below.' : 'Manage your public profile and preferences.'}
                     </DialogDescription>
                 </DialogHeader>
@@ -65,7 +65,7 @@ export function ProfileDialog({ userName, setUserName, profileImage, setProfileI
                     <>
                         <div className="flex flex-col items-center justify-center p-6 space-y-4">
                             <div
-                                className="relative w-24 h-24 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center cursor-pointer group hover:ring-4 hover:ring-blue-100 transition-all overflow-hidden"
+                                className="relative w-24 h-24 bg-blue-100 dark:bg-blue-900/40 rounded-full flex items-center justify-center cursor-pointer group hover:ring-4 hover:ring-blue-100 dark:hover:ring-blue-900 transition-all overflow-hidden"
                                 onClick={() => fileInputRef.current?.click()}
                             >
                                 {profileImage ? (
@@ -86,8 +86,8 @@ export function ProfileDialog({ userName, setUserName, profileImage, setProfileI
                             />
 
                             <div className="text-center">
-                                <h3 className="text-2xl font-bold">{userName}</h3>
-                                <p className="text-slate-500 font-medium">+1 (555) 123-4567</p>
+                                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{userName}</h3>
+                                <p className="text-slate-500 dark:text-slate-400 font-medium">+1 (555) 123-4567</p>
                                 <div className="flex items-center justify-center gap-2 mt-4">
                                     <Badge variant="secondary" className="px-3 py-1 text-sm"><Star className="w-3 h-3 text-yellow-500 mr-1 fill-yellow-500" /> 5.0 Rating</Badge>
                                     <Badge variant="secondary" className="px-3 py-1 text-sm"><History className="w-3 h-3 mr-1 text-blue-500" /> 42 Rides</Badge>
@@ -156,16 +156,17 @@ export function ProfileDialog({ userName, setUserName, profileImage, setProfileI
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Display Name</label>
+                                <label className="text-sm font-medium text-slate-900 dark:text-slate-300">Display Name</label>
                                 <Input
                                     value={editName}
                                     onChange={(e) => setEditName(e.target.value)}
                                     placeholder="First Last"
+                                    className="bg-white dark:bg-slate-900 dark:border-slate-800 dark:text-white"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-500">Phone Number (Verified)</label>
-                                <Input disabled value="+1 (555) 123-4567" className="bg-slate-50 text-slate-500" />
+                                <label className="text-sm font-medium text-slate-500 dark:text-slate-400">Phone Number (Verified)</label>
+                                <Input disabled value="+1 (555) 123-4567" className="bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400" />
                             </div>
                         </div>
                         <DialogFooter className="flex-row gap-2 sm:justify-end">

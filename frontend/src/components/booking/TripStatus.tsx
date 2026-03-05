@@ -12,6 +12,8 @@ import { useState, useEffect } from 'react';
 import { Heart, House } from 'lucide-react';
 
 interface TripStatusProps {
+    pickupText?: string;
+    dropoffText?: string;
     flowState: 'IDLE' | 'SELECTING_RIDE' | 'SEARCHING' | 'DRIVER_ASSIGNED' | 'IN_RIDE' | 'POST_RIDE';
     selectedVehicle: string;
     userName: string;
@@ -40,6 +42,8 @@ interface TripStatusProps {
 }
 
 export function TripStatus({
+    pickupText,
+    dropoffText,
     flowState,
     selectedVehicle,
     userName,
@@ -85,14 +89,14 @@ export function TripStatus({
 
     if (isThankYou) {
         return (
-            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in zoom-in-95 bg-white p-8 text-center bg-white/95 backdrop-blur">
-                <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Heart className="w-10 h-10 text-emerald-600 fill-emerald-600" />
+            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in zoom-in-95 bg-white dark:bg-slate-950 p-8 text-center backdrop-blur">
+                <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Heart className="w-10 h-10 text-emerald-600 dark:text-emerald-400 fill-emerald-600 dark:fill-emerald-400" />
                 </div>
-                <h2 className="text-3xl font-black mb-2 text-slate-900">Thank You!</h2>
-                <p className="text-slate-500 font-bold mb-8">We've received your feedback. See you soon on your next ride!</p>
+                <h2 className="text-3xl font-black mb-2 text-slate-900 dark:text-white">Thank You!</h2>
+                <p className="text-slate-500 dark:text-slate-400 font-bold mb-8">We've received your feedback. See you soon on your next ride!</p>
                 <Button
-                    className="w-full h-14 bg-black hover:bg-slate-900 text-white rounded-xl text-lg font-black"
+                    className="w-full h-14 bg-black dark:bg-white hover:bg-slate-900 dark:hover:bg-slate-200 text-white dark:text-black rounded-xl text-lg font-black"
                     onClick={() => {
                         setIsThankYou(false);
                         onReset();
@@ -248,7 +252,9 @@ export function TripStatus({
                             </SheetContent>
                         </Sheet>
                     </div>
-                    <Button variant="ghost" className="w-full mt-2 text-slate-400 text-xs uppercase tracking-widest font-black" onClick={onStartTrip}>[Debug: Start Trip]</Button>
+                    <div className=''>
+                        <Button variant="ghost" className="w-full bg-green-300 mt-2 text-white text-xs uppercase tracking-widest font-black cursor-pointer" onClick={onStartTrip}>Start Journey</Button>
+                    </div>
                 </CardContent>
             </Card>
         );
@@ -256,7 +262,7 @@ export function TripStatus({
 
     if (flowState === 'IN_RIDE') {
         return (
-            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white">
+            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white dark:bg-slate-950">
                 <div className="bg-emerald-600 text-white p-4 flex justify-between items-center">
                     <div className="flex flex-col">
                         <p className="text-slate-200 text-xs font-medium opacity-80 uppercase tracking-widest">Arrival Estimate</p>
@@ -266,11 +272,11 @@ export function TripStatus({
                         {formatTime(currentTime)}
                     </Badge>
                 </div>
-                <div className="p-4 bg-slate-50 border-b flex flex-col gap-2">
+                <div className="p-4 bg-slate-50 dark:bg-slate-900 border-b dark:border-slate-800 flex flex-col gap-2">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-3">
                             <Navigation className="w-5 h-5 text-black dark:text-white" />
-                            <p className="font-medium text-slate-800 dark:text-slate-200">123 Broadway, New York</p>
+                            <p className="font-medium text-slate-800 dark:text-slate-200">{dropoffText || "123 Broadway, New York"}</p>
                         </div>
                         <Button variant="ghost" size="sm" className="text-slate-500">Edit</Button>
                     </div>
@@ -278,10 +284,10 @@ export function TripStatus({
                 <div className="p-4 flex flex-col gap-3">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
+                            <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-900 border dark:border-slate-800 rounded-xl cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                                 <div className="flex items-center gap-3">
-                                    <CreditCard className="w-5 h-5 text-slate-600" />
-                                    <span className="font-medium text-slate-800">{paymentMethod}</span>
+                                    <CreditCard className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                                    <span className="font-medium text-slate-800 dark:text-slate-200">{paymentMethod}</span>
                                 </div>
                                 <span className="text-black dark:text-white text-sm font-semibold">Change</span>
                             </div>
@@ -294,8 +300,8 @@ export function TripStatus({
                     </DropdownMenu>
 
                     <div className="flex gap-3">
-                        <Button variant="outline" className="rounded-xl flex-1 h-14 bg-slate-50">
-                            <Phone className="w-5 h-5 text-slate-700 mr-2" /> Call Driver
+                        <Button variant="outline" className="rounded-xl flex-1 h-14 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800">
+                            <Phone className="w-5 h-5 text-slate-700 dark:text-slate-300 mr-2" /> Call Driver
                         </Button>
 
                         <Sheet>
@@ -366,7 +372,7 @@ export function TripStatus({
                         </Sheet>
                     </div>
 
-                    <Button variant="default" className="w-full rounded-xl h-14 bg-slate-900 text-white text-lg font-medium shadow-md hover:bg-black transition-colors" onClick={onCompleteTrip}>
+                    <Button variant="default" className="w-full rounded-xl h-14 bg-slate-900 dark:bg-slate-100 text-white dark:text-black text-lg font-medium shadow-md hover:bg-black dark:hover:bg-white transition-colors" onClick={onCompleteTrip}>
                         End Trip
                     </Button>
                 </div>
@@ -376,34 +382,34 @@ export function TripStatus({
 
     if (flowState === 'POST_RIDE') {
         return (
-            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white p-6">
+            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white dark:bg-slate-950 p-6">
                 <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span className="text-emerald-600 text-2xl">✓</span>
+                    <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-emerald-600 dark:text-emerald-400 text-2xl">✓</span>
                     </div>
-                    <h2 className="text-2xl font-bold">You arrived!</h2>
-                    <p className="text-slate-500 mt-1">Hope you enjoyed the ride with Arjun</p>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">You arrived!</h2>
+                    <p className="text-slate-500 dark:text-slate-400 mt-1">Hope you enjoyed the ride with Arjun</p>
                 </div>
 
-                <div className="bg-slate-50 border rounded-2xl p-4 mb-6 space-y-3">
+                <div className="bg-slate-50 dark:bg-slate-900 border dark:border-slate-800 rounded-2xl p-4 mb-6 space-y-3">
                     <div className="flex justify-between items-center">
-                        <span className="text-slate-500">Trip Fare</span>
-                        <span className="font-bold font-mono text-lg">₹1200</span>
+                        <span className="text-slate-500 dark:text-slate-400">Trip Fare</span>
+                        <span className="font-bold font-mono text-lg text-slate-900 dark:text-white">₹1200</span>
                     </div>
                     {tip > 0 && (
-                        <div className="flex justify-between items-center text-emerald-600 animate-in fade-in slide-in-from-top-1">
+                        <div className="flex justify-between items-center text-emerald-600 dark:text-emerald-400 animate-in fade-in slide-in-from-top-1">
                             <span className="text-sm font-medium">Tip</span>
                             <span className="font-bold font-mono">+₹{tip.toFixed(0)}</span>
                         </div>
                     )}
-                    <div className="flex justify-between items-center text-sm pt-2 border-t border-slate-200">
-                        <span className="flex items-center gap-2 text-slate-500"><CreditCard className="w-4 h-4" /> Paid with Visa 4242</span>
-                        {tip > 0 && <span className="font-bold text-slate-900 font-mono">₹{(1200 + tip).toFixed(0)}</span>}
+                    <div className="flex justify-between items-center text-sm pt-2 border-t border-slate-200 dark:border-slate-800">
+                        <span className="flex items-center gap-2 text-slate-500 dark:text-slate-400"><CreditCard className="w-4 h-4" /> Paid with Visa 4242</span>
+                        {tip > 0 && <span className="font-bold text-slate-900 dark:text-white font-mono">₹{(1200 + tip).toFixed(0)}</span>}
                     </div>
                 </div>
 
                 <div className="mb-6">
-                    <p className="font-medium mb-3 text-center">Add a tip for Arjun</p>
+                    <p className="font-medium mb-3 text-center text-slate-900 dark:text-white">Add a tip for Arjun</p>
                     <div className="flex justify-center gap-2 mb-4">
                         {[1, 2, 5].map((amount) => (
                             <Button
@@ -445,7 +451,7 @@ export function TripStatus({
                 </div>
 
                 <div className="text-center mb-6">
-                    <p className="font-medium mb-3">Rate your driver</p>
+                    <p className="font-medium mb-3 text-slate-900 dark:text-white">Rate your driver</p>
                     <div className="flex justify-center gap-2">
                         {[1, 2, 3, 4, 5].map((star) => (
                             <button
@@ -467,7 +473,28 @@ export function TripStatus({
                     />
                 </div>
 
-                <Button className="w-full bg-black hover:bg-slate-800 h-14 rounded-xl text-lg text-white font-black" disabled={rating === 0} onClick={() => setIsThankYou(true)}>
+                <Button className="w-full bg-black dark:bg-white hover:bg-slate-800 dark:hover:bg-slate-200 h-14 rounded-xl text-lg text-white dark:text-black font-black" disabled={rating === 0} onClick={() => {
+                    const pastTrips = JSON.parse(localStorage.getItem('user_trips') || '[]');
+                    const newTrip = {
+                        id: `trip-${Date.now()}`,
+                        date: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true }),
+                        status: "COMPLETED",
+                        pickup: pickupText || "Current Location",
+                        dropoff: dropoffText || "Destination",
+                        driver: "Arjun (Maruti Suzuki Dzire)",
+                        amount: `₹${1200 + tip}`,
+                        rating: rating,
+                        breakdown: {
+                            base: 150,
+                            distance: 650,
+                            time: 250,
+                            fee: 100,
+                            tax: 50 + tip
+                        }
+                    };
+                    localStorage.setItem('user_trips', JSON.stringify([newTrip, ...pastTrips]));
+                    setIsThankYou(true);
+                }}>
                     {rating > 0 ? 'Submit Rating' : 'Rate to continue'}
                 </Button>
             </Card>

@@ -165,15 +165,15 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col md:flex-row bg-white relative overflow-hidden font-sans">
+        <div className="min-h-screen flex flex-col md:flex-row bg-white dark:bg-black relative overflow-hidden font-sans">
             {/* Left Side: Auth Form */}
-            <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-12 z-10 bg-white">
+            <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-12 z-10 bg-white dark:bg-black">
                 <div className="w-full max-w-[440px]">
 
                     {/* Brand Logo for Mobile */}
                     <div className="md:hidden flex flex-col items-center mb-10">
-                        <img src="/e66735a8-370d-4668-b6b8-11a487bcd3cc" alt="NexRide Logo" className="h-16 w-auto mb-3 object-contain" />
-                        <h1 className="text-2xl font-black tracking-tighter uppercase">NexRide</h1>
+                        <img src="/e66735a8-370d-4668-b6b8-11a487bcd3cc" alt="NexRide Logo" className="h-16 w-auto mb-3 object-contain dark:invert rounded-xl" />
+                        <h1 className="text-2xl font-black tracking-tighter uppercase text-slate-900 dark:text-white">NexRide</h1>
                     </div>
 
                     <Card className="w-full shadow-2xl rounded-[48px] border-0 overflow-hidden glass transition-all duration-500 ease-in-out">
@@ -189,20 +189,20 @@ export default function LoginPage() {
                                 <form onSubmit={handleIdentifierSubmit}>
                                     <CardHeader className="pt-12 pb-8 px-10 flex flex-col items-center text-center">
                                         <div className="mb-6">
-                                            <img src="/e66735a8-370d-4668-b6b8-11a487bcd3cc" alt="NexRide Logo" className="h-20 w-auto object-contain" />
+                                            <img src="/e66735a8-370d-4668-b6b8-11a487bcd3cc" alt="NexRide Logo" className="h-20 w-auto object-contain dark:invert rounded-2xl" />
                                         </div>
-                                        <CardTitle className="text-3xl font-extrabold text-slate-900 mb-3">Login or Sign up</CardTitle>
-                                        <CardDescription className="text-base text-slate-500 font-medium leading-relaxed">
-                                            Enter your email or phone number to continue with NexRide.
+                                        <CardTitle className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3">Welcome to NexRide</CardTitle>
+                                        <CardDescription className="text-base text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
+                                            Experience the future of ride-sharing
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent className="px-10 pb-8 space-y-4">
                                         <div className="space-y-2">
-                                            <Label htmlFor="identifier" className="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">Account Identifier</Label>
+                                            <Label htmlFor="identifier" className="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">Enter your email or phone number</Label>
                                             <Input
                                                 id="identifier"
                                                 type="text"
-                                                placeholder="name@example.com or +1 234..."
+                                                placeholder="name@example.com or +91 9821456789..."
                                                 value={identifier}
                                                 onChange={(e) => setIdentifier(e.target.value)}
                                                 className="h-[56px] text-lg rounded-2xl border-slate-200 bg-slate-50/50 dark:bg-slate-900/50 dark:border-slate-800 dark:text-white placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-white shadow-none transition-all"
@@ -235,10 +235,31 @@ export default function LoginPage() {
                                     </CardHeader>
                                     <CardContent className="flex justify-center items-center py-10 px-6 sm:px-10">
                                         <div className="w-full flex justify-center">
-                                            <InputOTP maxLength={6} value={otp} onChange={setOtp} autoFocus onComplete={() => handleOtpVerify()}>
-                                                <InputOTPGroup className="gap-2 sm:gap-3 flex justify-center w-full">
+                                            <InputOTP
+                                                maxLength={6}
+                                                value={otp}
+                                                onChange={setOtp}
+                                                autoFocus
+                                                onComplete={() => handleOtpVerify()}
+                                            >
+                                                <InputOTPGroup className="flex gap-3 justify-center">
                                                     {[0, 1, 2, 3, 4, 5].map((i) => (
-                                                        <InputOTPSlot key={i} index={i} className="w-10 h-14 sm:w-12 sm:h-16 text-xl sm:text-2xl font-bold border-2 rounded-xl sm:rounded-2xl border-slate-200 dark:border-slate-800 dark:bg-slate-900 dark:text-white focus:border-black dark:focus:border-white transition-all" />
+                                                        <InputOTPSlot
+                                                            key={i}
+                                                            index={i}
+                                                            className="
+              w-12 h-14
+              text-xl font-bold
+              rounded-xl
+              border border-slate-300
+              dark:border-slate-700
+              dark:bg-slate-900
+              dark:text-white
+              focus:border-black
+              dark:focus:border-white
+              transition
+            "
+                                                        />
                                                     ))}
                                                 </InputOTPGroup>
                                             </InputOTP>
@@ -392,7 +413,7 @@ export default function LoginPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
 
                 <div className="relative z-10 text-center p-12 max-w-xl animate-in slide-in-from-bottom-10 duration-700">
-                    <img src="/e66735a8-370d-4668-b6b8-11a487bcd3cc" alt="Logo" className="w-24 h-auto mx-auto mb-10 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" />
+                    <img src="/e66735a8-370d-4668-b6b8-11a487bcd3cc" alt="Logo" className="w-24 h-auto mx-auto mb-10 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] invert rounded-2xl" />
                     <h2 className="text-6xl font-black text-white mb-6 leading-[1.1] tracking-tighter">
                         RELIABILITY AT YOUR <span className="text-slate-400 italic">FINGERTIPS.</span>
                     </h2>

@@ -1,15 +1,92 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Navigation, Calendar, CreditCard, ChevronDown, ChevronUp, Info, Star, Clock, Download, HelpCircle, TrendingUp, DollarSign } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import jsPDF from 'jspdf';
 
 export function TripsView() {
     const [expandedTrip, setExpandedTrip] = useState<string | null>(null);
 
+    const [trips, setTrips] = useState<any[]>([]);
+
+    useEffect(() => {
+        const storedTrips = JSON.parse(localStorage.getItem('user_trips') || '[]');
+        const defaultTrips = [
+            {
+                id: "trip-1",
+                date: "Today, 10:30 AM",
+                status: "COMPLETED",
+                pickup: "123 Broadway, NYC",
+                dropoff: "Central Park West",
+                driver: "Arjun (Maruti Suzuki Dzire)",
+                amount: "₹1200",
+                rating: 4.88,
+                breakdown: {
+                    base: 150,
+                    distance: 650,
+                    time: 250,
+                    fee: 100,
+                    tax: 50
+                }
+            },
+            {
+                id: "trip-2",
+                date: "Yesterday, 6:15 PM",
+                status: "COMPLETED",
+                pickup: "JFK Airport",
+                dropoff: "123 Broadway, NYC",
+                driver: "Sarah (Honda Accord)",
+                amount: "₹3800",
+                rating: 4.5,
+                breakdown: {
+                    base: 500,
+                    distance: 2200,
+                    time: 800,
+                    fee: 200,
+                    tax: 100
+                }
+            },
+            {
+                id: "trip-3",
+                date: "Oct 12, 9:00 AM",
+                status: "COMPLETED",
+                pickup: "Times Square",
+                dropoff: "Brooklyn Bridge",
+                driver: "Michael (Toyota Camry)",
+                amount: "₹1850",
+                rating: 4.9,
+                breakdown: {
+                    base: 250,
+                    distance: 1200,
+                    time: 300,
+                    fee: 50,
+                    tax: 50
+                }
+            },
+            {
+                id: "trip-4",
+                date: "Oct 10, 8:00 AM",
+                status: "COMPLETED",
+                pickup: "123 Broadway, NYC",
+                dropoff: "Lower Manhattan",
+                driver: "Jessica (Tesla Model 3)",
+                amount: "₹2450",
+                rating: 5.0,
+                breakdown: {
+                    base: 400,
+                    distance: 1500,
+                    time: 400,
+                    fee: 100,
+                    tax: 50
+                }
+            }
+        ];
+        setTrips([...storedTrips, ...defaultTrips]);
+    }, []);
+
     const stats = {
-        totalTrips: 42,
+        totalTrips: trips.length > 0 ? trips.length : 4,
         totalSpent: "12,450",
         totalDistance: "348",
         avgRating: 4.9
@@ -71,76 +148,6 @@ export function TripsView() {
         doc.save(`NexRide_Receipt_${trip.id}.pdf`);
     };
 
-    const trips = [
-        {
-            id: "trip-1",
-            date: "Today, 10:30 AM",
-            status: "COMPLETED",
-            pickup: "123 Broadway, NYC",
-            dropoff: "Central Park West",
-            driver: "Arjun (Maruti Suzuki Dzire)",
-            amount: "₹1200",
-            rating: 4.88,
-            breakdown: {
-                base: 150,
-                distance: 650,
-                time: 250,
-                fee: 100,
-                tax: 50
-            }
-        },
-        {
-            id: "trip-2",
-            date: "Yesterday, 6:15 PM",
-            status: "COMPLETED",
-            pickup: "JFK Airport",
-            dropoff: "123 Broadway, NYC",
-            driver: "Sarah (Honda Accord)",
-            amount: "₹3800",
-            rating: 4.5,
-            breakdown: {
-                base: 500,
-                distance: 2200,
-                time: 800,
-                fee: 200,
-                tax: 100
-            }
-        },
-        {
-            id: "trip-3",
-            date: "Oct 12, 9:00 AM",
-            status: "COMPLETED",
-            pickup: "Times Square",
-            dropoff: "Brooklyn Bridge",
-            driver: "Michael (Toyota Camry)",
-            amount: "₹1850",
-            rating: 4.9,
-            breakdown: {
-                base: 250,
-                distance: 1200,
-                time: 300,
-                fee: 50,
-                tax: 50
-            }
-        },
-        {
-            id: "trip-4",
-            date: "Oct 10, 8:00 AM",
-            status: "COMPLETED",
-            pickup: "123 Broadway, NYC",
-            dropoff: "Lower Manhattan",
-            driver: "Jessica (Tesla Model 3)",
-            amount: "₹2450",
-            rating: 5.0,
-            breakdown: {
-                base: 400,
-                distance: 1500,
-                time: 400,
-                fee: 100,
-                tax: 50
-            }
-        }
-    ];
 
     return (
         <div className="p-6 md:p-12 h-screen overflow-y-auto w-full max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-500 pb-24 bg-background">

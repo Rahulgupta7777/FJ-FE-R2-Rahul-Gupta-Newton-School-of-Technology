@@ -61,22 +61,22 @@ export default function LocationSearch({ placeholder, value, onChange, onSelect 
     return (
         <div className="relative w-full" ref={wrapperRef}>
             <div className="relative">
-                <MapPin className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <MapPin className="absolute left-3 top-3 w-5 h-5 text-slate-400 dark:text-slate-500" />
                 <input
                     type="text"
                     placeholder={placeholder}
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     onFocus={() => value.length >= 3 && setShowSuggestions(true)}
-                    className="w-full pl-10 pr-10 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium"
+                    className="w-full pl-10 pr-10 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition-all font-medium placeholder:text-slate-400"
                 />
                 {isLoading && (
-                    <Loader2 className="absolute right-3 top-3 w-5 h-5 text-gray-400 animate-spin" />
+                    <Loader2 className="absolute right-3 top-3 w-5 h-5 text-slate-400 animate-spin" />
                 )}
             </div>
 
             {showSuggestions && suggestions.length > 0 && (
-                <ul className="absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl max-h-60 overflow-y-auto overflow-x-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <ul className="absolute z-50 w-full mt-2 bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-xl shadow-xl max-h-60 overflow-y-auto overflow-x-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                     {suggestions.map((suggestion) => (
                         <li
                             key={suggestion.place_id}
@@ -84,10 +84,10 @@ export default function LocationSearch({ placeholder, value, onChange, onSelect 
                                 onSelect(parseFloat(suggestion.lat), parseFloat(suggestion.lon), suggestion.display_name);
                                 setShowSuggestions(false);
                             }}
-                            className="px-4 py-3 hover:bg-blue-50 cursor-pointer flex items-start space-x-3 transition-colors border-b border-gray-50 last:border-0"
+                            className="px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer flex items-start space-x-3 transition-colors border-b border-slate-50 dark:border-slate-800/50 last:border-0"
                         >
-                            <Search className="w-4 h-4 text-gray-400 mt-1 shrink-0" />
-                            <span className="text-sm text-gray-700 truncate">{suggestion.display_name}</span>
+                            <Search className="w-4 h-4 text-slate-400 mt-1 shrink-0" />
+                            <span className="text-sm text-slate-700 dark:text-slate-300 truncate">{suggestion.display_name}</span>
                         </li>
                     ))}
                 </ul>

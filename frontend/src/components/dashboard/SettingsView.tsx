@@ -95,7 +95,7 @@ export function SettingsView() {
                                     <p className="text-sm text-slate-500 font-medium">Receive exclusive offers and deals.</p>
                                 </div>
                             </div>
-                            <Switch />
+                            <Switch defaultChecked />
                         </div>
                     </CardContent>
                 </Card>
