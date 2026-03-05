@@ -195,11 +195,11 @@ export default function Home() {
       />
 
       <main className="flex-1 relative flex flex-col h-full w-full">
-        {/* Mobile Header */}
-        <header className="md:hidden absolute top-0 left-0 right-0 z-20 flex justify-between items-center p-4 bg-transparent pointer-events-none">
+        {/* Mobile Header - Always Visible */}
+        <header className="md:hidden fixed top-0 left-0 right-0 z-40 flex justify-between items-center p-4 bg-white/80 dark:bg-slate-950/80 backdrop-blur border-b border-slate-200 dark:border-slate-800">
           <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
             <SheetTrigger asChild>
-              <Button variant="secondary" size="icon" className="rounded-full shadow-lg pointer-events-auto bg-white/90 dark:bg-black/90 backdrop-blur border-0">
+              <Button variant="secondary" size="icon" className="rounded-full shadow-lg pointer-events-auto bg-white dark:bg-slate-900 border-0">
                 <Menu className="w-5 h-5 text-slate-700 dark:text-slate-300" />
               </Button>
             </SheetTrigger>
@@ -220,7 +220,7 @@ export default function Home() {
           </Sheet>
         </header>
 
-        <div className="flex-1 relative overflow-hidden flex flex-col">
+        <div className="flex-1 relative overflow-hidden flex flex-col mt-16 md:mt-0">
           <main className="flex-1 relative flex flex-col h-full w-full">
             <div className={`absolute inset-0 transition-all duration-1000 ${activeTab === 'BOOKING' ? 'opacity-100 blur-0 scale-100' : 'opacity-40 blur-sm scale-110'}`}>
               <DynamicMap
