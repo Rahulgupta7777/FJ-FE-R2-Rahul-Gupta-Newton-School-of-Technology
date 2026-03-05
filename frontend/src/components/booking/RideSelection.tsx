@@ -14,6 +14,7 @@ interface RideSelectionProps {
     setPaymentMethod: (m: 'Cash' | 'Visa •••• 1234' | 'Paytm') => void;
     getDropoffTime: (mins?: number) => string;
     tripDuration: number;
+    distanceKm: number;
     renderPaymentIcon: (method: string) => React.ReactNode;
     onConfirm: () => void;
     onBack: () => void;
@@ -28,6 +29,7 @@ export function RideSelection({
     setPaymentMethod,
     getDropoffTime,
     tripDuration,
+    distanceKm,
     renderPaymentIcon,
     onConfirm,
     onBack
@@ -72,7 +74,7 @@ export function RideSelection({
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">₹{((2.50 + tripDuration * 1.50) * sharedSeats * 80).toFixed(0)}</p>
+                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">₹{Math.round(distanceKm * 10 * 0.6 * sharedSeats)}</p>
                         </div>
                     </div>
 
@@ -97,7 +99,7 @@ export function RideSelection({
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">₹{((5.00 + tripDuration * 2.10) * 80).toFixed(0)}</p>
+                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">₹{Math.round(distanceKm * 10)}</p>
                         </div>
                     </div>
 
@@ -123,7 +125,7 @@ export function RideSelection({
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">₹{((6.00 + tripDuration * 2.30) * 80).toFixed(0)}</p>
+                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">₹{Math.round(distanceKm * 10 * 1.15)}</p>
                         </div>
                     </div>
 
@@ -148,7 +150,7 @@ export function RideSelection({
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">₹{((10.00 + tripDuration * 3.50) * 80).toFixed(0)}</p>
+                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">₹{Math.round(distanceKm * 10 * 1.5)}</p>
                         </div>
                     </div>
 
@@ -173,7 +175,7 @@ export function RideSelection({
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">₹{((15.00 + tripDuration * 5.20) * 80).toFixed(0)}</p>
+                            <p className="font-black text-xl text-slate-900 dark:text-white tracking-tight">₹{Math.round(distanceKm * 10 * 2.2)}</p>
                         </div>
                     </div>
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { User, Plus, Star, History, BadgeCheck } from 'lucide-react';
+import { User, Plus, Star, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -19,12 +19,6 @@ interface ProfileDialogProps {
 export function ProfileDialog({ userName, setUserName, profileImage, setProfileImage, avatarList }: ProfileDialogProps) {
     const [isEditingProfile, setIsEditingProfile] = useState(false);
     const [editName, setEditName] = useState(userName);
-    const [phoneNumber, setPhoneNumber] = useState("+91 98765 43210");
-    const [newNumber, setNewNumber] = useState("");
-    const [isVerifyingNumber, setIsVerifyingNumber] = useState(false);
-    const [isOtpStep, setIsOtpStep] = useState(false);
-    const [otpCode, setOtpCode] = useState("");
-    const [otpError, setOtpError] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleProfileImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,42 +85,17 @@ export function ProfileDialog({ userName, setUserName, profileImage, setProfileI
                                 onChange={handleProfileImageUpload}
                             />
 
-                            <div className="text-center w-full">
-                                <h3 className="text-2xl font-black tracking-tight">{userName}</h3>
-                                <p className="text-slate-500 font-bold mb-6">{phoneNumber}</p>
-
-                                <div className="grid grid-cols-3 gap-4 w-full py-4 border-y border-slate-100 dark:border-slate-800">
-                                    <div className="flex flex-col items-center">
-                                        <span className="text-lg font-black flex items-center gap-1">4.88 <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" /></span>
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Rating</span>
-                                    </div>
-                                    <div className="flex flex-col items-center border-x border-slate-100 dark:border-slate-800 px-4">
-                                        <span className="text-lg font-black">2.5</span>
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Years</span>
-                                    </div>
-                                    <div className="flex flex-col items-center">
-                                        <span className="text-lg font-black">42</span>
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Trips</span>
-                                    </div>
-                                </div>
-
-                                <div className="mt-6 flex flex-col gap-3 w-full">
-                                    <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center">
-                                                <BadgeCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                                            </div>
-                                            <div className="text-left">
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-none mb-1">Status</p>
-                                                <p className="text-sm font-bold text-slate-900 dark:text-white">Gold Member</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div className="text-center">
+                                <h3 className="text-2xl font-bold">{userName}</h3>
+                                <p className="text-slate-500 font-medium">+1 (555) 123-4567</p>
+                                <div className="flex items-center justify-center gap-2 mt-4">
+                                    <Badge variant="secondary" className="px-3 py-1 text-sm"><Star className="w-3 h-3 text-yellow-500 mr-1 fill-yellow-500" /> 5.0 Rating</Badge>
+                                    <Badge variant="secondary" className="px-3 py-1 text-sm"><History className="w-3 h-3 mr-1 text-blue-500" /> 42 Rides</Badge>
                                 </div>
                             </div>
                         </div>
                         <DialogFooter className="sm:justify-start">
-                            <Button className="w-full h-14 rounded-2xl bg-black dark:bg-white text-white dark:text-black font-black premium-shadow transition-all active:scale-[0.98]" onClick={() => {
+                            <Button variant="outline" className="w-full" onClick={() => {
                                 setEditName(userName);
                                 setIsEditingProfile(true);
                             }}>Edit Profile</Button>
@@ -194,90 +163,9 @@ export function ProfileDialog({ userName, setUserName, profileImage, setProfileI
                                     placeholder="First Last"
                                 />
                             </div>
-                            <div className="space-y-4 pt-2">
-                                <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-                                    <div className="space-y-1">
-                                        <label className="text-xs font-black uppercase tracking-widest text-slate-400">Phone Number</label>
-                                        <p className="font-bold text-slate-900 dark:text-white">{phoneNumber}</p>
-                                    </div>
-                                    <Button
-                                        variant="link"
-                                        className="text-blue-600 font-black"
-                                        onClick={() => {
-                                            setIsVerifyingNumber(true);
-                                            setIsOtpStep(false);
-                                            setNewNumber("");
-                                            setOtpCode("");
-                                            setOtpError(false);
-                                        }}
-                                    >
-                                        Change
-                                    </Button>
-                                </div>
-
-                                {isVerifyingNumber && (
-                                    <div className="p-5 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-white/5 animate-in slide-in-from-top-2 duration-300">
-                                        {!isOtpStep ? (
-                                            <div className="space-y-4">
-                                                <p className="text-xs font-bold text-slate-500">Enter your new mobile number to receive a verification code.</p>
-                                                <div className="flex gap-2">
-                                                    <Input
-                                                        placeholder="+91 XXXXX XXXXX"
-                                                        className="h-12 rounded-xl"
-                                                        value={newNumber}
-                                                        onChange={(e) => setNewNumber(e.target.value)}
-                                                    />
-                                                    <Button
-                                                        className="h-12 px-6 rounded-xl bg-black dark:bg-white text-white dark:text-black font-bold"
-                                                        onClick={() => setIsOtpStep(true)}
-                                                        disabled={!newNumber}
-                                                    >
-                                                        Send
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div className="space-y-4">
-                                                <p className="text-xs font-bold text-slate-500">Enter the code sent to {newNumber} (Default: 123456)</p>
-                                                <div className="space-y-3">
-                                                    <Input
-                                                        placeholder="Enter OTP"
-                                                        className={`h-12 rounded-xl text-center text-xl font-black tracking-[1em] ${otpError ? 'border-red-500 ring-red-100' : ''}`}
-                                                        value={otpCode}
-                                                        maxLength={6}
-                                                        onChange={(e) => {
-                                                            setOtpCode(e.target.value);
-                                                            setOtpError(false);
-                                                        }}
-                                                    />
-                                                    {otpError && <p className="text-[10px] font-bold text-red-500 text-center uppercase tracking-wider">Invalid OTP. Please use 123456</p>}
-                                                    <div className="flex gap-2">
-                                                        <Button
-                                                            variant="ghost"
-                                                            className="flex-1 h-12 rounded-xl font-bold"
-                                                            onClick={() => setIsOtpStep(false)}
-                                                        >
-                                                            Back
-                                                        </Button>
-                                                        <Button
-                                                            className="flex-1 h-12 rounded-xl bg-black dark:bg-white text-white dark:text-black font-bold"
-                                                            onClick={() => {
-                                                                if (otpCode === "123456") {
-                                                                    setPhoneNumber(newNumber);
-                                                                    setIsVerifyingNumber(false);
-                                                                } else {
-                                                                    setOtpError(true);
-                                                                }
-                                                            }}
-                                                        >
-                                                            Verify
-                                                        </Button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-slate-500">Phone Number (Verified)</label>
+                                <Input disabled value="+1 (555) 123-4567" className="bg-slate-50 text-slate-500" />
                             </div>
                         </div>
                         <DialogFooter className="flex-row gap-2 sm:justify-end">

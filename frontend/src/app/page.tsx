@@ -19,6 +19,8 @@ import LocationSearch from '@/components/LocationSearch';
 import { SidebarMenu } from '@/components/layout/SidebarMenu';
 import { RideSelection } from '@/components/booking/RideSelection';
 import { TripStatus } from '@/components/booking/TripStatus';
+import { NotificationStack } from '@/components/notifications/NotificationStack';
+import { useNotifications } from '@/hooks/useNotifications';
 
 const DynamicMap = dynamic(() => import('@/components/DynamicMap'), {
   ssr: false,
@@ -46,6 +48,7 @@ export default function Home() {
 
   const [currentTime, setCurrentTime] = useState(new Date());
   const [tripDuration] = useState(12);
+  const [distanceKm] = useState(8.4); // 12 min * 0.7 km/min
 
   const [pickup, setPickup] = useState<[number, number] | null>(null);
   const [dropoff, setDropoff] = useState<[number, number] | null>(null);
@@ -70,11 +73,51 @@ export default function Home() {
   const [showCustomTip, setShowCustomTip] = useState(false);
   const [customTipValue, setCustomTipValue] = useState('');
 
+  const { notifications, addNotification, removeNotification } = useNotifications();
   const [chatMessage, setChatMessage] = useState('');
   const [messages, setMessages] = useState([
     { sender: 'driver', text: 'I am arriving in 2 minutes.' },
     { sender: 'user', text: 'Okay, I am outside.' },
   ]);
+
+  // Handle flow state alerts
+  useEffect(() => {
+    switch (flowState) {
+      case 'DRIVER_ASSIGNED':
+        addNotification({
+          title: 'Driver Assigned',
+          message: 'Arjun (5.0★) is arriving in 2 minutes.',
+          type: 'ride'
+        });
+        break;
+      case 'IN_RIDE':
+        addNotification({
+          title: 'Trip Started',
+          message: 'Safe journey! You will reach your destination in 12 minutes.',
+          type: 'ride'
+        });
+        break;
+      case 'POST_RIDE':
+        addNotification({
+          title: 'Arrived!',
+          message: 'You have reached your destination. Please rate your experience.',
+          type: 'ride'
+        });
+        break;
+    }
+  }, [flowState, addNotification]);
+
+  // Promotion Alert
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      addNotification({
+        title: 'Promotion Alert 🎁',
+        message: 'Get 25% off on your next Shared ride! Use code NEX25.',
+        type: 'promotion'
+      });
+    }, 15000);
+    return () => clearTimeout(timer);
+  }, [addNotification]);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 10000);
@@ -127,7 +170,7 @@ export default function Home() {
 
   if (isAuthChecking) {
     return (
-      <div className="h-screen w-full flex flex-col items-center justify-center bg-slate-50 gap-4">
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-background gap-4">
         <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
         <p className="text-slate-500 font-medium animate-pulse">Loading securely...</p>
       </div>
@@ -135,7 +178,7 @@ export default function Home() {
   }
 
   return (
-    <div className="relative h-screen w-full flex overflow-hidden bg-slate-50 font-sans">
+    <div className="relative h-screen w-full flex overflow-hidden bg-background font-sans transition-colors duration-500">
       <SidebarMenu
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -151,18 +194,21 @@ export default function Home() {
         <header className="md:hidden absolute top-0 left-0 right-0 z-20 flex justify-between items-center p-4 bg-transparent pointer-events-none">
           <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
             <SheetTrigger asChild>
-              <Button variant="secondary" size="icon" className="rounded-full shadow-lg pointer-events-auto bg-white/90 dark:bg-slate-900/90 backdrop-blur">
+              <Button variant="secondary" size="icon" className="rounded-full shadow-lg pointer-events-auto bg-white/90 dark:bg-black/90 backdrop-blur border-0">
                 <Menu className="w-5 h-5 text-slate-700 dark:text-slate-300" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[300px] p-0 flex flex-col bg-white dark:bg-slate-950">
-              <div className="p-6">
-                <h2 className="text-xl font-bold">NexRide</h2>
-                <nav className="mt-6 flex flex-col gap-2">
-                  <Button variant="ghost" className="justify-start" onClick={() => { setActiveTab('BOOKING'); setIsSidebarOpen(false); }}>Booking</Button>
-                  <Button variant="ghost" className="justify-start" onClick={() => { setActiveTab('TRIPS'); setIsSidebarOpen(false); }}>Trips</Button>
-                  <Button variant="ghost" className="justify-start" onClick={() => { setActiveTab('PAYMENTS'); setIsSidebarOpen(false); }}>Payments</Button>
-                  <Button variant="ghost" className="justify-start" onClick={() => { setActiveTab('SETTINGS'); setIsSidebarOpen(false); }}>Settings</Button>
+            <SheetContent side="left" className="w-[300px] p-0 flex flex-col bg-background border-0">
+              <div className="p-8">
+                <div className="flex items-center gap-3 mb-8">
+                  <img src="/e66735a8-370d-4668-b6b8-11a487bcd3cc" alt="Logo" className="w-8 h-8 object-contain" />
+                  <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">NexRide</span>
+                </div>
+                <nav className="flex flex-col gap-2">
+                  <Button variant="ghost" className={`justify-start h-12 rounded-xl font-bold ${activeTab === 'BOOKING' ? 'bg-slate-100 dark:bg-white/10' : ''}`} onClick={() => { setActiveTab('BOOKING'); setIsSidebarOpen(false); }}>Booking</Button>
+                  <Button variant="ghost" className={`justify-start h-12 rounded-xl font-bold ${activeTab === 'TRIPS' ? 'bg-slate-100 dark:bg-white/10' : ''}`} onClick={() => { setActiveTab('TRIPS'); setIsSidebarOpen(false); }}>Trips</Button>
+                  <Button variant="ghost" className={`justify-start h-12 rounded-xl font-bold ${activeTab === 'PAYMENTS' ? 'bg-slate-100 dark:bg-white/10' : ''}`} onClick={() => { setActiveTab('PAYMENTS'); setIsSidebarOpen(false); }}>Payments</Button>
+                  <Button variant="ghost" className={`justify-start h-12 rounded-xl font-bold ${activeTab === 'SETTINGS' ? 'bg-slate-100 dark:bg-white/10' : ''}`} onClick={() => { setActiveTab('SETTINGS'); setIsSidebarOpen(false); }}>Settings</Button>
                 </nav>
               </div>
             </SheetContent>
@@ -246,7 +292,7 @@ export default function Home() {
                       <Dialog>
                         <DialogTrigger asChild><Button variant={isScheduled ? "default" : "outline"} className={`flex-1 h-14 rounded-2xl font-bold ${isScheduled ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-slate-900 dark:hover:bg-slate-100 shadow-lg' : ''}`}><Calendar className="w-5 h-5 mr-3" /> {isScheduled ? scheduleTime : 'Later'}</Button></DialogTrigger>
                         <DialogContent className="glass-card shadow-3xl border-0 p-0 overflow-hidden max-w-[400px] rounded-[32px]">
-                          <div className="p-8 space-y-8 bg-white dark:bg-slate-950">
+                          <div className="p-8 space-y-8 bg-background">
                             <DialogHeader>
                               <DialogTitle className="text-3xl font-black italic tracking-tighter">Schedule a ride</DialogTitle>
                               <p className="text-slate-500 font-medium">Choose a time for your pickup</p>
@@ -341,6 +387,7 @@ export default function Home() {
                     sharedSeats={sharedSeats} setSharedSeats={setSharedSeats}
                     paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod}
                     getDropoffTime={getDropoffTime} tripDuration={tripDuration}
+                    distanceKm={distanceKm}
                     renderPaymentIcon={renderPaymentIcon} onConfirm={handleConfirmRide} onBack={() => setFlowState('IDLE')}
                   />
                 </div>
@@ -367,7 +414,7 @@ export default function Home() {
             </div>
 
             {(activeTab === 'TRIPS' || activeTab === 'PAYMENTS' || activeTab === 'SETTINGS') && (
-              <div className="absolute inset-0 z-20 bg-slate-50/50 dark:bg-black/50 backdrop-blur-xl animate-in fade-in duration-700">
+              <div className="absolute inset-0 z-20 bg-background/80 backdrop-blur-xl animate-in fade-in duration-700">
                 {activeTab === 'TRIPS' && <TripsView />}
                 {activeTab === 'PAYMENTS' && <PaymentsView />}
                 {activeTab === 'SETTINGS' && <SettingsView />}
@@ -376,6 +423,7 @@ export default function Home() {
           </main>
         </div>
       </main>
+      <NotificationStack notifications={notifications} onRemove={removeNotification} />
     </div>
   );
 }

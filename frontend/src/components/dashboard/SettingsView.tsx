@@ -5,8 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Moon, Sun, Monitor, Bell, Shield, LogOut, ChevronRight } from "lucide-react";
+import { Moon, Sun, Monitor, Bell, Shield, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -24,46 +23,43 @@ export function SettingsView() {
     }
 
     return (
-        <div className="p-10 md:p-12 h-screen overflow-y-auto w-full max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-500">
-            <div className="mb-12">
-                <h2 className="text-4xl font-black tracking-tight mb-3 text-slate-900 dark:text-white">Settings</h2>
-                <p className="text-lg text-slate-500 dark:text-slate-400 font-medium">Personalize your NexRide experience and account security.</p>
+        <div className="p-4 md:p-12 h-screen overflow-y-auto w-full max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-500">
+            <div className="mb-8 md:mb-12">
+                <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-2 md:mb-3 text-slate-900 dark:text-white">Settings</h2>
+                <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 font-medium">Personalize your NexRide experience and account security.</p>
             </div>
 
             <div className="space-y-6">
-
                 {/* Appearance */}
-                <Card className="border shadow-sm">
-                    <CardHeader>
-                        <CardTitle className="text-xl">Appearance</CardTitle>
-                        <CardDescription>Customize how the app looks on your device.</CardDescription>
+                <Card className="glass-card border-0 shadow-none">
+                    <CardHeader className="p-6 pb-0">
+                        <CardTitle className="text-xl md:text-2xl font-black tracking-tighter italic">Appearance</CardTitle>
+                        <CardDescription className="text-sm md:text-base">Customize how the app looks on your device.</CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-6">
                         <div className="grid grid-cols-3 gap-4">
                             <button
                                 onClick={() => setTheme("light")}
-                                className={`group relative overflow-hidden rounded-2xl p-5 flex flex-col items-center gap-3 transition-all duration-300 ${theme === 'light' ? 'ring-2 ring-black ring-offset-2 dark:ring-offset-slate-950 bg-white shadow-lg' : 'border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-transparent opacity-70 hover:opacity-100'}`}
+                                className={`group relative flex flex-col items-center justify-center gap-3 rounded-2xl p-6 transition-all duration-300 ${theme === 'light' ? 'bg-black text-white shadow-xl' : 'bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-500 border border-slate-200 dark:border-white/5'}`}
                             >
-                                {theme === 'light' && <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-transparent opacity-50" />}
-                                <Sun className={`w-6 h-6 z-10 ${theme === 'light' ? 'text-black animate-in spin-in-90 duration-500' : 'text-slate-400'}`} />
-                                <span className={`font-semibold text-sm z-10 ${theme === 'light' ? 'text-black' : 'text-slate-500'}`}>Light</span>
+                                <Sun className={`w-7 h-7 transition-all duration-300 ${theme === 'light' ? 'scale-110' : 'group-hover:rotate-12'}`} />
+                                <span className="text-xs font-black uppercase tracking-widest">Light</span>
                             </button>
 
                             <button
                                 onClick={() => setTheme("dark")}
-                                className={`group relative overflow-hidden rounded-2xl p-5 flex flex-col items-center gap-3 transition-all duration-300 ${theme === 'dark' ? 'ring-2 ring-slate-400 ring-offset-2 dark:ring-offset-slate-950 bg-slate-900 shadow-lg' : 'border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-transparent opacity-70 hover:opacity-100'}`}
+                                className={`group relative flex flex-col items-center justify-center gap-3 rounded-2xl p-6 transition-all duration-300 ${theme === 'dark' ? 'bg-white text-black shadow-xl' : 'bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 border border-slate-200 dark:border-white/5'}`}
                             >
-                                {theme === 'dark' && <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-transparent opacity-50" />}
-                                <Moon className={`w-6 h-6 z-10 ${theme === 'dark' ? 'text-white animate-in zoom-in-50 duration-500' : 'text-slate-400'}`} />
-                                <span className={`font-semibold text-sm z-10 ${theme === 'dark' ? 'text-white' : 'text-slate-500'}`}>Dark</span>
+                                <Moon className={`w-7 h-7 transition-all duration-300 ${theme === 'dark' ? 'scale-110' : 'group-hover:-rotate-12'}`} />
+                                <span className="text-xs font-black uppercase tracking-widest">Dark</span>
                             </button>
 
                             <button
                                 onClick={() => setTheme("system")}
-                                className={`group relative overflow-hidden rounded-2xl p-5 flex flex-col items-center gap-3 transition-all duration-300 ${theme === 'system' ? 'ring-2 ring-slate-600 ring-offset-2 dark:ring-offset-slate-950 bg-slate-100 dark:bg-slate-800 shadow-lg' : 'border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-transparent opacity-70 hover:opacity-100'}`}
+                                className={`group relative flex flex-col items-center justify-center gap-3 rounded-2xl p-6 transition-all duration-300 ${theme === 'system' ? 'bg-blue-600 text-white shadow-xl' : 'bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 border border-slate-200 dark:border-white/5'}`}
                             >
-                                <Monitor className={`w-6 h-6 z-10 ${theme === 'system' ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400'}`} />
-                                <span className={`font-semibold text-sm z-10 ${theme === 'system' ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>System</span>
+                                <Monitor className={`w-7 h-7 transition-all duration-300 ${theme === 'system' ? 'scale-110' : ''}`} />
+                                <span className="text-xs font-black uppercase tracking-widest">System</span>
                             </button>
                         </div>
                     </CardContent>
@@ -119,8 +115,7 @@ export function SettingsView() {
                         Log Out
                     </Button>
                 </div>
-
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

@@ -1,13 +1,75 @@
-"use client";
-
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Navigation, Calendar, CreditCard, ChevronDown, ChevronUp, Info, Star } from "lucide-react";
+import { MapPin, Navigation, Calendar, CreditCard, ChevronDown, ChevronUp, Info, Star, Clock, Download, HelpCircle, TrendingUp, DollarSign } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import jsPDF from 'jspdf';
 
 export function TripsView() {
     const [expandedTrip, setExpandedTrip] = useState<string | null>(null);
+
+    const stats = {
+        totalTrips: 42,
+        totalSpent: "12,450",
+        totalDistance: "348",
+        avgRating: 4.9
+    };
+
+    const handleDownloadReceipt = (trip: any) => {
+        const doc = new jsPDF();
+
+        // Receipt Header
+        doc.setFontSize(22);
+        doc.text("NexRide Receipt", 105, 20, { align: "center" });
+
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text(`Receipt ID: ${trip.id}`, 105, 30, { align: "center" });
+
+        // Divider
+        doc.setLineWidth(0.5);
+        doc.line(20, 35, 190, 35);
+
+        // Trip Details
+        doc.setFontSize(14);
+        doc.setTextColor(0);
+        doc.text("Trip Information", 20, 45);
+
+        doc.setFontSize(11);
+        doc.text(`Date: ${trip.date}`, 20, 55);
+        doc.text(`Driver: ${trip.driver}`, 20, 62);
+        doc.text(`Vehicle: ${trip.vehicle}`, 20, 69);
+        doc.text(`Pickup: ${trip.pickup}`, 20, 76);
+        doc.text(`Dropoff: ${trip.destination}`, 20, 83);
+
+        // Fare Breakdown
+        doc.setFontSize(14);
+        doc.text("Fare Breakdown", 20, 100);
+
+        doc.setFontSize(11);
+        doc.text(`Base Fare:`, 20, 110);
+        doc.text(`₹${trip.breakdown.base}`, 190, 110, { align: "right" });
+
+        doc.text(`Distance (${trip.distance}):`, 20, 117);
+        doc.text(`₹${trip.breakdown.distance}`, 190, 117, { align: "right" });
+
+        doc.text(`Time (${trip.duration}):`, 20, 124);
+        doc.text(`₹${trip.breakdown.time}`, 190, 124, { align: "right" });
+
+        doc.text(`Long Pickup Fee:`, 20, 131);
+        doc.text(`₹0.00`, 190, 131, { align: "right" });
+
+        doc.setFontSize(12);
+        doc.text(`Subtotal:`, 20, 145);
+        doc.text(`₹${trip.price}`, 190, 145, { align: "right" });
+
+        // Footer
+        doc.setFontSize(10);
+        doc.setTextColor(150);
+        doc.text("Thank you for riding with NexRide!", 105, 280, { align: "center" });
+
+        doc.save(`NexRide_Receipt_${trip.id}.pdf`);
+    };
 
     const trips = [
         {
@@ -47,30 +109,84 @@ export function TripsView() {
         {
             id: "trip-3",
             date: "Oct 12, 9:00 AM",
-            status: "CANCELLED",
+            status: "COMPLETED",
             pickup: "Times Square",
             dropoff: "Brooklyn Bridge",
-            driver: "Unknown",
-            amount: "₹0",
-            rating: null,
+            driver: "Michael (Toyota Camry)",
+            amount: "₹1850",
+            rating: 4.9,
+            breakdown: {
+                base: 250,
+                distance: 1200,
+                time: 300,
+                fee: 50,
+                tax: 50
+            }
         },
         {
             id: "trip-4",
-            date: "Tomorrow, 8:00 AM",
-            status: "SCHEDULED",
+            date: "Oct 10, 8:00 AM",
+            status: "COMPLETED",
             pickup: "123 Broadway, NYC",
-            dropoff: "JFK Airport",
-            driver: "Pending",
-            amount: "~₹3800",
-            rating: null,
+            dropoff: "Lower Manhattan",
+            driver: "Jessica (Tesla Model 3)",
+            amount: "₹2450",
+            rating: 5.0,
+            breakdown: {
+                base: 400,
+                distance: 1500,
+                time: 400,
+                fee: 100,
+                tax: 50
+            }
         }
     ];
 
     return (
-        <div className="p-10 md:p-12 h-screen overflow-y-auto w-full max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-500">
+        <div className="p-6 md:p-12 h-screen overflow-y-auto w-full max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-500 pb-24 bg-background">
             <div className="mb-12">
-                <h2 className="text-4xl font-black tracking-tight mb-3 text-slate-900 dark:text-white">My Trips</h2>
-                <p className="text-lg text-slate-500 dark:text-slate-400 font-medium">Manage your past rides and upcoming schedules.</p>
+                <h2 className="text-4xl font-black tracking-tight mb-3 text-slate-900 dark:text-white">Your Trips</h2>
+                <p className="text-lg text-slate-500 dark:text-slate-400 font-medium">Review your ride history and download receipts.</p>
+            </div>
+
+            {/* Ride Statistics Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+                <Card className="glass-card border-0 bg-white/50 dark:bg-white/5 p-4 rounded-2xl flex flex-col gap-2">
+                    <div className="p-2 w-fit bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
+                        <Navigation className="w-5 h-5" />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 leading-none mb-1">Total Trips</p>
+                        <p className="text-2xl font-black">{stats.totalTrips}</p>
+                    </div>
+                </Card>
+                <Card className="glass-card border-0 bg-white/50 dark:bg-white/5 p-4 rounded-2xl flex flex-col gap-2">
+                    <div className="p-2 w-fit bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-emerald-600 dark:text-emerald-400">
+                        <TrendingUp className="w-5 h-5" />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 leading-none mb-1">Total KM</p>
+                        <p className="text-2xl font-black">{stats.totalDistance}</p>
+                    </div>
+                </Card>
+                <Card className="glass-card border-0 bg-white/50 dark:bg-white/5 p-4 rounded-2xl flex flex-col gap-2">
+                    <div className="p-2 w-fit bg-yellow-100 dark:bg-yellow-900/30 rounded-lg text-yellow-600 dark:text-yellow-400">
+                        <Star className="w-5 h-5 fill-current" />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 leading-none mb-1">Avg Rating</p>
+                        <p className="text-2xl font-black">{stats.avgRating}</p>
+                    </div>
+                </Card>
+                <Card className="glass-card border-0 bg-white/50 dark:bg-white/5 p-4 rounded-2xl flex flex-col gap-2">
+                    <div className="p-2 w-fit bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-emerald-600 dark:text-emerald-400">
+                        <DollarSign className="w-5 h-5" />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 leading-none mb-1">Total Spent</p>
+                        <p className="text-2xl font-black">₹{stats.totalSpent}</p>
+                    </div>
+                </Card>
             </div>
 
             <div className="space-y-6 pb-20">
@@ -116,7 +232,21 @@ export function TripsView() {
                                 </div>
 
                                 <div className="text-right flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center border-t md:border-t-0 md:border-l border-slate-100 dark:border-slate-800 pt-4 md:pt-0 md:pl-6 min-w-[120px]">
-                                    <p className="font-black text-2xl tracking-tighter">{trip.amount}</p>
+                                    <div className="flex gap-4 items-end">
+                                        <div className="text-right">
+                                            <p className="font-black text-2xl tracking-tighter mb-1">{trip.amount}</p>
+                                        </div>
+                                        <div className="text-right border-l border-slate-200 dark:border-white/10 pl-3">
+                                            <p className="text-[8px] text-indigo-500 font-black uppercase tracking-widest leading-none">REWARDS</p>
+                                            <p className="text-lg font-black text-indigo-600 dark:text-indigo-400 leading-none">
+                                                +{(() => {
+                                                    const cleanAmount = trip.amount.replace(/[^0-9]/g, '');
+                                                    const val = parseInt(cleanAmount);
+                                                    return isNaN(val) ? 0 : Math.round(val / 10);
+                                                })()}
+                                            </p>
+                                        </div>
+                                    </div>
                                     {trip.rating && (
                                         <div className="flex items-center gap-1.5 mt-1 bg-yellow-50 dark:bg-yellow-900/20 px-2 py-0.5 rounded-full border border-yellow-200/50 dark:border-yellow-700/30">
                                             <span className="text-xs font-black text-yellow-700 dark:text-yellow-500">{trip.rating}</span>
@@ -131,7 +261,7 @@ export function TripsView() {
                                     <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
                                         <Info className="w-3 h-3" /> Fare Breakdown
                                     </h4>
-                                    <div className="space-y-3 bg-slate-50 dark:bg-slate-950/50 p-4 rounded-2xl">
+                                    <div className="space-y-3 bg-slate-50 dark:bg-card p-4 rounded-2xl border border-slate-100 dark:border-white/5">
                                         <div className="flex justify-between text-sm font-bold">
                                             <span className="text-slate-500">Base Fare</span>
                                             <span>₹{trip.breakdown.base}</span>
@@ -157,9 +287,43 @@ export function TripsView() {
                                             <span className="text-black dark:text-white">{trip.amount}</span>
                                         </div>
                                     </div>
-                                    <div className="mt-4 flex gap-2">
-                                        <Button variant="outline" className="flex-1 h-12 rounded-xl text-xs font-black uppercase tracking-widest">Get Receipt</Button>
-                                        <Button variant="outline" className="flex-1 h-12 rounded-xl text-xs font-black uppercase tracking-widest">Support</Button>
+                                    <div className="mt-4 flex flex-col gap-4">
+                                        <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
+                                            <div className="flex items-center gap-2 px-3 py-2 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/40 rounded-xl text-indigo-700 dark:text-indigo-300 text-[10px] font-bold">
+                                                <Info className="w-3 h-3" />
+                                                <span>FARES MAY VARY BASED ON TRAFFIC AND DEMAND</span>
+                                            </div>
+                                            <div className="flex items-center justify-between text-sm font-bold opacity-60">
+                                                <span>Fare Calculation Metrics</span>
+                                                <Info className="w-4 h-4" />
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="p-3 bg-slate-100 dark:bg-white/5 rounded-xl">
+                                                    <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-1">Standard Rate</p>
+                                                    <p className="text-base font-black">₹10 / km</p>
+                                                </div>
+                                                <div className="p-3 bg-slate-100 dark:bg-white/5 rounded-xl">
+                                                    <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-1">Membership</p>
+                                                    <p className="text-base font-black text-indigo-600 dark:text-indigo-400">10% Points</p>
+                                                </div>
+                                            </div>
+                                            <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                                                Fare is calculated at a base rate of ₹10 per km. Premium vehicle types may carry a multiplier. Members earn 1 reward point for every ₹10 spent.
+                                            </p>
+                                        </div>
+
+                                        <div className="flex gap-2">
+                                            <Button
+                                                variant="secondary"
+                                                className="flex-1 h-12 rounded-xl text-xs font-black uppercase tracking-widest"
+                                                onClick={(e) => { e.stopPropagation(); handleDownloadReceipt(trip); }}
+                                            >
+                                                <Download className="w-4 h-4 mr-2" /> Receipt
+                                            </Button>
+                                            <Button variant="outline" className="flex-1 h-12 rounded-xl text-xs font-black uppercase tracking-widest">
+                                                <HelpCircle className="w-4 h-4 mr-2" /> Support
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
                             )}

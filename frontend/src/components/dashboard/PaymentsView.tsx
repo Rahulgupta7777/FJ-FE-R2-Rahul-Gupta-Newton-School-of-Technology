@@ -13,14 +13,14 @@ export function PaymentsView() {
     const [upiId, setUpiId] = useState("");
 
     return (
-        <div className="p-10 md:p-12 h-screen overflow-y-auto w-full max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-500">
+        <div className="p-10 md:p-12 h-screen overflow-y-auto w-full max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-500 bg-background">
             <div className="mb-12">
                 <h2 className="text-4xl font-black tracking-tight mb-3 text-slate-900 dark:text-white">Payment Methods</h2>
                 <p className="text-lg text-slate-500 dark:text-slate-400 font-medium">Securely manage your preferred ways to pay for rides.</p>
             </div>
 
             <Tabs defaultValue="upi" className="w-full">
-                <TabsList className="grid w-full grid-cols-4 mb-8 h-14 bg-slate-100 dark:bg-slate-900 rounded-xl p-1">
+                <TabsList className="grid w-full grid-cols-4 mb-8 h-14 bg-slate-100 dark:bg-card rounded-xl p-1 border dark:border-white/5">
                     <TabsTrigger value="upi" className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800">
                         <Smartphone className="w-4 h-4 mr-2 hidden sm:block" /> UPI
                     </TabsTrigger>
@@ -56,7 +56,7 @@ export function PaymentsView() {
                                         className="h-12"
                                     />
                                 </div>
-                                <div className="flex items-center text-sm text-slate-500 gap-2 bg-slate-50 dark:bg-slate-900 p-3 rounded-lg">
+                                <div className="flex items-center text-sm text-slate-500 gap-2 bg-slate-50 dark:bg-card p-3 rounded-lg border border-slate-100 dark:border-white/5">
                                     <ShieldCheck className="w-4 h-4 text-emerald-600" />
                                     We'll send a 1₹ request to verify this ID. It will be refunded automatically.
                                 </div>
@@ -86,28 +86,47 @@ export function PaymentsView() {
 
                 {/* CARDS SECTION */}
                 <TabsContent value="cards" className="space-y-4">
-                    <Card className="border shadow-sm bg-gradient-to-br from-slate-900 to-slate-800 text-white overflow-hidden relative">
-                        <div className="absolute right-[-20px] top-[-20px] w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-                        <CardContent className="p-6 relative z-10">
-                            <div className="flex justify-between items-start mb-8">
-                                <CreditCard className="w-8 h-8 opacity-80" />
-                                <span className="font-bold italic text-xl opacity-80">VISA</span>
+                    <div className="relative group perspective-1000 max-w-md mx-auto w-full">
+                        <div className="h-60 w-full glass-card border-0 bg-gradient-to-br from-slate-900 to-black p-8 rounded-[28px] shadow-2xl relative overflow-hidden transition-transform duration-500 hover:scale-[1.02] group-hover:rotate-x-1 group-hover:rotate-y-2">
+                            {/* Card Chip & Type  */}
+                            <div className="flex justify-between items-start mb-10">
+                                <div className="w-12 h-9 bg-gradient-to-br from-yellow-200 to-yellow-500 rounded-md shadow-inner flex items-center justify-center relative overflow-hidden">
+                                    <div className="absolute inset-0 border border-black/10 grid grid-cols-3 grid-rows-3 opacity-30">
+                                        {[...Array(9)].map((_, i) => <div key={i} className="border-[0.5px] border-black/40" />)}
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <h3 className="font-extrabold text-2xl italic tracking-tighter opacity-80">VISA</h3>
+                                </div>
                             </div>
-                            <div className="space-y-1 mb-6">
-                                <p className="font-mono text-xl tracking-[0.2em] opacity-90">•••• •••• •••• 4242</p>
+
+                            {/* Card Number */}
+                            <div className="mb-8">
+                                <p className="font-mono text-2xl tracking-[0.25em] text-white flex justify-between">
+                                    <span>••••</span>
+                                    <span>••••</span>
+                                    <span>••••</span>
+                                    <span>4242</span>
+                                </p>
                             </div>
+
+                            {/* Holder & Expiry */}
                             <div className="flex justify-between items-end">
-                                <div>
-                                    <p className="text-xs uppercase opacity-60 tracking-wider">Card Holder</p>
-                                    <p className="font-medium tracking-wide">RAHUL GUPTA</p>
+                                <div className="space-y-1">
+                                    <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-bold">Card Holder</p>
+                                    <p className="font-bold text-base tracking-wide text-white/90">RAHUL GUPTA</p>
                                 </div>
-                                <div>
-                                    <p className="text-xs uppercase opacity-60 tracking-wider">Expires</p>
-                                    <p className="font-medium tracking-wide">12/28</p>
+                                <div className="text-right space-y-1">
+                                    <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-bold">Expires</p>
+                                    <p className="font-bold text-base tracking-wide text-white/90">12/28</p>
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
+
+                            {/* Realistic Gloss Effect */}
+                            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-tr from-transparent via-white/5 to-white/10 opacity-30 pointer-events-none" />
+                            <div className="absolute -bottom-20 -right-20 w-60 h-60 bg-blue-500/10 rounded-full blur-[80px]" />
+                        </div>
+                    </div>
 
                     <Dialog>
                         <DialogTrigger asChild>
@@ -169,14 +188,14 @@ export function PaymentsView() {
                         </Card>
 
                         {/* PhonePe */}
-                        <Card className="border shadow-sm hover:border-purple-500 transition-colors cursor-pointer group">
+                        <Card className="border shadow-sm hover:border-indigo-500 transition-colors cursor-pointer group">
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm p-2">
                                         <img src="https://www.vectorlogo.zone/logos/phonepe/phonepe-ar21.svg" alt="PhonePe" className="w-full h-full object-contain" />
                                     </div>
                                     <div>
-                                        <h4 className="font-bold group-hover:text-purple-600 transition-colors">PhonePe</h4>
+                                        <h4 className="font-bold group-hover:text-indigo-600 transition-colors">PhonePe</h4>
                                         <p className="text-sm text-slate-500">Link your account</p>
                                     </div>
                                 </div>
