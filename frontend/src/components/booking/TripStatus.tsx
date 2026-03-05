@@ -8,19 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription } from "@/components/ui/sheet";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createElement } from 'react';
 import { Heart, House } from 'lucide-react';
-
-declare global {
-    namespace JSX {
-        interface IntrinsicElements {
-            'stripe-buy-button': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
-                'buy-button-id': string;
-                'publishable-key': string;
-            };
-        }
-    }
-}
 
 interface TripStatusProps {
     pickupText?: string;
@@ -516,11 +505,10 @@ export function TripStatus({
                                     <p className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter">₹{1200 + tip}</p>
                                 </div>
                                 <div className="bg-white dark:bg-slate-900 rounded-2xl p-2">
-                                    <stripe-buy-button
-                                        buy-button-id="buy_btn_1T7ZQJ2euZ0ZOKm2yb24A8Si"
-                                        publishable-key="pk_test_51T7YFD2euZ0ZOKm2yXRrakX3Rx8UK7OJIdk5XCV4oiaH9ctBu9w44lSDbOhZ7u2aaybFYSqycyPqKEOq0HyhDkUB00wQJlNi06"
-                                    >
-                                    </stripe-buy-button>
+                                    {createElement('stripe-buy-button', {
+                                        'buy-button-id': 'buy_btn_1T7ZQJ2euZ0ZOKm2yb24A8Si',
+                                        'publishable-key': 'pk_test_51T7YFD2euZ0ZOKm2yXRrakX3Rx8UK7OJIdk5XCV4oiaH9ctBu9w44lSDbOhZ7u2aaybFYSqycyPqKEOq0HyhDkUB00wQJlNi06'
+                                    })}
                                 </div>
                             </div>
                         </div>
