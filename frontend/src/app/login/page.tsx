@@ -329,7 +329,7 @@ export default function LoginPage() {
                                         </div>
                                     </CardContent>
                                     <CardFooter className="px-10 pb-12">
-                                        <Button type="submit" className="w-full h-[56px] text-lg font-bold rounded-2xl bg-black transition-all active:scale-[0.98]" disabled={!password || isLoading}>
+                                        <Button type="submit" className="w-full h-[56px] text-lg font-bold rounded-2xl bg-black dark:bg-white text-white dark:text-black hover:bg-slate-900 dark:hover:bg-slate-100 transition-all active:scale-[0.98]" disabled={!password || isLoading}>
                                             {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Log In'}
                                         </Button>
                                     </CardFooter>

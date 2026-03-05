@@ -11,6 +11,17 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescri
 import { useState, useEffect } from 'react';
 import { Heart, House } from 'lucide-react';
 
+declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+            'stripe-buy-button': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+                'buy-button-id': string;
+                'publishable-key': string;
+            };
+        }
+    }
+}
+
 interface TripStatusProps {
     pickupText?: string;
     dropoffText?: string;
@@ -72,6 +83,19 @@ export function TripStatus({
 }: TripStatusProps) {
     const [timeLeft, setTimeLeft] = useState(2);
     const [isThankYou, setIsThankYou] = useState(false);
+    const [postRideStep, setPostRideStep] = useState<'SUMMARY' | 'PAYMENT' | 'FEEDBACK'>('SUMMARY');
+
+    useEffect(() => {
+        if (flowState === 'POST_RIDE') {
+            const script = document.createElement('script');
+            script.src = "https://js.stripe.com/v3/buy-button.js";
+            script.async = true;
+            document.body.appendChild(script);
+            return () => {
+                document.body.removeChild(script);
+            };
+        }
+    }, [flowState]);
 
     useEffect(() => {
         if (flowState === 'DRIVER_ASSIGNED' && timeLeft > 0) {
@@ -382,121 +406,183 @@ export function TripStatus({
 
     if (flowState === 'POST_RIDE') {
         return (
-            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white dark:bg-slate-950 p-6">
-                <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span className="text-emerald-600 dark:text-emerald-400 text-2xl">✓</span>
-                    </div>
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">You arrived!</h2>
-                    <p className="text-slate-500 dark:text-slate-400 mt-1">Hope you enjoyed the ride with Arjun</p>
-                </div>
-
-                <div className="bg-slate-50 dark:bg-slate-900 border dark:border-slate-800 rounded-2xl p-4 mb-6 space-y-3">
-                    <div className="flex justify-between items-center">
-                        <span className="text-slate-500 dark:text-slate-400">Trip Fare</span>
-                        <span className="font-bold font-mono text-lg text-slate-900 dark:text-white">₹1200</span>
-                    </div>
-                    {tip > 0 && (
-                        <div className="flex justify-between items-center text-emerald-600 dark:text-emerald-400 animate-in fade-in slide-in-from-top-1">
-                            <span className="text-sm font-medium">Tip</span>
-                            <span className="font-bold font-mono">+₹{tip.toFixed(0)}</span>
+            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in slide-in-from-bottom-10 bg-white dark:bg-slate-950 p-6 flex flex-col gap-6">
+                {/* Step Indicator */}
+                <div className="flex items-center justify-between px-2 mb-2">
+                    {['SUMMARY', 'PAYMENT', 'FEEDBACK'].map((step, idx) => (
+                        <div key={step} className="flex items-center gap-2">
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all duration-500 ${postRideStep === step ? 'bg-blue-600 text-white scale-110 shadow-lg shadow-blue-500/20' : (idx < ['SUMMARY', 'PAYMENT', 'FEEDBACK'].indexOf(postRideStep) ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400')}`}>
+                                {idx < ['SUMMARY', 'PAYMENT', 'FEEDBACK'].indexOf(postRideStep) ? '✓' : idx + 1}
+                            </div>
+                            {idx < 2 && <div className={`h-[2px] w-8 sm:w-16 rounded-full transition-all duration-1000 ${idx < ['SUMMARY', 'PAYMENT', 'FEEDBACK'].indexOf(postRideStep) ? 'bg-emerald-500' : 'bg-slate-100 dark:bg-slate-800'}`}></div>}
                         </div>
-                    )}
-                    <div className="flex justify-between items-center text-sm pt-2 border-t border-slate-200 dark:border-slate-800">
-                        <span className="flex items-center gap-2 text-slate-500 dark:text-slate-400"><CreditCard className="w-4 h-4" /> Paid with Visa 4242</span>
-                        {tip > 0 && <span className="font-bold text-slate-900 dark:text-white font-mono">₹{(1200 + tip).toFixed(0)}</span>}
-                    </div>
+                    ))}
                 </div>
 
-                <div className="mb-6">
-                    <p className="font-medium mb-3 text-center text-slate-900 dark:text-white">Add a tip for Arjun</p>
-                    <div className="flex justify-center gap-2 mb-4">
-                        {[1, 2, 5].map((amount) => (
-                            <Button
-                                key={amount}
-                                variant={tip === amount && !showCustomTip ? "default" : "outline"}
-                                className={`flex-1 rounded-xl h-12 font-bold ${tip === amount && !showCustomTip ? 'bg-black dark:bg-white text-white dark:text-black border-black dark:border-white shadow-md' : 'text-slate-600'}`}
-                                onClick={() => {
-                                    setTip(amount * 80);
-                                    setShowCustomTip(false);
-                                }}
-                            >
-                                ₹{amount * 80}
-                            </Button>
-                        ))}
-                        <Button
-                            variant={showCustomTip ? "default" : "outline"}
-                            className={`flex-1 rounded-xl h-12 font-bold ${showCustomTip ? 'bg-black dark:bg-white text-white dark:text-black border-black dark:border-white shadow-md' : 'text-slate-600'}`}
-                            onClick={() => setShowCustomTip(!showCustomTip)}
-                        >
-                            Other
+                {postRideStep === 'SUMMARY' && (
+                    <div className="animate-in fade-in slide-in-from-right-4 duration-500 space-y-6">
+                        <div className="text-center">
+                            <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span className="text-emerald-600 dark:text-emerald-400 text-2xl">✓</span>
+                            </div>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">You arrived!</h2>
+                            <p className="text-slate-500 dark:text-slate-400 mt-1">Hope you enjoyed the ride with Arjun</p>
+                        </div>
+
+                        <div className="bg-slate-50 dark:bg-slate-900 border dark:border-slate-800 rounded-3xl p-6 space-y-4">
+                            <div className="flex justify-between items-center text-slate-500">
+                                <span className="text-sm font-bold uppercase tracking-wider">Trip Fare</span>
+                                <span className="font-black text-slate-900 dark:text-white">₹1200</span>
+                            </div>
+                            <div className="flex justify-between items-center text-slate-500">
+                                <span className="text-sm font-bold uppercase tracking-wider">Tipping</span>
+                                <span className="font-black text-emerald-600 dark:text-emerald-400 animate-in fade-in">+₹{tip}</span>
+                            </div>
+                            <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center">
+                                <span className="font-black text-lg text-slate-900 dark:text-white">Total Amount</span>
+                                <span className="font-black text-2xl text-blue-600 dark:text-blue-400">₹{1200 + tip}</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p className="font-black text-xs uppercase tracking-widest text-slate-400 mb-4 text-center">Add a tip for Arjun</p>
+                            <div className="grid grid-cols-4 gap-2 mb-4">
+                                {[80, 160, 400].map((amount) => (
+                                    <Button
+                                        key={amount}
+                                        variant={tip === amount ? "default" : "outline"}
+                                        className={`rounded-xl h-12 font-black transition-all ${tip === amount ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-500/20' : 'text-slate-500 bg-white dark:bg-white/5 border-slate-200 dark:border-white/5'}`}
+                                        onClick={() => { setTip(amount); setShowCustomTip(false); }}
+                                    >
+                                        ₹{amount}
+                                    </Button>
+                                ))}
+                                <Button
+                                    variant={showCustomTip ? "default" : "outline"}
+                                    className={`rounded-xl h-12 font-black transition-all ${showCustomTip ? 'bg-blue-600 text-white border-blue-600' : 'text-slate-500 bg-white dark:bg-white/5 border-slate-200 dark:border-white/5'}`}
+                                    onClick={() => setShowCustomTip(!showCustomTip)}
+                                >
+                                    Other
+                                </Button>
+                            </div>
+                            {showCustomTip && (
+                                <div className="relative animate-in slide-in-from-top-2 fade-in">
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
+                                    <Input
+                                        type="number"
+                                        placeholder="Custom amount"
+                                        className="h-12 pl-8 rounded-xl border-slate-200 dark:border-white/10 dark:bg-white/5 font-black"
+                                        value={customTipValue}
+                                        onChange={(e) => {
+                                            setCustomTipValue(e.target.value);
+                                            setTip(parseFloat(e.target.value) || 0);
+                                        }}
+                                    />
+                                </div>
+                            )}
+                        </div>
+
+                        <Button className="w-full h-16 bg-slate-900 dark:bg-white text-white dark:text-black rounded-2xl text-lg font-black shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all" onClick={() => setPostRideStep('PAYMENT')}>
+                            Confirm Fare & Pay
                         </Button>
                     </div>
+                )}
 
-                    {showCustomTip && (
-                        <div className="relative animate-in slide-in-from-top-2 fade-in">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
-                            <Input
-                                type="number"
-                                placeholder="Enter custom amount"
-                                className="h-12 pl-8 rounded-xl border-slate-200"
-                                value={customTipValue}
-                                onChange={(e) => {
-                                    setCustomTipValue(e.target.value);
-                                    setTip(parseFloat(e.target.value) || 0);
-                                }}
+                {postRideStep === 'PAYMENT' && (
+                    <div className="animate-in fade-in slide-in-from-right-4 duration-500 space-y-6">
+                        <div className="text-center">
+                            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <CreditCard className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                            </div>
+                            <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Complete Payment</h2>
+                            <p className="text-slate-500 dark:text-slate-400 mt-1 font-medium">Your total ride fare is <span className="text-blue-600 dark:text-blue-400 font-black">₹{1200 + tip}</span></p>
+                        </div>
+
+                        <div className="p-1 glass-card border-2 border-emerald-500/20 dark:border-emerald-500/10 rounded-[32px] overflow-hidden bg-gradient-to-br from-emerald-50/50 to-white dark:from-emerald-950/10 dark:to-slate-950 shadow-2xl">
+                            <div className="p-6 flex items-center justify-between border-b border-emerald-100 dark:border-emerald-900/20">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                                        <CreditCard className="w-6 h-6 text-white" />
+                                    </div>
+                                    <div>
+                                        <p className="font-black text-slate-900 dark:text-white">NexRide Checkout</p>
+                                        <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Stripe Secure</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="p-6 space-y-6">
+                                <div className="text-center py-2">
+                                    <p className="text-sm font-black text-slate-400 uppercase tracking-widest mb-1">Total to Pay</p>
+                                    <p className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter">₹{1200 + tip}</p>
+                                </div>
+                                <div className="bg-white dark:bg-slate-900 rounded-2xl p-2">
+                                    <stripe-buy-button
+                                        buy-button-id="buy_btn_1T7ZQJ2euZ0ZOKm2yb24A8Si"
+                                        publishable-key="pk_test_51T7YFD2euZ0ZOKm2yXRrakX3Rx8UK7OJIdk5XCV4oiaH9ctBu9w44lSDbOhZ7u2aaybFYSqycyPqKEOq0HyhDkUB00wQJlNi06"
+                                    >
+                                    </stripe-buy-button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <Button className="w-full h-14 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-lg font-black shadow-lg transition-all" onClick={() => setPostRideStep('FEEDBACK')}>
+                            Next: Rate Experience
+                        </Button>
+                        <button className="w-full text-slate-400 dark:text-slate-600 text-sm font-bold uppercase tracking-widest py-2" onClick={() => setPostRideStep('SUMMARY')}>Back to Summary</button>
+                    </div>
+                )}
+
+                {postRideStep === 'FEEDBACK' && (
+                    <div className="animate-in fade-in slide-in-from-right-4 duration-500 space-y-8">
+                        <div className="text-center">
+                            <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Rate your driver</h2>
+                            <p className="text-slate-500 dark:text-slate-400 mt-1 font-medium">How was your ride with Arjun?</p>
+                        </div>
+
+                        <div className="flex justify-center gap-3">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                                <button
+                                    key={star}
+                                    onClick={() => setRating(star)}
+                                    className={`p-1 transition-all hover:scale-125 focus:outline-none ${rating >= star ? 'text-yellow-400' : 'text-slate-100 dark:text-slate-800'}`}
+                                >
+                                    <Star className={`w-12 h-12 ${rating >= star ? 'fill-yellow-400 shadow-xl' : ''}`} />
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="space-y-4">
+                            <p className="text-xs font-black uppercase tracking-widest text-slate-400 text-center">Add a comment</p>
+                            <textarea
+                                className="w-full p-5 rounded-[24px] bg-slate-50 dark:bg-slate-900 border-0 focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 transition-all resize-none h-28 text-base font-medium text-slate-900 dark:text-white shadow-inner"
+                                placeholder="Write your feedback..."
                             />
                         </div>
-                    )}
-                </div>
 
-                <div className="text-center mb-6">
-                    <p className="font-medium mb-3 text-slate-900 dark:text-white">Rate your driver</p>
-                    <div className="flex justify-center gap-2">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                            <button
-                                key={star}
-                                onClick={() => setRating(star)}
-                                className={`p-1 transition-transform hover:scale-110 focus:outline-none focus:ring-0 ${rating >= star ? 'text-yellow-400' : 'text-slate-200'}`}
-                            >
-                                <Star className={`w-10 h-10 ${rating >= star ? 'fill-yellow-400' : ''}`} />
-                            </button>
-                        ))}
+                        <Button
+                            className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-white dark:hover:bg-slate-100 h-16 rounded-[24px] text-lg text-white dark:text-black font-black shadow-xl"
+                            disabled={rating === 0}
+                            onClick={() => {
+                                const pastTrips = JSON.parse(localStorage.getItem('user_trips') || '[]');
+                                const newTrip = {
+                                    id: `trip-${Date.now()}`,
+                                    date: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true }),
+                                    status: "COMPLETED",
+                                    pickup: pickupText || "Current Location",
+                                    dropoff: dropoffText || "Destination",
+                                    driver: "Arjun (Maruti Suzuki Dzire)",
+                                    amount: `₹${1200 + tip}`,
+                                    rating: rating,
+                                    breakdown: { base: 150, distance: 650, time: 250, fee: 100, tax: 50 + tip }
+                                };
+                                localStorage.setItem('user_trips', JSON.stringify([newTrip, ...pastTrips]));
+                                setIsThankYou(true);
+                            }}
+                        >
+                            {rating > 0 ? 'Submit Feedback' : 'Rate to Finish'}
+                        </Button>
                     </div>
-                </div>
-
-                <div className="mb-6">
-                    <p className="font-medium mb-3 text-center text-sm text-slate-500">How was your ride?</p>
-                    <textarea
-                        className="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border-0 focus:ring-2 focus:ring-black dark:focus:ring-white transition-all resize-none h-24 text-sm font-medium"
-                        placeholder="Add a comment or feedback..."
-                    />
-                </div>
-
-                <Button className="w-full bg-black dark:bg-white hover:bg-slate-800 dark:hover:bg-slate-200 h-14 rounded-xl text-lg text-white dark:text-black font-black" disabled={rating === 0} onClick={() => {
-                    const pastTrips = JSON.parse(localStorage.getItem('user_trips') || '[]');
-                    const newTrip = {
-                        id: `trip-${Date.now()}`,
-                        date: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true }),
-                        status: "COMPLETED",
-                        pickup: pickupText || "Current Location",
-                        dropoff: dropoffText || "Destination",
-                        driver: "Arjun (Maruti Suzuki Dzire)",
-                        amount: `₹${1200 + tip}`,
-                        rating: rating,
-                        breakdown: {
-                            base: 150,
-                            distance: 650,
-                            time: 250,
-                            fee: 100,
-                            tax: 50 + tip
-                        }
-                    };
-                    localStorage.setItem('user_trips', JSON.stringify([newTrip, ...pastTrips]));
-                    setIsThankYou(true);
-                }}>
-                    {rating > 0 ? 'Submit Rating' : 'Rate to continue'}
-                </Button>
+                )}
             </Card>
         );
     }

@@ -27,7 +27,7 @@ export function SidebarMenu({
     avatarList
 }: SidebarMenuProps) {
     return (
-        <aside className="hidden md:flex flex-col w-72 glass h-full z-10 transition-all duration-500 ease-in-out border-r border-slate-200/40 dark:border-white/5">
+        <aside className="hidden md:flex flex-col w-72 glass h-full z-10 transition-all duration-500 ease-in-out border-r border-slate-200/60 dark:border-white/5">
             <div className="p-8">
                 <div className="flex items-center gap-3">
                     <img src="/cab_car_logos/newlog.png" alt="Logo" className="w-10 h-10 object-contain" />
@@ -40,36 +40,36 @@ export function SidebarMenu({
                     className={`w-full justify-start font-bold rounded-2xl h-14 transition-all duration-300 group relative overflow-hidden ${activeTab === 'BOOKING' ? 'text-black dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'}`}
                     onClick={() => setActiveTab('BOOKING')}
                 >
-                    {activeTab === 'BOOKING' && <div className="absolute inset-0 bg-slate-500/10 backdrop-blur-md animate-in fade-in transition-all duration-500"></div>}
-                    <Car className={`w-6 h-6 mr-4 transition-transform z-10 ${activeTab === 'BOOKING' ? 'scale-110' : 'group-hover:translate-x-1'}`} />
-                    <span className="tracking-tight text-base font-black z-10">Booking</span>
+                    {activeTab === 'BOOKING' && <div className="absolute inset-0 bg-blue-600/10 dark:bg-white/10 backdrop-blur-md animate-in fade-in transition-all duration-500"></div>}
+                    <Car className={`w-6 h-6 mr-4 transition-transform z-10 ${activeTab === 'BOOKING' ? 'text-blue-600 dark:text-white scale-110' : 'group-hover:translate-x-1'}`} />
+                    <span className={`tracking-tight text-base font-black z-10 ${activeTab === 'BOOKING' ? 'text-blue-600 dark:text-white' : ''}`}>Booking</span>
                 </Button>
                 <Button
                     variant="ghost"
-                    className={`w-full justify-start font-bold rounded-2xl h-14 transition-all duration-300 group relative overflow-hidden ${activeTab === 'TRIPS' ? 'text-black dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'}`}
+                    className={`w-full justify-start font-bold rounded-2xl h-14 transition-all duration-300 group relative overflow-hidden ${activeTab === 'TRIPS' ? '' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'}`}
                     onClick={() => setActiveTab('TRIPS')}
                 >
-                    {activeTab === 'TRIPS' && <div className="absolute inset-0 bg-slate-500/10 backdrop-blur-md animate-in fade-in transition-all duration-500"></div>}
-                    <History className={`w-6 h-6 mr-4 transition-transform z-10 ${activeTab === 'TRIPS' ? 'scale-110' : 'group-hover:translate-x-1'}`} />
-                    <span className="tracking-tight text-base font-black z-10">My Trips</span>
+                    {activeTab === 'TRIPS' && <div className="absolute inset-0 bg-blue-600/10 dark:bg-white/10 backdrop-blur-md animate-in fade-in transition-all duration-500"></div>}
+                    <History className={`w-6 h-6 mr-4 transition-transform z-10 ${activeTab === 'TRIPS' ? 'text-blue-600 dark:text-white scale-110' : 'group-hover:translate-x-1'}`} />
+                    <span className={`tracking-tight text-base font-black z-10 ${activeTab === 'TRIPS' ? 'text-blue-600 dark:text-white' : ''}`}>My Trips</span>
                 </Button>
                 <Button
                     variant="ghost"
-                    className={`w-full justify-start font-bold rounded-2xl h-14 transition-all duration-300 group relative overflow-hidden ${activeTab === 'PAYMENTS' ? 'text-black dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'}`}
+                    className={`w-full justify-start font-bold rounded-2xl h-14 transition-all duration-300 group relative overflow-hidden ${activeTab === 'PAYMENTS' ? '' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'}`}
                     onClick={() => setActiveTab('PAYMENTS')}
                 >
-                    {activeTab === 'PAYMENTS' && <div className="absolute inset-0 bg-slate-500/10 backdrop-blur-md animate-in fade-in transition-all duration-500"></div>}
-                    <Wallet className={`w-6 h-6 mr-4 transition-transform z-10 ${activeTab === 'PAYMENTS' ? 'scale-110' : 'group-hover:translate-x-1'}`} />
-                    <span className="tracking-tight text-base font-black z-10">Payments</span>
+                    {activeTab === 'PAYMENTS' && <div className="absolute inset-0 bg-blue-600/10 dark:bg-white/10 backdrop-blur-md animate-in fade-in transition-all duration-500"></div>}
+                    <Wallet className={`w-6 h-6 mr-4 transition-transform z-10 ${activeTab === 'PAYMENTS' ? 'text-blue-600 dark:text-white scale-110' : 'group-hover:translate-x-1'}`} />
+                    <span className={`tracking-tight text-base font-black z-10 ${activeTab === 'PAYMENTS' ? 'text-blue-600 dark:text-white' : ''}`}>Payments</span>
                 </Button>
                 <Button
                     variant="ghost"
-                    className={`w-full justify-start font-bold rounded-2xl h-14 transition-all duration-300 group relative overflow-hidden ${activeTab === 'SETTINGS' ? 'text-black dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'}`}
+                    className={`w-full justify-start font-bold rounded-2xl h-14 transition-all duration-300 group relative overflow-hidden ${activeTab === 'SETTINGS' ? '' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'}`}
                     onClick={() => setActiveTab('SETTINGS')}
                 >
-                    {activeTab === 'SETTINGS' && <div className="absolute inset-0 bg-slate-500/10 backdrop-blur-md animate-in fade-in transition-all duration-500"></div>}
-                    <Settings className={`w-6 h-6 mr-4 transition-transform z-10 ${activeTab === 'SETTINGS' ? 'scale-110' : 'group-hover:translate-x-1'}`} />
-                    <span className="tracking-tight text-base font-black z-10">Settings</span>
+                    {activeTab === 'SETTINGS' && <div className="absolute inset-0 bg-blue-600/10 dark:bg-white/10 backdrop-blur-md animate-in fade-in transition-all duration-500"></div>}
+                    <Settings className={`w-6 h-6 mr-4 transition-transform z-10 ${activeTab === 'SETTINGS' ? 'text-blue-600 dark:text-white scale-110' : 'group-hover:translate-x-1'}`} />
+                    <span className={`tracking-tight text-base font-black z-10 ${activeTab === 'SETTINGS' ? 'text-blue-600 dark:text-white' : ''}`}>Settings</span>
                 </Button>
             </nav>
             <div className="p-4 border-t border-slate-200 dark:border-slate-800">

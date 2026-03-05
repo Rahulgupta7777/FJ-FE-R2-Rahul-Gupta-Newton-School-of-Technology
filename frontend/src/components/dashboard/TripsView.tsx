@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Navigation, Calendar, CreditCard, ChevronDown, ChevronUp, Info, Star, Clock, Download, HelpCircle, TrendingUp, DollarSign } from "lucide-react";
+import { MapPin, Navigation, Calendar, CreditCard, ChevronDown, ChevronUp, Info, Star, Clock, Download, HelpCircle, TrendingUp, IndianRupee } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import jsPDF from 'jspdf';
@@ -185,9 +185,9 @@ export function TripsView() {
                         <p className="text-2xl font-black">{stats.avgRating}</p>
                     </div>
                 </Card>
-                <Card className="glass-card border-0 bg-white/50 dark:bg-white/5 p-4 rounded-2xl flex flex-col gap-2">
+                <Card className="glass-card border-0 p-4 rounded-2xl flex flex-col gap-2">
                     <div className="p-2 w-fit bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-emerald-600 dark:text-emerald-400">
-                        <DollarSign className="w-5 h-5" />
+                        <IndianRupee className="w-5 h-5" />
                     </div>
                     <div>
                         <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 leading-none mb-1">Total Spent</p>
@@ -200,7 +200,7 @@ export function TripsView() {
                 {trips.map((trip) => (
                     <Card
                         key={trip.id}
-                        className={`glass-card border-0 transition-all duration-300 ease-out p-1 overflow-hidden cursor-pointer active:scale-[0.99] ${expandedTrip === trip.id ? 'ring-2 ring-black dark:ring-white border-transparent' : 'hover:bg-slate-50/50 dark:hover:bg-white/5'}`}
+                        className={`glass-card border-0 transition-all duration-300 ease-out p-1 overflow-hidden cursor-pointer active:scale-[0.99] ${expandedTrip === trip.id ? 'ring-2 ring-black dark:ring-white' : ''}`}
                         onClick={() => setExpandedTrip(expandedTrip === trip.id ? null : trip.id)}
                     >
                         <CardHeader className="pb-3 flex flex-row items-center justify-between">

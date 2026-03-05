@@ -45,12 +45,14 @@ const carIcon = new L.Icon({
     popupAnchor: [0, -20],
 });
 
-const busIcon = new L.Icon({
-    iconUrl: '/3d-bus-real.png', // Transparent 3D Bus illustration
+const busIcon = (bearing: number = 0) => new L.DivIcon({
+    html: `<div style="transform: rotate(${bearing}deg); transition: transform 0.5s ease-in-out;">
+             <img src="/top-down-bus.png" style="width: 48px; height: 48px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));" />
+           </div>`,
     iconSize: [48, 48],
     iconAnchor: [24, 24],
     popupAnchor: [0, -20],
-    className: 'drop-shadow-lg'
+    className: 'bus-marker-birdseye'
 });
 
 // Auto adjust map view
@@ -120,6 +122,8 @@ export default function Map({
     const [isSensed, setIsSensed] = useState(false);
     const [route, setRoute] = useState<[number, number][]>([]);
     const [buses, setBuses] = useState<Bus[]>([]);
+    const [prevBuses, setPrevBuses] = useState<Record<string, { lat: number, lon: number }>>({});
+    const [busBearings, setBusBearings] = useState<Record<string, number>>({});
 
     // Fetch live buses from Delhi Transport API via proxy
     useEffect(() => {
@@ -129,7 +133,31 @@ export default function Map({
                 if (res.ok) {
                     const data = await res.json();
                     if (data.buses) {
-                        setBuses(data.buses);
+                        setBuses(prev => {
+                            // Update previous positions
+                            const newPrev = { ...prevBuses };
+                            prev.forEach(b => newPrev[b.id] = { lat: b.latitude, lon: b.longitude });
+                            setPrevBuses(newPrev);
+
+                            // Calculate bearings for moved buses
+                            const newBearings = { ...busBearings };
+                            data.buses.forEach((b: Bus) => {
+                                const old = prevBuses[b.id];
+                                if (old && (old.lat !== b.latitude || old.lon !== b.longitude)) {
+                                    // Calculate bearing
+                                    const y = Math.sin((b.longitude - old.lon) * Math.PI / 180) * Math.cos(b.latitude * Math.PI / 180);
+                                    const x = Math.cos(old.lat * Math.PI / 180) * Math.sin(b.latitude * Math.PI / 180) -
+                                        Math.sin(old.lat * Math.PI / 180) * Math.cos(b.latitude * Math.PI / 180) * Math.cos((b.longitude - old.lon) * Math.PI / 180);
+                                    const brng = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+                                    newBearings[b.id] = brng;
+                                } else if (!newBearings[b.id] && b.bearing) {
+                                    newBearings[b.id] = b.bearing;
+                                }
+                            });
+                            setBusBearings(newBearings);
+
+                            return data.buses;
+                        });
                     }
                 }
             } catch (err) {
@@ -138,7 +166,7 @@ export default function Map({
         };
 
         fetchBuses();
-        const interval = setInterval(fetchBuses, 10000); // 10s poll
+        const interval = setInterval(fetchBuses, 5000); // 5s poll
         return () => clearInterval(interval);
     }, []);
 
@@ -234,12 +262,21 @@ export default function Map({
         const distances = buses.map(bus => {
             const dLat = bus.latitude - centerLat;
             const dLon = bus.longitude - centerLon;
-            return { ...bus, distSq: dLat * dLat + dLon * dLon };
+
+            // Generate a stable "pseudo-random" bearing based on ID for stationary buses
+            const idHash = bus.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+            const initialBearing = idHash % 360;
+
+            return {
+                ...bus,
+                distSq: dLat * dLat + dLon * dLon,
+                bearing: busBearings[bus.id] || bus.bearing || initialBearing
+            };
         });
 
         distances.sort((a, b) => a.distSq - b.distSq);
         return distances.slice(0, 50);
-    }, [buses, mapCenter]);
+    }, [buses, mapCenter, busBearings]);
 
     return (
 
@@ -302,7 +339,7 @@ export default function Map({
 
             {/* Live Buses via OTD */}
             {nearestBuses.map(bus => (
-                <Marker key={bus.id} position={[bus.latitude, bus.longitude]} icon={busIcon}>
+                <Marker key={bus.id} position={[bus.latitude, bus.longitude]} icon={busIcon(bus.bearing)}>
                     <Popup>
                         <div className="font-sans">
                             <h3 className="font-bold text-lg mb-1">{bus.routeId ? `Route: ${bus.routeId}` : 'Delhi Bus'}</h3>

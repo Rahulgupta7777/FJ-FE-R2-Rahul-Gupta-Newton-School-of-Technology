@@ -129,21 +129,21 @@
 @layer utilities {
   .glass {
     backdrop-filter: blur(24px);
-    @apply bg-white/60 dark:bg-black/95 border-r border-slate-200/40 dark:border-white/5 shadow-glass;
+    @apply bg-white/70 dark:bg-black/90 border-r border-slate-200/50 dark:border-white/10 shadow-sm;
   }
 
   .glass-card {
     backdrop-filter: blur(32px);
-    @apply bg-white/70 dark:bg-black/98 border border-white/50 dark:border-white/10 shadow-lg dark:shadow-none shadow-black/5;
+    @apply bg-white/80 dark:bg-slate-950/90 border border-slate-200/60 dark:border-white/10 shadow-xl dark:shadow-none;
   }
 
   .glass-slate {
     backdrop-filter: blur(20px);
-    @apply bg-slate-500/5 dark:bg-white/5 border border-slate-500/10 dark:border-white/10;
+    @apply bg-slate-500/10 dark:bg-white/5 border border-slate-500/20 dark:border-white/10;
   }
 
   .premium-shadow {
-    @apply shadow-premium dark:shadow-premium-dark;
+    @apply shadow-2xl dark:shadow-premium-dark;
   }
 }
 

@@ -40,7 +40,7 @@ export function SettingsView() {
                         <div className="grid grid-cols-3 gap-4">
                             <button
                                 onClick={() => setTheme("light")}
-                                className={`group relative flex flex-col items-center justify-center gap-3 rounded-2xl p-6 transition-all duration-300 ${theme === 'light' ? 'bg-black text-white shadow-xl' : 'bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-500 border border-slate-200 dark:border-white/5'}`}
+                                className={`group relative flex flex-col items-center justify-center gap-3 rounded-2xl p-6 transition-all duration-300 ${theme === 'light' ? 'bg-blue-600 text-white shadow-xl' : 'bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-500 border border-slate-200 dark:border-white/5'}`}
                             >
                                 <Sun className={`w-7 h-7 transition-all duration-300 ${theme === 'light' ? 'scale-110' : 'group-hover:rotate-12'}`} />
                                 <span className="text-xs font-black uppercase tracking-widest">Light</span>
@@ -48,7 +48,7 @@ export function SettingsView() {
 
                             <button
                                 onClick={() => setTheme("dark")}
-                                className={`group relative flex flex-col items-center justify-center gap-3 rounded-2xl p-6 transition-all duration-300 ${theme === 'dark' ? 'bg-white text-black shadow-xl' : 'bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 border border-slate-200 dark:border-white/5'}`}
+                                className={`group relative flex flex-col items-center justify-center gap-3 rounded-2xl p-6 transition-all duration-300 ${theme === 'dark' ? 'bg-slate-900 text-white shadow-xl' : 'bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-400 border border-slate-200 dark:border-white/5'}`}
                             >
                                 <Moon className={`w-7 h-7 transition-all duration-300 ${theme === 'dark' ? 'scale-110' : 'group-hover:-rotate-12'}`} />
                                 <span className="text-xs font-black uppercase tracking-widest">Dark</span>
@@ -56,7 +56,7 @@ export function SettingsView() {
 
                             <button
                                 onClick={() => setTheme("system")}
-                                className={`group relative flex flex-col items-center justify-center gap-3 rounded-2xl p-6 transition-all duration-300 ${theme === 'system' ? 'bg-blue-600 text-white shadow-xl' : 'bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 border border-slate-200 dark:border-white/5'}`}
+                                className={`group relative flex flex-col items-center justify-center gap-3 rounded-2xl p-6 transition-all duration-300 ${theme === 'system' ? 'bg-slate-200 dark:bg-white text-slate-900 dark:text-black shadow-xl' : 'bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-400 border border-slate-200 dark:border-white/5'}`}
                             >
                                 <Monitor className={`w-7 h-7 transition-all duration-300 ${theme === 'system' ? 'scale-110' : ''}`} />
                                 <span className="text-xs font-black uppercase tracking-widest">System</span>
@@ -72,7 +72,7 @@ export function SettingsView() {
                         <CardDescription className="text-base">Choose what updates you want to receive.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between p-4 glass-card border-0 bg-white/40 dark:bg-white/5 rounded-2xl">
+                        <div className="flex items-center justify-between p-4 glass-card border-0 bg-white/60 dark:bg-white/5 rounded-2xl">
                             <div className="flex items-center gap-4">
                                 <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-black dark:text-white">
                                     <Bell className="w-5 h-5" />
@@ -85,7 +85,7 @@ export function SettingsView() {
                             <Switch defaultChecked />
                         </div>
 
-                        <div className="flex items-center justify-between p-4 glass-card border-0 bg-white/40 dark:bg-white/5 rounded-2xl">
+                        <div className="flex items-center justify-between p-4 glass-card border-0 bg-white/60 dark:bg-white/5 rounded-2xl">
                             <div className="flex items-center gap-4">
                                 <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-black dark:text-white">
                                     <Shield className="w-5 h-5" />
