@@ -55,7 +55,7 @@ export default function Home() {
   const [dropoff, setDropoff] = useState<[number, number] | null>(null);
   const [driverLoc, setDriverLoc] = useState<[number, number] | null>(null);
 
-  const [pickupText, setPickupText] = useState('Current Location');
+  const [pickupText, setPickupText] = useState('New Delhi, Delhi, India');
   const [dropoffText, setDropoffText] = useState('');
 
   const [selectedVehicle, setSelectedVehicle] = useState<'Economy' | 'Comfort' | 'XL' | 'Shared' | 'EV'>('Economy');
