@@ -196,20 +196,23 @@ export default function Map({
     useEffect(() => {
 
         if (showRoute && pickup && dropoff) {
-
-            setRoute([]); // reset previous route
+            // Show straight line immediately as fallback
+            setRoute([pickup, dropoff]);
 
             const fetchRoute = async () => {
                 try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
                     const response = await fetch(
-                        `https://router.project-osrm.org/route/v1/driving/${pickup[1]},${pickup[0]};${dropoff[1]},${dropoff[0]}?overview=full&geometries=geojson`
+                        `https://router.project-osrm.org/route/v1/driving/${pickup[1]},${pickup[0]};${dropoff[1]},${dropoff[0]}?overview=full&geometries=geojson`,
+                        { signal: controller.signal }
                     );
 
+                    clearTimeout(timeoutId);
                     const data = await response.json();
 
                     if (data.routes && data.routes.length > 0) {
-
                         const coords = data.routes[0].geometry.coordinates.map(
                             (coord: [number, number]) => [coord[1], coord[0]]
                         ) as [number, number][];
@@ -218,20 +221,17 @@ export default function Map({
                     }
 
                 } catch (error) {
-
                     console.error("OSRM route error:", error);
-
-                    // fallback straight line
-                    setRoute([pickup, dropoff]);
+                    // Keep the straight line fallback
                 }
             };
 
-            fetchRoute();
+            // Add small delay to prevent race conditions
+            const timeoutId = setTimeout(fetchRoute, 300);
+            return () => clearTimeout(timeoutId);
 
         } else {
-
             setRoute([]);
-
         }
 
     }, [showRoute, pickup, dropoff]);

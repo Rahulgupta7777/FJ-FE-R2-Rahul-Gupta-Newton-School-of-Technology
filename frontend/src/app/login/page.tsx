@@ -77,7 +77,7 @@ export default function LoginPage() {
                     document.cookie = `authToken=local_jwt_${Math.random().toString(36).substring(7)}; path=/; max-age=3600`;
                     localStorage.setItem('isAuthenticated', 'true');
                     localStorage.setItem('user_name', user ? `${user.firstName} ${user.lastName}`.trim() : identifier.split('@')[0]);
-                    router.push('/');
+                    router.replace('/');
                 } else {
                     // New User: Proceed to Profile Setup
                     setStep('PROFILE');
@@ -106,7 +106,7 @@ export default function LoginPage() {
                     document.cookie = `authToken=local_jwt_${Math.random().toString(36).substring(7)}; path=/; max-age=3600`;
                     localStorage.setItem('isAuthenticated', 'true');
                     localStorage.setItem('user_name', `${user.firstName} ${user.lastName}`.trim());
-                    router.push('/');
+                    router.replace('/');
                 } else {
                     setError('Invalid password. Please try again.');
                 }
@@ -155,7 +155,7 @@ export default function LoginPage() {
                 localStorage.setItem('isAuthenticated', 'true');
                 localStorage.setItem('authToken', 'local_jwt_' + Math.random().toString(36).substring(7));
                 localStorage.setItem('user_name', `${firstName} ${lastName}`.trim());
-                router.push('/');
+                router.replace('/');
             } catch (err: any) {
                 setError('Registration failed locally.');
             } finally {
@@ -408,11 +408,11 @@ export default function LoginPage() {
             </div>
 
             {/* Right Side: Visuals */}
-            <div className="hidden md:flex flex-1 relative bg-black overflow-hidden items-center justify-center">
+            <div className="hidden md:flex flex-1 relative bg-black overflow-hidden items-end justify-center">
                 <Image src="/hero.gif" alt="Hero" fill className="object-cover opacity-60 scale-105" priority />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
 
-                <div className="relative z-10 text-center p-12 max-w-xl animate-in slide-in-from-bottom-10 duration-700">
+                <div className="relative z-10 text-center p-12 max-w-xl animate-in slide-in-from-bottom-10 duration-700 mb-8">
                     <h2 className="text-6xl font-black text-white mb-6 leading-[1.1] tracking-tighter">
                         RELIABILITY AT YOUR <span className="text-slate-400 italic">FINGERTIPS.</span>
                     </h2>

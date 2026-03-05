@@ -176,7 +176,7 @@ export function PaymentsView() {
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden shadow-sm bg-white p-2">
-                                        <img src="https://www.vectorlogo.zone/logos/paytm/paytm-ar21.svg" alt="Paytm" className="w-full h-full object-contain" />
+                                        <img src="frontend/styling_assets/paytm.png" alt="Paytm" className="w-full h-full object-contain" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold group-hover:text-black dark:group-hover:text-white transition-colors">Paytm Wallet</h4>
@@ -192,7 +192,7 @@ export function PaymentsView() {
                             <CardContent className="p-6 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm p-2">
-                                        <img src="https://www.vectorlogo.zone/logos/phonepe/phonepe-ar21.svg" alt="PhonePe" className="w-full h-full object-contain" />
+                                        <img src="frontend/styling_assets/phonepe.png" alt="PhonePe" className="w-full h-full object-contain" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold group-hover:text-indigo-600 transition-colors">PhonePe</h4>
@@ -229,22 +229,22 @@ export function PaymentsView() {
                             <CardDescription>We support all major Indian banks for seamless payments.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                                 {[
-                                    { name: 'HDFC Bank', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2020/11/hdfc_bank_logo.png' },
-                                    { name: 'SBI', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2023/05/sbi_logo-freelogovectors.net_.png' },
-                                    { name: 'ICICI Bank', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2018/02/icici-bank-logo.png' },
-                                    { name: 'Axis Bank', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2023/11/axis_bank_logo-freelogovectors.net_.png' },
-                                    { name: 'Kotak Bank', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2021/11/kotak-mahindra-bank-logo-freelogovectors.net_.png' },
-                                    { name: 'Yes Bank', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2021/11/yes-bank-logo-freelogovectors.net_.png' },
-                                    { name: 'PNB', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2021/11/punjab-national-bank-logo-freelogovectors.net_.png' },
+                                    { name: 'HDFC Bank', logo: 'frontend/styling_assets/hdfc.png' },
+                                    { name: 'SBI', logo: 'frontend/styling_assets/sbi.png' },
+                                    { name: 'ICICI Bank', logo: 'frontend/styling_assets/icici.png' },
+                                    { name: 'Axis Bank', logo: 'frontend/styling_assets/axis.png' },
+                                    { name: 'Kotak Bank', logo: 'frontend/styling_assets/kotak.png' },
+                                    { name: 'Yes Bank', logo: 'frontend/styling_assets/yes.png' },
+                                    { name: 'PNB', logo: 'frontend/styling_assets/pnb.png' },
                                     { name: 'Bank of Baroda', logo: 'https://cdn.freelogovectors.net/wp-content/uploads/2021/11/bank-of-baroda-logo-freelogovectors.net_.png' }
                                 ].map(bank => (
-                                    <Button key={bank.name} variant="outline" className="h-24 justify-center flex-col gap-3 glass-card border-0 hover:scale-105 transition-all duration-300 rounded-2xl overflow-hidden p-3">
-                                        <div className="h-10 flex items-center justify-center w-full">
+                                    <Button key={bank.name} variant="outline" className="h-20 sm:h-24 justify-center flex-col gap-2 sm:gap-3 glass-card border-0 hover:scale-105 transition-all duration-300 rounded-xl sm:rounded-2xl overflow-hidden p-2 sm:p-3">
+                                        <div className="h-8 sm:h-10 flex items-center justify-center w-full">
                                             <img src={bank.logo} alt={bank.name} className="max-h-full max-w-full object-contain dark:brightness-200" />
                                         </div>
-                                        <span className="text-[11px] font-bold truncate w-full px-1 text-center text-slate-700 dark:text-slate-200">{bank.name}</span>
+                                        <span className="text-[10px] sm:text-[11px] font-bold truncate w-full px-1 text-center text-slate-700 dark:text-slate-200">{bank.name}</span>
                                     </Button>
                                 ))}
                             </div>
