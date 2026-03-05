@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription } from "@/components/ui/sheet";
+import { useState, useEffect } from 'react';
+import { Heart, House } from 'lucide-react';
 
 interface TripStatusProps {
     flowState: 'IDLE' | 'SELECTING_RIDE' | 'SEARCHING' | 'DRIVER_ASSIGNED' | 'IN_RIDE' | 'POST_RIDE';
@@ -64,6 +66,43 @@ export function TripStatus({
     onCompleteTrip,
     onReset
 }: TripStatusProps) {
+    const [timeLeft, setTimeLeft] = useState(2);
+    const [isThankYou, setIsThankYou] = useState(false);
+
+    useEffect(() => {
+        if (flowState === 'DRIVER_ASSIGNED' && timeLeft > 0) {
+            const timer = setInterval(() => setTimeLeft(prev => prev - 1), 60000);
+            return () => clearInterval(timer);
+        }
+    }, [flowState, timeLeft]);
+
+    // Handle initial message from driver
+    useEffect(() => {
+        if (flowState === 'DRIVER_ASSIGNED' && messages.length === 0) {
+            setMessages([{ sender: 'driver', text: "Hello! I'm on my way. I'll be there in 2 minutes." }]);
+        }
+    }, [flowState, messages.length, setMessages]);
+
+    if (isThankYou) {
+        return (
+            <Card className="pointer-events-auto shadow-2xl rounded-t-3xl md:rounded-xl border-0 overflow-hidden animate-in zoom-in-95 bg-white p-8 text-center bg-white/95 backdrop-blur">
+                <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Heart className="w-10 h-10 text-emerald-600 fill-emerald-600" />
+                </div>
+                <h2 className="text-3xl font-black mb-2 text-slate-900">Thank You!</h2>
+                <p className="text-slate-500 font-bold mb-8">We've received your feedback. See you soon on your next ride!</p>
+                <Button
+                    className="w-full h-14 bg-black hover:bg-slate-900 text-white rounded-xl text-lg font-black"
+                    onClick={() => {
+                        setIsThankYou(false);
+                        onReset();
+                    }}
+                >
+                    Back to Home
+                </Button>
+            </Card>
+        );
+    }
 
     if (flowState === 'SEARCHING') {
         return (
@@ -109,7 +148,7 @@ export function TripStatus({
                 <div className="bg-black dark:bg-white text-white dark:text-black p-4">
                     <div className="flex justify-between items-end">
                         <div>
-                            <h3 className="font-bold text-2xl mb-1">2 min</h3>
+                            <h3 className="font-bold text-2xl mb-1">{timeLeft} min</h3>
                             <p className="text-slate-300 dark:text-slate-600 text-sm">Driver is arriving soon</p>
                         </div>
                         <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 border-0">
@@ -130,13 +169,13 @@ export function TripStatus({
                                 </div>
                             </div>
                             <div>
-                                <h4 className="font-bold text-lg text-slate-900 dark:text-white">Michael</h4>
-                                <p className="text-slate-500 dark:text-slate-400 text-sm">Toyota Camry - White</p>
+                                <h4 className="font-bold text-lg text-slate-900 dark:text-white">Arjun</h4>
+                                <p className="text-slate-500 dark:text-slate-400 text-sm">Maruti Suzuki Dzire - White</p>
                             </div>
                         </div>
                         <div className="text-right">
                             <div className="bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded uppercase font-mono font-bold text-slate-700 dark:text-slate-300 tracking-wider">
-                                NYC 482
+                                MH 12 BK 7586
                             </div>
                         </div>
                     </div>
@@ -145,10 +184,71 @@ export function TripStatus({
                         <Button variant="outline" className="flex-1 rounded-xl h-12 gap-2 text-slate-700 dark:text-slate-300 dark:border-slate-800 dark:hover:bg-slate-900">
                             <Phone className="w-4 h-4" /> Call
                         </Button>
-                        <Button className="flex-1 rounded-xl h-12 gap-2 bg-black dark:bg-white hover:bg-slate-900 dark:hover:bg-slate-100 text-white dark:text-black" onClick={onStartTrip}>
-                            <MessageSquare className="w-4 h-4" /> Message
-                        </Button>
+                        <Sheet>
+                            <SheetTrigger asChild>
+                                <Button className="flex-1 rounded-xl h-12 gap-2 bg-black dark:bg-white hover:bg-slate-900 dark:hover:bg-slate-100 text-white dark:text-black">
+                                    <MessageSquare className="w-4 h-4" /> Message
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="bottom" className="h-[70vh] sm:h-[600px] flex flex-col rounded-t-3xl sm:rounded-xl">
+                                <SheetHeader className="text-left border-b pb-4 shrink-0">
+                                    <div className="flex items-center gap-3">
+                                        <Avatar className="w-10 h-10">
+                                            <AvatarImage src="https://ui.shadcn.com/avatars/03.png" />
+                                            <AvatarFallback>JD</AvatarFallback>
+                                        </Avatar>
+                                        <div>
+                                            <SheetTitle>Arjun</SheetTitle>
+                                            <SheetDescription>Maruti Suzuki Dzire • White</SheetDescription>
+                                        </div>
+                                    </div>
+                                </SheetHeader>
+
+                                <div className="flex-1 overflow-y-auto pt-4 flex flex-col gap-4">
+                                    {messages.map((msg, idx) => (
+                                        <div key={idx} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                            <div className={`px-4 py-2 rounded-2xl max-w-[80%] ${msg.sender === 'user' ? 'bg-black dark:bg-white text-white dark:text-black rounded-br-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-bl-sm'}`}>
+                                                {msg.text}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="pt-4 border-t flex gap-2 shrink-0">
+                                    <Input
+                                        placeholder="Type a message..."
+                                        className="rounded-full h-12"
+                                        value={chatMessage}
+                                        onChange={(e) => setChatMessage(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && chatMessage.trim()) {
+                                                setMessages([...messages, { sender: 'user', text: chatMessage }]);
+                                                setChatMessage('');
+                                                setTimeout(() => {
+                                                    setMessages((prev: any) => [...prev, { sender: 'driver', text: "I'll be there shortly!" }]);
+                                                }, 1500);
+                                            }
+                                        }}
+                                    />
+                                    <Button
+                                        className="rounded-full w-12 h-12 p-0 bg-black dark:bg-white text-white dark:text-black hover:bg-slate-900 dark:hover:bg-slate-100 shrink-0"
+                                        onClick={() => {
+                                            if (chatMessage.trim()) {
+                                                setMessages([...messages, { sender: 'user', text: chatMessage }]);
+                                                setChatMessage('');
+                                                setTimeout(() => {
+                                                    setMessages((prev: any) => [...prev, { sender: 'driver', text: "I'll be there shortly!" }]);
+                                                }, 1500);
+                                            }
+                                        }}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`${messages.length % 2 === 0 ? 'text-white dark:text-black' : 'text-white dark:text-black'} ml-[-2px] mt-[2px]`}><path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" /></svg>
+                                    </Button>
+                                </div>
+                            </SheetContent>
+                        </Sheet>
                     </div>
+                    <Button variant="ghost" className="w-full mt-2 text-slate-400 text-xs uppercase tracking-widest font-black" onClick={onStartTrip}>[Debug: Start Trip]</Button>
                 </CardContent>
             </Card>
         );
@@ -213,8 +313,8 @@ export function TripStatus({
                                             <AvatarFallback>JD</AvatarFallback>
                                         </Avatar>
                                         <div>
-                                            <SheetTitle>Michael</SheetTitle>
-                                            <SheetDescription>Toyota Camry • White</SheetDescription>
+                                            <SheetTitle>Arjun</SheetTitle>
+                                            <SheetDescription>Maruti Suzuki Dzire • White</SheetDescription>
                                         </div>
                                     </div>
                                 </SheetHeader>
@@ -282,7 +382,7 @@ export function TripStatus({
                         <span className="text-emerald-600 text-2xl">✓</span>
                     </div>
                     <h2 className="text-2xl font-bold">You arrived!</h2>
-                    <p className="text-slate-500 mt-1">Hope you enjoyed the ride with Michael</p>
+                    <p className="text-slate-500 mt-1">Hope you enjoyed the ride with Arjun</p>
                 </div>
 
                 <div className="bg-slate-50 border rounded-2xl p-4 mb-6 space-y-3">
@@ -303,7 +403,7 @@ export function TripStatus({
                 </div>
 
                 <div className="mb-6">
-                    <p className="font-medium mb-3 text-center">Add a tip for Michael</p>
+                    <p className="font-medium mb-3 text-center">Add a tip for Arjun</p>
                     <div className="flex justify-center gap-2 mb-4">
                         {[1, 2, 5].map((amount) => (
                             <Button
@@ -367,7 +467,7 @@ export function TripStatus({
                     />
                 </div>
 
-                <Button className="w-full bg-black hover:bg-slate-800 h-14 rounded-xl text-lg text-white" disabled={rating === 0} onClick={onReset}>
+                <Button className="w-full bg-black hover:bg-slate-800 h-14 rounded-xl text-lg text-white font-black" disabled={rating === 0} onClick={() => setIsThankYou(true)}>
                     {rating > 0 ? 'Submit Rating' : 'Rate to continue'}
                 </Button>
             </Card>

@@ -176,6 +176,7 @@ export default function Home() {
                 pickup={pickup}
                 dropoff={dropoff}
                 driverLocation={driverLoc}
+                showRoute={!!(pickup && dropoff)}
                 onMapClick={(lat: number, lon: number) => {
                   if (!pickup) {
                     setPickup([lat, lon]);
