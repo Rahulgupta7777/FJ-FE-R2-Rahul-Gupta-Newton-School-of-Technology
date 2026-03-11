@@ -2,13 +2,14 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Card } from '@/components/ui/card';
 import Image from 'next/image';
-import { Label } from '@/components/ui/label';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
-import { ArrowLeft, Loader2, KeyRound, UserPlus, Fingerprint, ShieldCheck } from 'lucide-react';
+
+import { IdentifierStep } from '@/components/auth/IdentifierStep';
+import { OtpStep } from '@/components/auth/OtpStep';
+import { AuthChoiceStep } from '@/components/auth/AuthChoiceStep';
+import { PasswordStep } from '@/components/auth/PasswordStep';
+import { ProfileStep } from '@/components/auth/ProfileStep';
 
 type LoginStep = 'IDENTIFIER' | 'OTP' | 'AUTH_CHOICE' | 'PASSWORD' | 'PROFILE';
 
@@ -28,9 +29,6 @@ export default function LoginPage() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-
-    // Helpers
-    const isEmail = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
 
     // Handlers
     const handleIdentifierSubmit = async (e: React.FormEvent) => {
@@ -184,219 +182,26 @@ export default function LoginPage() {
                         )}
 
                         <div className="p-2">
-                            {/* Step 1: Identifier */}
                             {step === 'IDENTIFIER' && (
-                                <form onSubmit={handleIdentifierSubmit}>
-                                    <CardHeader className="pt-12 pb-8 px-10 flex flex-col items-center text-center">
-                                        <div className="mb-6">
-                                            <img src="/e66735a8-370d-4668-b6b8-11a487bcd3cc" alt="NexRide Logo" className="h-20 w-auto object-contain dark:invert rounded-2xl" />
-                                        </div>
-                                        <CardTitle className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3">Welcome to NexRide</CardTitle>
-                                        <CardDescription className="text-base text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
-                                            Experience the future of ride-sharing
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="px-10 pb-8 space-y-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="identifier" className="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">Enter your email or phone number</Label>
-                                            <Input
-                                                id="identifier"
-                                                type="text"
-                                                placeholder="name@example.com or +91 9821456789..."
-                                                value={identifier}
-                                                onChange={(e) => setIdentifier(e.target.value)}
-                                                className="h-[56px] text-lg rounded-2xl border-slate-200 bg-slate-50/50 dark:bg-slate-900/50 dark:border-slate-800 dark:text-white placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-white shadow-none transition-all"
-                                                autoFocus
-                                            />
-                                        </div>
-                                    </CardContent>
-                                    <CardFooter className="px-10 pb-12">
-                                        <Button type="submit" className="w-full h-[56px] text-lg font-bold rounded-2xl bg-black dark:bg-white text-white dark:text-black hover:bg-slate-900 dark:hover:bg-slate-100 premium-shadow transition-all active:scale-[0.98]" disabled={!identifier || isLoading}>
-                                            {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Continue'}
-                                        </Button>
-                                    </CardFooter>
-                                </form>
+                                <IdentifierStep identifier={identifier} setIdentifier={setIdentifier} isLoading={isLoading} onSubmit={handleIdentifierSubmit} />
                             )}
-
-                            {/* Step 2: OTP */}
                             {step === 'OTP' && (
-                                <form onSubmit={handleOtpVerify}>
-                                    <CardHeader className="pt-8 sm:pt-12 pb-6 sm:pb-8 px-4 sm:px-10 relative">
-                                        <Button variant="ghost" size="icon" className="absolute top-6 sm:top-8 left-4 sm:left-8 hover:bg-slate-100 rounded-full" onClick={() => setStep('IDENTIFIER')}>
-                                            <ArrowLeft className="w-5 h-5" />
-                                        </Button>
-                                        <div className="flex flex-col items-center text-center">
-                                            <div className="w-12 h-12 bg-slate-50 dark:bg-slate-900/30 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 text-black dark:text-white border border-slate-100 dark:border-slate-800 shadow-sm">
-                                                <ShieldCheck className="w-6 h-6" />
-                                            </div>
-                                            <CardTitle className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mb-2 sm:mb-3 text-center">Verify Identity</CardTitle>
-                                            <CardDescription className="text-sm sm:text-base text-center dark:text-slate-400">A 6-digit code has been sent to your device. Enter code <span className="text-black dark:text-white font-bold">123456</span> to proceed.</CardDescription>
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent className="flex justify-center items-center py-8 px-4 sm:py-10 sm:px-10">
-                                        <div className="w-full flex justify-center">
-                                            <InputOTP
-                                                maxLength={6}
-                                                value={otp}
-                                                onChange={setOtp}
-                                                autoFocus
-                                                onComplete={() => handleOtpVerify()}
-                                            >
-                                                <InputOTPGroup className="flex gap-2 sm:gap-3 justify-center">
-                                                    {[0, 1, 2, 3, 4, 5].map((i) => (
-                                                        <InputOTPSlot
-                                                            key={i}
-                                                            index={i}
-                                                            className="
-              w-10 h-12 sm:w-12 sm:h-14
-              text-lg sm:text-xl font-bold
-              rounded-lg sm:rounded-xl
-              border border-slate-300
-              dark:border-slate-700
-              dark:bg-slate-900
-              dark:text-white
-              focus:border-black
-              dark:focus:border-white
-              transition
-            "
-                                                        />
-                                                    ))}
-                                                </InputOTPGroup>
-                                            </InputOTP>
-                                        </div>
-                                    </CardContent>
-                                    <CardFooter className="px-4 sm:px-10 pb-12">
-                                        <Button type="submit" className="w-full h-[56px] text-lg font-bold rounded-2xl bg-black dark:bg-white text-white dark:text-black transition-all active:scale-[0.98] premium-shadow" disabled={otp.length !== 6 || isLoading}>
-                                            {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Verify Account'}
-                                        </Button>
-                                    </CardFooter>
-                                </form>
+                                <OtpStep otp={otp} setOtp={setOtp} isLoading={isLoading} onBack={() => setStep('IDENTIFIER')} onSubmit={handleOtpVerify} />
                             )}
-
-                            {/* Step 3: Auth Choice (Returning User - Welcome Back) */}
                             {step === 'AUTH_CHOICE' && (
-                                <div className="p-10 text-center animate-in fade-in zoom-in duration-300">
-                                    <div className="w-16 h-16 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-8 text-slate-900 dark:text-white border border-slate-100 dark:border-slate-800 shadow-md ring-8 ring-slate-50 dark:ring-slate-900/50 transition-transform hover:scale-110">
-                                        <KeyRound className="w-8 h-8" />
-                                    </div>
-                                    <h2 className="text-4xl font-black mb-4 tracking-tight text-slate-900 dark:text-white">Welcome back</h2>
-                                    <p className="text-slate-500 dark:text-slate-400 text-lg mb-12 font-medium px-4">Choose how you'd like to sign in to your account.</p>
-
-                                    <div className="space-y-4 px-2">
-                                        <Button
-                                            onClick={() => setStep('PASSWORD')}
-                                            className="w-full h-[72px] text-xl font-bold rounded-[24px] bg-black dark:bg-white text-white dark:text-black hover:bg-slate-900 dark:hover:bg-slate-100 flex items-center justify-center gap-4 shadow-xl shadow-slate-200 dark:shadow-none transition-all active:scale-[0.98]"
-                                        >
-                                            <KeyRound className="w-6 h-6" /> Sign in with Password
-                                        </Button>
-                                        <Button
-                                            variant="outline"
-                                            onClick={() => {
-                                                setStep('OTP'); // Go to OTP step but for returning user
-                                            }}
-                                            className="w-full h-[72px] text-xl font-bold rounded-[24px] border-2 border-slate-100 dark:border-slate-800 bg-white dark:bg-transparent text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-900 flex items-center justify-center gap-4 transition-all active:scale-[0.98]"
-                                        >
-                                            <ShieldCheck className="w-6 h-6" /> Continue with OTP
-                                        </Button>
-                                    </div>
-                                </div>
+                                <AuthChoiceStep onSelectPassword={() => setStep('PASSWORD')} onSelectOtp={() => setStep('OTP')} />
                             )}
-
-                            {/* Step 4: Password (Returning User) */}
                             {step === 'PASSWORD' && (
-                                <form onSubmit={handleLoginSubmit}>
-                                    <CardHeader className="pt-12 pb-8 px-10 relative">
-                                        <Button variant="ghost" size="icon" className="absolute top-8 left-8" onClick={() => setStep('AUTH_CHOICE')}>
-                                            <ArrowLeft className="w-5 h-5" />
-                                        </Button>
-                                        <div className="flex flex-col items-center text-center">
-                                            <CardTitle className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3">Enter Password</CardTitle>
-                                            <CardDescription className="dark:text-slate-400">Enter the password associated with your account.</CardDescription>
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent className="px-10 pb-8 space-y-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="pass" className="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">Account Password</Label>
-                                            <Input
-                                                id="pass"
-                                                type="password"
-                                                placeholder="••••••••"
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                                className="h-[56px] text-lg rounded-2xl border-slate-200 bg-slate-50/50 dark:bg-slate-900/50 dark:border-slate-800 dark:text-white placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-white shadow-none transition-all"
-                                                autoFocus
-                                            />
-                                        </div>
-                                    </CardContent>
-                                    <CardFooter className="px-10 pb-12">
-                                        <Button type="submit" className="w-full h-[56px] text-lg font-bold rounded-2xl bg-black dark:bg-white text-white dark:text-black hover:bg-slate-900 dark:hover:bg-slate-100 transition-all active:scale-[0.98]" disabled={!password || isLoading}>
-                                            {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Log In'}
-                                        </Button>
-                                    </CardFooter>
-                                </form>
+                                <PasswordStep password={password} setPassword={setPassword} isLoading={isLoading} onBack={() => setStep('AUTH_CHOICE')} onSubmit={handleLoginSubmit} />
                             )}
-
-                            {/* Step 5: Profile (New User) */}
                             {step === 'PROFILE' && (
-                                <form onSubmit={handleRegisterSubmit}>
-                                    <CardHeader className="pt-12 pb-8 px-10 relative">
-                                        <Button variant="ghost" size="icon" className="absolute top-8 left-8" onClick={() => setStep('IDENTIFIER')}>
-                                            <ArrowLeft className="w-5 h-5" />
-                                        </Button>
-                                        <div className="flex flex-col items-center text-center">
-                                            <div className="w-12 h-12 bg-slate-50 dark:bg-slate-900/30 rounded-2xl flex items-center justify-center mb-6 text-black dark:text-white border border-slate-100 dark:border-slate-800 shadow-sm">
-                                                <UserPlus className="w-6 h-6" />
-                                            </div>
-                                            <CardTitle className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3">Create Profile</CardTitle>
-                                            <CardDescription className="dark:text-slate-400">Join NexRide and start traveling reliably.</CardDescription>
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent className="px-10 pb-8 space-y-6">
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label className="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">First Name</Label>
-                                                <Input placeholder="John" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-[50px] rounded-xl dark:bg-slate-900 dark:border-slate-800 dark:text-white" required />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label className="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">Last Name</Label>
-                                                <Input placeholder="Doe" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-[50px] rounded-xl dark:bg-slate-900 dark:border-slate-800 dark:text-white" />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-4">
-                                            <div className="space-y-2">
-                                                <Label className="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">Choose Password</Label>
-                                                <Input
-                                                    type="password"
-                                                    placeholder="Minimum 8 characters"
-                                                    value={password}
-                                                    onChange={(e) => setPassword(e.target.value)}
-                                                    className="h-[56px] text-lg rounded-xl dark:bg-slate-900 dark:border-slate-800 dark:text-white"
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label className="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">Confirm Password</Label>
-                                                <Input
-                                                    type="password"
-                                                    placeholder="Repeat password"
-                                                    value={confirmPassword}
-                                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                                    className="h-[56px] text-lg rounded-xl dark:bg-slate-900 dark:border-slate-800 dark:text-white"
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                    <CardFooter className="px-10 pb-12">
-                                        <Button
-                                            type="submit"
-                                            className="w-full h-[56px] text-lg font-bold rounded-2xl bg-black dark:bg-white text-white dark:text-black hover:bg-slate-900 dark:hover:bg-slate-100 transition-all active:scale-[0.98] premium-shadow"
-                                            disabled={isLoading}
-                                        >
-                                            {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Set up Account'}
-                                        </Button>
-                                    </CardFooter>
-                                </form>
+                                <ProfileStep
+                                    firstName={firstName} setFirstName={setFirstName}
+                                    lastName={lastName} setLastName={setLastName}
+                                    password={password} setPassword={setPassword}
+                                    confirmPassword={confirmPassword} setConfirmPassword={setConfirmPassword}
+                                    isLoading={isLoading} onBack={() => setStep('IDENTIFIER')} onSubmit={handleRegisterSubmit}
+                                />
                             )}
                         </div>
                     </Card>
